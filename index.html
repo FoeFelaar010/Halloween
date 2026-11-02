@@ -214,7 +214,7 @@ async function laadGebied(pcs,losse=[]){
 }
 // rand om het gebied: convex omhulsel van alle percelen, iets ruimer
 function maakRand(){
- if(window.hull&&LOTS.length>2){const k=Math.cos(52*Math.PI/180)*111320,m=111320;const h=hull(LOTS.flatMap(l=>l.p).map(([la,lo])=>[lo*k,la*m]),110);if(h&&h.length>3)return h.map(([x,y])=>[y/m,x/k])}
+ if(window.hull&&LOTS.length>2){const k=Math.cos(52*Math.PI/180)*111320,m=111320;const P=[];LOTS.flatMap(l=>l.p).forEach(([la,lo])=>{for(let i=0;i<8;i++){const a=i*Math.PI/4;P.push([lo*k+18*Math.cos(a),la*m+18*Math.sin(a)])}});const h=hull(P,110);if(h&&h.length>3)return h.map(([x,y])=>[y/m,x/k])}
  const pts=LOTS.flatMap(l=>l.p).map(([la,lo])=>[lo,la]);if(pts.length<3)return null;
  pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
  const lo=[],up=[];for(const p of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
