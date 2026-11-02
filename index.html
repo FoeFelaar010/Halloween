@@ -195,7 +195,7 @@ async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?selec
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
-function zetLots(d){LOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)}));HULL=maakRand()}
+function zetLots(d){LOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)}));HULL=strakRand(maakRand())}
 async function laadGebied(pcs,losse=[]){
  const key="gebied3:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
  const adr=[];await Promise.all(pcs.map(async pc=>{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=100&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc);const j=await r.json();
@@ -213,6 +213,11 @@ async function laadGebied(pcs,losse=[]){
  zetLots(d);
 }
 // rand om het gebied: convex omhulsel van alle percelen, iets ruimer
+function strakRand(H){if(!H||H.length<4)return H;const k=Math.cos(52*Math.PI/180)*111320,m=111320;let P=H.map(([a,o])=>[o*k,a*m]);if(P[0][0]==P[P.length-1][0]&&P[0][1]==P[P.length-1][1])P=P.slice(0,-1);
+ const dp=(pts,t)=>{if(pts.length<3)return pts;const [x1,y1]=pts[0],[x2,y2]=pts[pts.length-1];let mx=0,mi=0;const L=Math.hypot(x2-x1,y2-y1)||1e-9;for(let i=1;i<pts.length-1;i++){const d=Math.abs((y2-y1)*pts[i][0]-(x2-x1)*pts[i][1]+x2*y1-y2*x1)/L;if(d>mx){mx=d;mi=i}}if(mx>t){const a=dp(pts.slice(0,mi+1),t),b=dp(pts.slice(mi),t);return a.slice(0,-1).concat(b)}return [pts[0],pts[pts.length-1]]};
+ const inP=(R,x,y)=>{let c=false;for(let i=0,j=R.length-1;i<R.length;j=i++){const [x1,y1]=R[i],[x2,y2]=R[j];if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c}return c};
+ const LP=LOTS.flatMap(l=>l.p).map(([a,o])=>[o*k,a*m]),h=Math.floor(P.length/2);
+ for(let t=12;t>=1;t--){const S=dp(P.slice(0,h+1),t).slice(0,-1).concat(dp(P.slice(h).concat([P[0]]),t).slice(0,-1));if(LP.every(([x,y])=>inP(S,x,y)))return S.map(([x,y])=>[y/m,x/k])}return H}
 // Rand van het gebied, getekend door de organisatie (leeg = automatisch om de huizen)
 const RAND=[[51.988155,4.492006],[51.987793,4.492685],[51.987529,4.493364],[51.987362,4.493987],[51.986993,4.494496],[51.986665,4.495062],[51.986854,4.495379],[51.986904,4.495741],[51.986751,4.496024],[51.986436,4.495797],[51.985982,4.495288],[51.985632,4.494812],[51.985389,4.495287],[51.985131,4.495966],[51.984867,4.496758],[51.984589,4.497437],[51.984394,4.497867],[51.984101,4.49798],[51.983822,4.49789],[51.983668,4.497437],[51.983458,4.497007],[51.983471,4.496701],[51.983666,4.496418],[51.983485,4.496079],[51.983261,4.495739],[51.983176,4.49506],[51.983363,4.494267],[51.983746,4.493475],[51.984164,4.49291],[51.984234,4.492627],[51.984059,4.492287],[51.983779,4.491947],[51.983744,4.491608],[51.984057,4.491155],[51.984266,4.490703],[51.984704,4.489797],[51.984997,4.489175],[51.985275,4.488722],[51.985729,4.488666],[51.986113,4.489062],[51.986568,4.489742],[51.987162,4.490648],[51.987652,4.49144]];
 function maakRand(){
