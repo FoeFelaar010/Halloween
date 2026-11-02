@@ -133,6 +133,16 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
+html{scrollbar-gutter:stable;overflow-y:scroll}
+.hero .when.soon{color:var(--tx);text-decoration:none;border-color:#7a3d10;background:#3a2410}.hero .when.soon u{text-decoration-color:var(--or);text-underline-offset:3px}
+.big a{align-items:center;text-align:center;justify-content:center}.big>a:last-child:nth-child(even){grid-column:1/-1;min-height:96px}
+.stat div{display:flex;flex-direction:column;align-items:center;justify-content:center}
+@media (min-width:900px){
+ .tabs{display:grid;grid-auto-flow:column;grid-auto-columns:150px;justify-content:center;gap:6px}
+ .tabs a{flex:none;width:150px}
+ .tabs a.on{box-shadow:inset 0 -3px 0 var(--or)}
+ .big a{min-height:150px}.big>a:last-child:nth-child(even){grid-column:auto;min-height:150px}
+}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -298,7 +308,7 @@ async function looproute(a){
 // ---- Start ----
 function start(){
  app.className="home";
- app.innerHTML=`<div class="homebg" aria-hidden="true"></div><div class="hero"><h1>Halloween<br>in de buurt</h1><div class="wijk">De Eilanden &amp; Dichtersbuurt · Bergschenhoek</div><div class="when">🎃 ${wanneer()}</div>${agendaHTML()}${dlTxt()?`<div class="dl">⏳ ${dlTxt()}</div>`:""}</div>
+ app.innerHTML=`<div class="homebg" aria-hidden="true"></div><div class="hero"><h1>Halloween<br>in de buurt</h1><div class="wijk">De Eilanden &amp; Dichtersbuurt · Bergschenhoek</div>${EVENT.datum?`<div class="when">🎃 ${wanneer()}</div>`:`<a class="when soon" href="#/datum">📅 Datum volgt${EVENT.prikker===false?"":" · <u>stem mee</u> →"}</a>`}${agendaHTML()}${dlTxt()?`<div class="dl">⏳ ${dlTxt()}</div>`:""}</div>
  ${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}
  <div class="stat"><div><b>${huizen.length}</b><small>huizen doen mee</small></div><div><b>${huizen.filter(h=>DOET(h).some(k=>k=="spookhuis"||k=="eng")).length}</b><small>spookhuizen</small></div><div><b>${huizen.filter(h=>h.extra.length).length}</b><small>met extra's</small></div></div>
  <div class="big">
