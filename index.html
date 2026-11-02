@@ -148,6 +148,7 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
 main{position:relative;z-index:1}
 body[data-p=""] .pagebg,body[data-p="kaart"] .pagebg{display:none}
 @media print{.pagebg{display:none}}
+.rpt{width:24px;height:24px;border-radius:50%;background:#fff;border:5px solid #7c3aed;box-shadow:0 1px 5px #0009;cursor:grab}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -191,11 +192,11 @@ const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
 async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
-async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot})}catch(e){console.log(e)}}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[]}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
-function zetLots(d){LOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)})).filter(l=>!RAND.length||randAfst(l.lat,l.lng)<20);HULL=strakRand(maakRand())}
+function zetLots(d){LOTS=(window.ALLOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)}))).filter(l=>!RAND.length||randAfst(l.lat,l.lng)<20);HULL=strakRand(maakRand())}
 async function laadGebied(pcs,losse=[]){
  const key="gebied3:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
  const adr=[];await Promise.all(pcs.map(async pc=>{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=100&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc);const j=await r.json();
@@ -214,13 +215,31 @@ async function laadGebied(pcs,losse=[]){
 }
 // rand om het gebied: convex omhulsel van alle percelen, iets ruimer
 function randAfst(la,lo){const k=Math.cos(52*Math.PI/180)*111320,m=111320,R=RAND;let c=false,d=1e9;const x=lo*k,y=la*m;for(let i=0,j=R.length-1;i<R.length;j=i++){const x1=R[i][1]*k,y1=R[i][0]*m,x2=R[j][1]*k,y2=R[j][0]*m;if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c;const dx=x2-x1,dy=y2-y1,t=Math.max(0,Math.min(1,((x-x1)*dx+(y-y1)*dy)/(dx*dx+dy*dy||1)));d=Math.min(d,Math.hypot(x-x1-t*dx,y-y1-t*dy))}return c?0:d}
+function randEditor(k){
+ if(MAP){MAP.remove();MAP=null}
+ const m=L.map($("#rmap"),{zoomSnap:.5,maxZoom:20});MAP=m;
+ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
+ const AL=window.ALLOTS||LOTS;AL.forEach(l=>L.polygon(l.p,{weight:1,color:"#ff7a1a",fillColor:"#ff7a1a",fillOpacity:.3,interactive:false}).addTo(m));
+ let pts=(RAND.length?RAND:(HULL||[])).map(p=>[p[0],p[1]]);if(pts.length>1&&pts[0][0]==pts[pts.length-1][0]&&pts[0][1]==pts[pts.length-1][1])pts.pop();
+ const lijn=L.polygon([],{color:"#7c3aed",weight:3,fillColor:"#7c3aed",fillOpacity:.08,interactive:false}).addTo(m),grp=L.layerGroup().addTo(m);
+ const icon=L.divIcon({className:"",html:'<div class="rpt"></div>',iconSize:[24,24],iconAnchor:[12,12]});
+ const inP=(la,lo)=>{let c=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const [a1,o1]=pts[i],[a2,o2]=pts[j];if((o1>lo)!=(o2>lo)&&la<(a2-a1)*(lo-o1)/(o2-o1)+a1)c=!c}return c};
+ const info=()=>{const n=pts.length<3?0:AL.filter(l=>!inP(l.lat,l.lng)).length;$("#rinfo").textContent=pts.length<3?"✏️ Tik op de kaart om punten te zetten (minstens 3).":n?`⚠️ ${n} adressen uit je postcodes liggen buiten de lijn en doen dan niet mee.`:"✅ Alle adressen uit je postcodes liggen binnen de lijn."};
+ const teken=()=>{lijn.setLatLngs(pts);grp.clearLayers();pts.forEach((p,i)=>{const mk=L.marker(p,{icon,draggable:true}).addTo(grp);mk.on("drag",e=>{pts[i]=[e.latlng.lat,e.latlng.lng];lijn.setLatLngs(pts)});mk.on("dragend",info);mk.on("click",()=>{if(pts.length>3){pts.splice(i,1);teken()}})});info()};
+ m.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(pts.length<3)pts.push(p);else{const c=.616,d=(q,a,b)=>{const ax=a[1]*c,ay=a[0],bx=b[1]*c,by=b[0],qx=q[1]*c,qy=q[0],dx=bx-ax,dy=by-ay,t=Math.max(0,Math.min(1,((qx-ax)*dx+(qy-ay)*dy)/(dx*dx+dy*dy||1e-12)));return Math.hypot(qx-ax-t*dx,qy-ay-t*dy)};let best=0,bd=1e9;for(let i=0;i<pts.length;i++){const v=d(p,pts[i],pts[(i+1)%pts.length]);if(v<bd){bd=v;best=i+1}}pts.splice(best,0,p)}teken()});
+ const b=L.latLngBounds(pts.length?pts:AL.map(l=>[l.lat,l.lng]));if(b.isValid())m.fitBounds(b,{padding:[20,20]});else m.setView([51.9855,4.4935],16);teken();
+ const bewaar=async(r,t)=>{try{await rpc("beheer_rand",{p_key:k,p_rand:r});RAND=r;await laad();await laadGebied(EVENT.postcodes,EVENT.losse);toast(t)}catch(x){$("#rinfo").textContent=x}};
+ $("#rsave").onclick=()=>{if(pts.length<3)return $("#rinfo").textContent="Zet eerst minstens 3 punten.";bewaar(pts.map(p=>[+p[0].toFixed(6),+p[1].toFixed(6)]),"Rand opgeslagen ✓")};
+ $("#rleeg").onclick=()=>{if(confirm("Rand helemaal opnieuw tekenen?")){pts=[];teken()}};
+ $("#rauto").onclick=()=>{if(confirm("Geen getekende rand meer, maar automatisch om de huizen heen?"))bewaar([],"Rand staat op automatisch")};
+}
 function strakRand(H){if(!H||H.length<4)return H;const k=Math.cos(52*Math.PI/180)*111320,m=111320;let P=H.map(([a,o])=>[o*k,a*m]);if(P[0][0]==P[P.length-1][0]&&P[0][1]==P[P.length-1][1])P=P.slice(0,-1);
  const dp=(pts,t)=>{if(pts.length<3)return pts;const [x1,y1]=pts[0],[x2,y2]=pts[pts.length-1];let mx=0,mi=0;const L=Math.hypot(x2-x1,y2-y1)||1e-9;for(let i=1;i<pts.length-1;i++){const d=Math.abs((y2-y1)*pts[i][0]-(x2-x1)*pts[i][1]+x2*y1-y2*x1)/L;if(d>mx){mx=d;mi=i}}if(mx>t){const a=dp(pts.slice(0,mi+1),t),b=dp(pts.slice(mi),t);return a.slice(0,-1).concat(b)}return [pts[0],pts[pts.length-1]]};
  const inP=(R,x,y)=>{let c=false;for(let i=0,j=R.length-1;i<R.length;j=i++){const [x1,y1]=R[i],[x2,y2]=R[j];if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c}return c};
  const LP=LOTS.flatMap(l=>l.p).map(([a,o])=>[o*k,a*m]),h=Math.floor(P.length/2);
  for(let t=12;t>=1;t--){const S=dp(P.slice(0,h+1),t).slice(0,-1).concat(dp(P.slice(h).concat([P[0]]),t).slice(0,-1));if(LP.every(([x,y])=>inP(S,x,y)))return S.map(([x,y])=>[y/m,x/k])}return H}
 // Rand van het gebied, getekend door de organisatie (leeg = automatisch om de huizen)
-const RAND=[[51.988155,4.492006],[51.987793,4.492685],[51.987529,4.493364],[51.987448,4.493652],[51.986787,4.494913],[51.986919,4.495369],[51.986904,4.495741],[51.986751,4.496024],[51.986436,4.495797],[51.985982,4.495288],[51.985632,4.494812],[51.985389,4.495287],[51.985131,4.495966],[51.984867,4.496758],[51.984589,4.497437],[51.984394,4.497867],[51.984101,4.49798],[51.983822,4.49789],[51.983668,4.497437],[51.983458,4.497007],[51.983471,4.496701],[51.983666,4.496418],[51.983485,4.496079],[51.983261,4.495739],[51.983176,4.49506],[51.983363,4.494267],[51.983746,4.493475],[51.984164,4.49291],[51.984234,4.492627],[51.984059,4.492287],[51.983779,4.491947],[51.983744,4.491608],[51.984057,4.491155],[51.984266,4.490703],[51.984704,4.489797],[51.984997,4.489175],[51.985275,4.488722],[51.985729,4.488666],[51.986113,4.489062],[51.986568,4.489742],[51.987162,4.490648],[51.987652,4.49144]];
+let RAND=[[51.988155,4.492006],[51.987793,4.492685],[51.987529,4.493364],[51.987448,4.493652],[51.986787,4.494913],[51.986919,4.495369],[51.986904,4.495741],[51.986751,4.496024],[51.986436,4.495797],[51.985982,4.495288],[51.985632,4.494812],[51.985389,4.495287],[51.985131,4.495966],[51.984867,4.496758],[51.984589,4.497437],[51.984394,4.497867],[51.984101,4.49798],[51.983822,4.49789],[51.983668,4.497437],[51.983458,4.497007],[51.983471,4.496701],[51.983666,4.496418],[51.983485,4.496079],[51.983261,4.495739],[51.983176,4.49506],[51.983363,4.494267],[51.983746,4.493475],[51.984164,4.49291],[51.984234,4.492627],[51.984059,4.492287],[51.983779,4.491947],[51.983744,4.491608],[51.984057,4.491155],[51.984266,4.490703],[51.984704,4.489797],[51.984997,4.489175],[51.985275,4.488722],[51.985729,4.488666],[51.986113,4.489062],[51.986568,4.489742],[51.987162,4.490648],[51.987652,4.49144]];
 function maakRand(){
  if(window.hull&&LOTS.length>2){const k=Math.cos(52*Math.PI/180)*111320,m=111320;const P=[],b=RAND.length?6:10;for(let i=0;i<RAND.length;i++){const [a1,o1]=RAND[i],[a2,o2]=RAND[(i+1)%RAND.length];const x1=o1*k,y1=a1*m,x2=o2*k,y2=a2*m,n=Math.max(1,Math.ceil(Math.hypot(x2-x1,y2-y1)/8));for(let t=0;t<n;t++)P.push([x1+(x2-x1)*t/n,y1+(y2-y1)*t/n])}LOTS.flatMap(l=>l.p).forEach(([la,lo])=>{for(let i=0;i<8;i++){const a=i*Math.PI/4;P.push([lo*k+b*Math.cos(a),la*m+b*Math.sin(a)])}});const h=hull(P,RAND.length?30:75);if(h&&h.length>3)return h.map(([x,y])=>[y/m,x/k])}
  const pts=LOTS.flatMap(l=>l.p).map(([la,lo])=>[lo,la]);if(pts.length<3)return null;
@@ -445,6 +464,7 @@ async function beheer(){
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
  <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
+ <h2>✏️ Rand van het gebied</h2><p class="m"><b>Sleep</b> de paarse bolletjes om de rand te verplaatsen. <b>Tik op de kaart</b> om een punt toe te voegen, <b>tik op een bolletje</b> om het weg te halen. Oranje = adressen uit je postcodes.</p><div class="pmap" style="height:62vh;position:relative;border-radius:18px;overflow:hidden"><div class="lmap" id="rmap"></div></div><div id="rinfo" class="m" style="margin-top:8px"></div><div class="chips"><button class="chip on" id="rsave">💾 Rand opslaan</button><button class="chip" id="rleeg">✏️ Opnieuw tekenen</button><button class="chip" id="rauto">🔄 Automatisch</button></div>
  <h2>📍 Gebied (postcodes)</h2><p class="m">Alle adressen met deze postcodes kunnen meedoen. Zoek postcodes op via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.</p><textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea><button class="btn ghost" id="bpcs">Gebied opslaan</button>
  <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
  <h2>Evenement</h2><p class="m">Vul de definitieve datum in, of kies hieronder een datum uit de prikker. Aanmelden sluit dan automatisch 3 dagen ervoor.</p>
@@ -460,7 +480,7 @@ async function beheer(){
  const bewaar=(dag,van,tot,open)=>doe("beheer_instellingen",{p_datum:dag?dagTxt(dag):"",p_tijd:tijdTxt(van,tot),p_mededeling:$("#bm").value,p_prikker_open:open,p_dag:dag||null,p_van:van||null,p_tot:tot||null});
  app.querySelectorAll("[data-kies]").forEach(b=>b.onclick=()=>{const x=o.find(q=>q.id==b.dataset.kies);if(confirm(`${dagTxt(x.dag)} vastzetten als Halloween-datum en de datumprikker sluiten?`))bewaar(x.dag,hm(x.van),hm(x.tot),false)});
  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>doe("beheer_optie",{p_label:"",p_verwijder:b.dataset.del}));
- $("#bp").onclick=()=>$("#bp").classList.toggle("on");
+ $("#bp").onclick=()=>$("#bp").classList.toggle("on");randEditor(k);
  $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  $("#blos").onclick=async()=>{const l=$("#blo").value.toUpperCase().split(/[,;\n]+/).map(x=>x.trim().replace(/^(\d{4})\s*([A-Z]{2})\s+/,"$1$2 ")).filter(x=>/^\d{4}[A-Z]{2} \d+[A-Z]?(-[A-Z0-9]+)?$/.test(x));try{$("#blos").textContent="Laden…";await rpc("beheer_losse",{p_key:k,p_losse:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  $("#bs").onclick=()=>bewaar($("#bdag").value,$("#bvan").value,$("#btot").value,$("#bp").classList.contains("on"));
