@@ -202,8 +202,16 @@ async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?selec
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
 function zetLots(d){LOTS=(window.ALLOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)}))).filter(l=>!RAND.length||randAfst(l.lat,l.lng)<20);HULL=strakRand(maakRand())}
+function splitPerceel(g,as){const k=Math.cos(52*Math.PI/180)*111320,m=111320;const G=g.slice(0,-1).map(q=>[q[0]*k,q[1]*m]),A=as.map(a=>[a.lng*k,a.lat*m]);
+ const cx=A.reduce((s,p)=>s+p[0],0)/A.length,cy=A.reduce((s,p)=>s+p[1],0)/A.length;let sxx=0,syy=0,sxy=0;A.forEach(([x,y])=>{sxx+=(x-cx)**2;syy+=(y-cy)**2;sxy+=(x-cx)*(y-cy)});
+ const th=.5*Math.atan2(2*sxy,sxx-syy),u=[Math.cos(th),Math.sin(th)],v=[-u[1],u[0]],dt=p=>p[0]*u[0]+p[1]*u[1],ds=p=>p[0]*v[0]+p[1]*v[1];
+ const clip=(P,n,c)=>{const o=[];for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length],da=a[0]*n[0]+a[1]*n[1]-c,db=b[0]*n[0]+b[1]*n[1]-c;if(da<=0)o.push(a);if((da<0)!=(db<0)&&da!=db){const t=da/(da-db);o.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t])}}return o};
+ const ix=A.map((p,i)=>i).sort((i,j)=>dt(A[i])-dt(A[j])),T=ix.map(i=>dt(A[i])),res=new Array(as.length).fill(0);
+ ix.forEach((i,r)=>{const lo=r>0?(T[r-1]+T[r])/2:null,hi=r<ix.length-1?(T[r]+T[r+1])/2:null;if((hi!==null&&hi-T[r]<1)||(lo!==null&&T[r]-lo<1))return;
+  let P=G;if(hi!==null)P=clip(P,u,hi);if(lo!==null)P=clip(P,[-u[0],-u[1]],-lo);const s=ds(A[i]);P=clip(P,v,s+16);P=clip(P,[-v[0],-v[1]],-(s-16));
+  if(P.length>=3)res[i]=P.map(([x,y])=>[+(y/m).toFixed(6),+(x/k).toFixed(6)])});return res}
 async function laadGebied(pcs,losse=[]){
- const key="gebied3:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
+ const key="gebied4:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
  const adr=[];await Promise.all(pcs.map(async pc=>{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=100&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc);const j=await r.json();
   for(const d of j.response.docs){const m=d.centroide_ll.match(/POINT\(([\d.]+) ([\d.]+)\)/);adr.push({a:d.straatnaam+" "+d.huisnummer+(d.huisletter||"")+(d.huisnummertoevoeging?"-"+d.huisnummertoevoeging:""),lng:+m[1],lat:+m[2]})}}));
  await Promise.all(losse.map(async x=>{const [pc,nr]=x.split(" ");const hn=parseInt(nr);const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=20&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc+"&fq=huisnummer:"+hn);const j=await r.json();
@@ -214,7 +222,8 @@ async function laadGebied(pcs,losse=[]){
  let P=[];try{const r=await fetch("https://service.pdok.nl/kadaster/kadastralekaart/wfs/v5_0?service=WFS&version=2.0.0&request=GetFeature&typeNames=kadastralekaart:Perceel&outputFormat=application/json&srsName=urn:ogc:def:crs:EPSG::4326&count=5000&bbox="+bb+",urn:ogc:def:crs:EPSG::4326");P=(await r.json()).features.filter(f=>f.geometry.type=="Polygon").map(f=>({id:f.id,g:f.geometry.coordinates[0]}))}catch(e){console.log(e)}
  const ins=(x,y,g)=>{let c=false;for(let i=0,j=g.length-1;i<g.length;j=i++){const a=g[i],b=g[j];if(((a[1]>y)!=(b[1]>y))&&(x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]))c=!c}return c};
  const cnt=new Map();for(const a of adr){a.p=P.find(q=>ins(a.lng,a.lat,q.g));if(a.p)cnt.set(a.p.id,(cnt.get(a.p.id)||0)+1)}
- const seen=new Set(),d=[];for(const a of adr){if(seen.has(a.a))continue;seen.add(a.a);let poly=0;if(a.p&&cnt.get(a.p.id)==1){let g=a.p.g.slice(0,-1);if(g.length>40)g=g.filter((_,i)=>i%Math.ceil(g.length/40)==0);poly=g.map(q=>[+q[1].toFixed(6),+q[0].toFixed(6)])}d.push([a.a,+a.lat.toFixed(6),+a.lng.toFixed(6),poly])}
+ const grp=new Map();for(const a of adr)if(a.p&&cnt.get(a.p.id)>1){if(!grp.has(a.p.id))grp.set(a.p.id,[]);grp.get(a.p.id).push(a)}for(const [id,as] of grp){const r=splitPerceel(as[0].p.g,as);as.forEach((a,i)=>a.strip=r[i])}
+ const seen=new Set(),d=[];for(const a of adr){if(seen.has(a.a))continue;seen.add(a.a);let poly=a.strip||0;if(a.p&&cnt.get(a.p.id)==1){let g=a.p.g.slice(0,-1);if(g.length>40)g=g.filter((_,i)=>i%Math.ceil(g.length/40)==0);poly=g.map(q=>[+q[1].toFixed(6),+q[0].toFixed(6)])}d.push([a.a,+a.lat.toFixed(6),+a.lng.toFixed(6),poly])}
  try{for(const k of Object.keys(localStorage))if(k.startsWith("gebied"))localStorage.removeItem(k);localStorage.setItem(key,JSON.stringify({t:Date.now(),d}))}catch(e){}
  zetLots(d);
 }
