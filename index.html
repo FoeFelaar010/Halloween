@@ -65,7 +65,7 @@ main.full{max-width:none;padding:0}
 .step i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--or);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:14px}
 .picked{background:var(--card);border-radius:14px;padding:14px 16px;font-weight:600;min-height:52px;margin-top:10px}
 .picked.ok{background:var(--ok);color:#06210f}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .tile{background:var(--card);border:2px solid transparent;border-radius:16px;padding:16px 4px;text-align:center;color:var(--tx);font:600 14px Inter,sans-serif;cursor:pointer}
 .tile b{display:block;font-size:30px;line-height:1.3}.tile.on{border-color:var(--or);background:#3a2410}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -99,7 +99,7 @@ input:focus,textarea:focus{border-color:var(--or)}
  .side .top{padding:18px 16px 8px}.side .bd{overflow:auto;padding:0 12px 16px;flex:1}
  .drawer{display:none}
  .sheet{left:auto;right:24px;bottom:24px;width:360px}
- .big{grid-template-columns:repeat(4,1fr)}.big a.main{grid-column:auto}
+ .big{grid-template-columns:repeat(4,1fr)}.big:has(>a:nth-child(3):last-child){grid-template-columns:repeat(3,1fr)}.big a.main{grid-column:auto}
  main{max-width:960px}.hero h1{font-size:64px}
  .meedoen{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.pmap{height:70vh;position:sticky;top:80px}
 }
@@ -107,6 +107,32 @@ input:focus,textarea:focus{border-color:var(--or)}
 .mk{position:relative}.mk.vis{background:#e9e4ef;border-color:#2fbf6b;box-shadow:none}.mk.vis span{filter:grayscale(1);opacity:.45}.mk i{position:absolute;right:-7px;bottom:-7px;width:19px;height:19px;border-radius:50%;background:#2fbf6b;color:#fff;font:800 11px Inter,sans-serif;font-style:normal;display:flex;align-items:center;justify-content:center;border:2px solid #fff}.spooky .mk.vis{box-shadow:none}
 .row.vis{opacity:.5}.prog{background:var(--card);border-radius:16px;padding:12px 14px;margin-bottom:10px}.pt{display:flex;justify-content:space-between;align-items:center}.bar{height:8px;background:#352a45;border-radius:4px;margin:8px 0;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#ff7a1a,#2fbf6b);transition:width .3s}.tg{font-size:14px;color:var(--mu);display:flex;gap:8px;align-items:center;cursor:pointer}.tg input{width:auto;margin:0;accent-color:#ff7a1a}.lnk{background:none;border:0;color:var(--or);font:700 14px Inter,sans-serif;cursor:pointer}
 .sbtn{display:grid;gap:8px;margin-top:12px}.sbtn .btn{margin:0}.btn.okb{background:#2fbf6b;color:#06210f}.btn.zacht{background:#ece8f2;color:#3b2f4d}
+
+.pinfo{background:var(--card);border-radius:16px;padding:12px 14px;margin:6px 0 12px}.pinfo small{color:var(--mu)}
+.popt{background:var(--card);border:2px solid transparent;border-radius:18px;padding:14px;margin-bottom:10px}.popt.lead{border-color:var(--or)}.popt.oud{opacity:.5}
+.ph{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.ph b{font-size:18px;display:block}.ph small{color:var(--mu);font-size:14px}
+.badge{background:var(--or);color:#1a0e00;font-weight:800;font-size:12px;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.pbar{display:flex;height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:10px 0 6px}.pbar .j{background:var(--ok)}.pbar .m{background:#f2c94c}.pbar .n{background:#ff6b6b}
+.pcnt{display:flex;gap:12px;flex-wrap:wrap;color:var(--mu);font-size:13px}
+.pk3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.pkb{background:#2c2240;border:2px solid transparent;border-radius:14px;color:var(--tx);font:700 13px Inter,sans-serif;padding:10px 4px;cursor:pointer;min-height:58px;display:flex;flex-direction:column;align-items:center;gap:2px}.pkb span{font-size:20px}
+.pkb.ja.on{background:#123d24;border-color:var(--ok)}.pkb.misschien.on{background:#3d3312;border-color:#f2c94c}.pkb.nee.on{background:#3d1616;border-color:#ff6b6b}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 20px + env(safe-area-inset-bottom));background:var(--ok);color:#06210f;font-weight:800;padding:10px 18px;border-radius:999px;z-index:1300;box-shadow:0 6px 20px #0008}
+.agbtn{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}.agbtn button,.agbtn a{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:999px;padding:9px 14px;font:700 14px Inter,sans-serif;text-decoration:none;cursor:pointer}
+.dl{color:var(--mu);font-size:13px;margin-top:8px}
+.tile .s{display:block;font-weight:400;font-size:12px;color:var(--mu);margin-top:2px}.tile.on .s{color:#ffd2ad}
+.rbar{position:absolute;left:10px;right:10px;top:10px;z-index:1050;background:#fff;color:#1d1528;border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px #0008;max-width:460px;margin:auto}
+.rbar b{font-size:16px}.rbar small{display:block;color:#5b4a6b;font-size:12px}.rbar a{color:#c2410c;font-weight:700}.rbar .x{margin-left:auto;border:0;background:#eee;border-radius:50%;width:34px;height:34px;font-size:16px;cursor:pointer;flex:none}
+@media(min-width:900px){.rbar{left:auto;right:76px;width:380px}}
+.tr3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:8px}.tr3 label{font-size:13px;color:var(--mu);min-width:0}.tr3 label:first-child{grid-column:1/-1}.tr3 input{margin-top:4px;width:100%;min-width:0}
+.homebg{position:absolute;left:50%;width:100vw;margin-left:-50vw;top:0;height:min(78vh,620px);background:url(bg.webp?v=1) center 40%/cover;-webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent);opacity:1;animation:drift 40s ease-in-out infinite alternate;pointer-events:none}
+.homebg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 32%,#16101fb0 0,#16101f40 38%,#16101f00 60%),linear-gradient(#16101f00 55%,#16101fcc)}
+main.home{position:relative}body{overflow-x:clip}main.home>*:not(.homebg){position:relative;z-index:1}
+main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .hero .wijk{color:#e3d8f0;text-shadow:0 2px 8px #000}
+.credit{text-align:center;color:#6f6283;font-size:11px;margin-top:8px}
+@keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
+@media(prefers-reduced-motion:reduce){.homebg{animation:none}}
+.tabs a[hidden]{display:none}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -117,7 +143,31 @@ const $=s=>document.querySelector(s),app=$("#app");
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const SITE=location.origin+location.pathname;
 const EVENT={datum:"Zaterdag 31 oktober",tijd:"17:00 – 20:00",postcodes:[]};
-const TYPES={snoep:["🍬","Snoep"],spookhuis:["👻","Spookhuis"],versierd:["🎃","Versierd"]};
+const TYPES={aanbellen:["🎃","Aanbellen","Hier kun je aanbellen"],bak:["🍬","Snoepbak","Bak snoep staat buiten"],spookhuis:["👻","Spookhuis","Een beetje griezelig"],eng:["💀","Eng spookhuis","Alleen voor durfals!"]};
+const DOET=h=>{const d=h.doet&&h.doet.length?h.doet:[{snoep:"aanbellen",versierd:"aanbellen"}[h.type]||h.type];return Object.keys(TYPES).filter(k=>d.includes(k))};
+const prim=h=>{const d=DOET(h);return TYPES[["eng","spookhuis","aanbellen","bak"].find(k=>d.includes(k))||"aanbellen"][0]};
+const doetTxt=h=>{const d=DOET(h);return [...d.map(k=>TYPES[k][0]+" "+TYPES[k][1]),...(d.includes("aanbellen")||d.includes("bak")?[]:["🚫 Geen snoep"])].join(" · ")};
+const RUIL={spookhuis:"eng",eng:"spookhuis"};
+const doetIco=h=>DOET(h).map(k=>TYPES[k][0]).join("");
+const hm=t=>(t||"").slice(0,5);
+const DAGF=new Intl.DateTimeFormat("nl-NL",{weekday:"long",day:"numeric",month:"long"});
+function dagTxt(d){if(!d)return "";const s=DAGF.format(new Date(d+"T12:00"));return s[0].toUpperCase()+s.slice(1)}
+function tijdTxt(v,t){return v?hm(v)+(t?" – "+hm(t):""):""}
+function wanneer(){return EVENT.datum?esc(EVENT.datum)+(EVENT.tijd?" · "+esc(EVENT.tijd):""):"Datum volgt"}
+function deadline(){if(!EVENT.dag)return null;const d=new Date(EVENT.dag+"T12:00");d.setDate(d.getDate()-3);return d}
+function aanmeldenDicht(){const d=deadline();if(!d)return false;const t=new Date();t.setHours(12,0,0,0);return t>d}
+function dlTxt(){const d=deadline();if(!d)return "";const s=DAGF.format(d);return aanmeldenDicht()?"Aanmelden is gesloten.":"Huis aanmelden kan t/m "+s+"."}
+function agendaHTML(){return EVENT.dag?`<div class="agbtn"><button data-ics>📅 Zet in agenda</button><a target="_blank" rel="noopener" href="${gcal()}">Google Agenda</a></div>`:""}
+function icsT(d,t){return d.replace(/-/g,"")+"T"+(t||"17:00").slice(0,5).replace(":","")+"00"}
+function eindT(){return EVENT.tot||(EVENT.van?String(Math.min(23,+EVENT.van.slice(0,2)+3)).padStart(2,"0")+EVENT.van.slice(2,5):"20:00")}
+function gcal(){const p=new URLSearchParams({action:"TEMPLATE",text:"🎃 Halloween in de buurt",dates:icsT(EVENT.dag,EVENT.van)+"/"+icsT(EVENT.dag,eindT()),ctz:"Europe/Amsterdam",location:"De Eilanden & Dichtersbuurt, Bergschenhoek",details:"Spookykaart: "+SITE});return "https://calendar.google.com/calendar/render?"+p}
+function ics(){const now=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+ const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Halloween in de buurt//NL","CALSCALE:GREGORIAN","BEGIN:VTIMEZONE","TZID:Europe/Amsterdam","BEGIN:STANDARD","DTSTART:19701025T030000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU","TZOFFSETFROM:+0200","TZOFFSETTO:+0100","END:STANDARD","BEGIN:DAYLIGHT","DTSTART:19700329T020000","RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU","TZOFFSETFROM:+0100","TZOFFSETTO:+0200","END:DAYLIGHT","END:VTIMEZONE",
+ "BEGIN:VEVENT","UID:halloween-"+EVENT.dag+"@foefelaar010.github.io","DTSTAMP:"+now,"DTSTART;TZID=Europe/Amsterdam:"+icsT(EVENT.dag,EVENT.van),"DTEND;TZID=Europe/Amsterdam:"+icsT(EVENT.dag,eindT()),"SUMMARY:🎃 Halloween in de buurt","LOCATION:De Eilanden & Dichtersbuurt\\, Bergschenhoek","DESCRIPTION:Spookykaart: "+SITE,"URL:"+SITE,
+ "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Halloween in de buurt","TRIGGER:-PT1H","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/calendar;charset=utf-8"}));a.download="halloween-in-de-buurt.ics";document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function bindAgenda(){app.querySelectorAll("[data-ics]").forEach(b=>b.onclick=ics)}
+function toast(t){$(".toast")?.remove();const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),1600)}
 const EXTRA=["🍭 Suikerspin","🔥 Marshmallows","🍫 Chocomel","📸 Fotohoekje","🎶 Muziek","🎭 Schminken"];
 let huizen=[],LOTS=[],HULL=null,MAP=null,LAYER=(()=>{try{return localStorage.getItem("laag")||"spooky"}catch(e){return "spooky"}})(),ME=null,WATCH=null;
 
@@ -126,7 +176,7 @@ const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
 async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
-async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[]})}catch(e){console.log(e)}}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot})}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
@@ -198,18 +248,18 @@ function zetGeweest(a,aan){const s=geweest();aan?s.add(a):s.delete(a);try{localS
 let VERBERG=false;
 function pins(m,hl){const g=geweest();
  huizen.forEach(h=>{const l=lot(h.adres);if(!l)return;const v=g.has(h.adres);if(v&&VERBERG)return;
-  const mk=L.marker([l.lat,l.lng],{zIndexOffset:v?-500:0,icon:L.divIcon({className:"",html:`<div class="mk ${hl==h.adres?"hl":""} ${v?"vis":""}"><span>${TYPES[h.type][0]}</span>${v?"<i>✓</i>":""}</div>`,iconSize:[36,36],iconAnchor:[18,18]})}).addTo(m);
+  const mk=L.marker([l.lat,l.lng],{zIndexOffset:v?-500:0,icon:L.divIcon({className:"",html:`<div class="mk ${hl==h.adres?"hl":""} ${v?"vis":""}"><span>${prim(h)}</span>${v?"<i>✓</i>":""}</div>`,iconSize:[36,36],iconAnchor:[18,18]})}).addTo(m);
   mk.on("click",()=>{sheet(h.adres);m.panTo([l.lat,l.lng])})});
 }
 function voortgang(){const g=geweest(),t=huizen.length,n=huizen.filter(h=>g.has(h.adres)).length;
  return{n,t,html:t?`<div class="prog"><div class="pt"><b>${n==t?"🎉 Alles gehad!":"🍬 "+n+" van "+t+" bezocht"}</b>${n?`<button class="lnk" data-reset>Opnieuw</button>`:""}</div><div class="bar"><i style="width:${n/t*100}%"></i></div><label class="tg"><input type="checkbox" data-verberg ${VERBERG?"checked":""}> Verberg huizen waar ik al was</label></div>`:""}}
 function lijstHTML(){const g=geweest();const rows=sorted().sort((a,b)=>g.has(a.adres)-g.has(b.adres));
- return `${voortgang().html}<div class="list">${rows.map(h=>{const v=g.has(h.adres);return `<div class="row ${v?"vis":""}" data-h="${esc(h.adres)}"><span class="e">${v?"✅":TYPES[h.type][0]}</span><span class="t">${esc(h.adres)}<small>${v?"Geweest · ":""}${TYPES[h.type][1]}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span><span style="color:var(--mu)">›</span></div>`}).join("")||'<div class="empty">Nog niemand. Wees de eerste! <a href="#/meedoen" style="color:var(--or)">Doe mee</a></div>'}</div>
+ return `${voortgang().html}<div class="list">${rows.map(h=>{const v=g.has(h.adres);return `<div class="row ${v?"vis":""}" data-h="${esc(h.adres)}"><span class="e">${v?"✅":prim(h)}</span><span class="t">${esc(h.adres)}<small>${v?"Geweest · ":""}${doetTxt(h)}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span><span style="color:var(--mu)">›</span></div>`}).join("")||'<div class="empty">Nog niemand. Wees de eerste! <a href="#/meedoen" style="color:var(--or)">Doe mee</a></div>'}</div>
  <div class="legend" style="margin-top:12px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}<span>✅ Geweest</span></div>`}
 function herteken(){if(!MAP||(location.hash||"").slice(2).split("?")[0]!="kaart")return;const c=MAP.getCenter(),z=MAP.getZoom(),open=$("#dr")?.classList.contains("open");kaart();MAP.setView(c,z);if(open)$("#dr").classList.add("open")}
 function kaart(){
  app.className="full";const vg=voortgang();
- app.innerHTML=`<div class="kp"><aside class="side"><div class="top"><h1 style="font-size:30px">Spookykaart</h1><p class="m" style="margin:4px 0 0">${huizen.length} huizen doen mee · ${esc(EVENT.datum)} ${esc(EVENT.tijd)}</p>${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}</div><div class="bd">${lijstHTML()}</div></aside>
+ app.innerHTML=`<div class="kp"><aside class="side"><div class="top"><h1 style="font-size:30px">Spookykaart</h1><p class="m" style="margin:4px 0 0">${huizen.length} huizen doen mee · ${wanneer()}</p>${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}</div><div class="bd">${lijstHTML()}</div></aside>
  <div class="map" id="mw"><div class="lmap" id="lmap"></div>
  <div class="drawer" id="dr"><div class="hd"><b>👻 ${huizen.length} huizen${vg.n?` · ✅ ${vg.n} bezocht`:" doen mee"}</b><small>Tik om de lijst te openen</small></div><div class="bd">${EVENT.mededeling?`<div class="note" style="margin:0 0 10px">📢 ${esc(EVENT.mededeling)}</div>`:""}${lijstHTML()}</div></div></div></div>`;
  const m=basis($("#lmap"));pins(m);
@@ -220,37 +270,59 @@ function kaart(){
  app.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>{if(!confirm("Alle vinkjes wissen en opnieuw beginnen?"))return;try{localStorage.removeItem(GKEY())}catch(e){}herteken()});
 }
 function sheet(a){$(".sheet")?.remove();const h=huizen.find(x=>x.adres==a);if(!h)return;const l=lot(a);const v=geweest().has(a);const d=document.createElement("div");d.className="sheet";
- d.innerHTML=`<button class="x" aria-label="Sluiten">✕</button><h3>${TYPES[h.type][0]} ${esc(h.adres)}</h3><div style="color:#4d4060">${TYPES[h.type][1]}${v?" · ✅ geweest":""}</div>${h.extra.length?`<p>⭐ ${h.extra.map(esc).join(" · ")}</p>`:""}
- <div class="sbtn"><button class="btn ${v?"zacht":"okb"}" data-gw>${v?"↩️ Toch niet geweest":"✅ Hier geweest!"}</button>${l&&!v?`<a class="btn" target="_blank" href="https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${l.lat},${l.lng}">🚶 Loop hierheen</a>`:""}</div>`;
+ d.innerHTML=`<button class="x" aria-label="Sluiten">✕</button><h3>${prim(h)} ${esc(h.adres)}</h3><div style="color:#4d4060">${doetTxt(h)}${v?" · ✅ geweest":""}</div>${h.extra.length?`<p>⭐ ${h.extra.map(esc).join(" · ")}</p>`:""}
+ <div class="sbtn"><button class="btn ${v?"zacht":"okb"}" data-gw>${v?"↩️ Toch niet geweest":"✅ Hier geweest!"}</button>${l&&!v?`<button class="btn" data-loop>🚶 Loop hierheen</button>`:""}</div>`;
  document.body.append(d);d.querySelector(".x").onclick=()=>d.remove();
- d.querySelector("[data-gw]").onclick=()=>{zetGeweest(a,!v);d.remove();herteken()}}
+ d.querySelector("[data-gw]").onclick=()=>{zetGeweest(a,!v);d.remove();stopRoute();herteken()};
+ const lb=d.querySelector("[data-loop]");if(lb)lb.onclick=()=>{d.remove();looproute(a)}}
+let RLIJN=null;
+function stopRoute(){if(RLIJN){RLIJN.remove();RLIJN=null}$(".rbar")?.remove()}
+function hier(){return new Promise((ok,nee)=>{if(ME)return ok(ME.getLatLng());if(!navigator.geolocation)return nee("geen");navigator.geolocation.getCurrentPosition(p=>ok(L.latLng(p.coords.latitude,p.coords.longitude)),()=>nee("geweigerd"),{enableHighAccuracy:true,timeout:10000,maximumAge:10000})})}
+async function looproute(a){
+ const l=lot(a);if(!l||!MAP)return;stopRoute();const doel=L.latLng(l.lat,l.lng),gm=`https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${l.lat},${l.lng}`;
+ const wrap=$("#lmap").parentElement,bar=document.createElement("div");bar.className="rbar";bar.innerHTML=`<span style="font-size:26px">🚶</span><div><b>Route zoeken…</b><small>${esc(a)}</small></div><button class="x" aria-label="Route sluiten">✕</button>`;wrap.append(bar);
+ bar.querySelector(".x").onclick=stopRoute;
+ const zet=(html)=>{bar.querySelector("div").innerHTML=html};
+ let van;try{van=await hier()}catch(e){zet(`<b>Waar ben je?</b><small>Sta locatie toe om de route te zien, of <a href="${gm}" target="_blank" rel="noopener">open Google Maps</a>.</small>`);return}
+ if(!$(".ctl [data-c=gps]").classList.contains("on"))gps($(".ctl [data-c=gps]"));
+ if(van.distanceTo(doel)>4000){zet(`<b>Je bent niet in de buurt</b><small>Ga eerst naar De Eilanden / Dichtersbuurt, of <a href="${gm}" target="_blank" rel="noopener">open Google Maps</a>.</small>`);return}
+ let pts=null,m=van.distanceTo(doel)*1.3,sec=null;
+ try{const r=await fetch(`https://routing.openstreetmap.de/routed-foot/route/v1/foot/${van.lng},${van.lat};${l.lng},${l.lat}?overview=full&geometries=geojson`);const j=await r.json();
+  if(j.routes&&j.routes[0]){pts=j.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);m=j.routes[0].distance}}catch(e){}
+ const min=Math.max(1,Math.round(m/75));
+ RLIJN=L.layerGroup([L.polyline(pts||[van,doel],{color:"#16101f",weight:9,opacity:.5}),L.polyline(pts||[van,doel],{color:"#ff7a1a",weight:5,dashArray:pts?null:"8 8"})]).addTo(MAP);
+ MAP.fitBounds(L.latLngBounds(pts||[van,doel]).extend(doel),{padding:[70,40],maxZoom:19});
+ zet(`<b>${min} min lopen · ${m<1000?Math.round(m/10)*10+" m":(m/1000).toFixed(1).replace(".",",")+" km"}</b><small>naar ${esc(a)}${pts?"":" (hemelsbreed)"} · <a href="${gm}" target="_blank" rel="noopener">Google Maps</a></small>`);
+}
 
 // ---- Start ----
 function start(){
- app.className="";
- app.innerHTML=`<div class="hero"><h1>Halloween<br>in de buurt</h1><div class="wijk">De Eilanden &amp; Dichtersbuurt · Bergschenhoek</div><div class="when">🎃 ${esc(EVENT.datum)} · ${esc(EVENT.tijd)}</div></div>
+ app.className="home";
+ app.innerHTML=`<div class="homebg" aria-hidden="true"></div><div class="hero"><h1>Halloween<br>in de buurt</h1><div class="wijk">De Eilanden &amp; Dichtersbuurt · Bergschenhoek</div><div class="when">🎃 ${wanneer()}</div>${agendaHTML()}${dlTxt()?`<div class="dl">⏳ ${dlTxt()}</div>`:""}</div>
  ${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}
- <div class="stat"><div><b>${huizen.length}</b><small>huizen doen mee</small></div><div><b>${huizen.filter(h=>h.type=="spookhuis").length}</b><small>spookhuizen</small></div><div><b>${huizen.filter(h=>h.extra.length).length}</b><small>met extra's</small></div></div>
+ <div class="stat"><div><b>${huizen.length}</b><small>huizen doen mee</small></div><div><b>${huizen.filter(h=>DOET(h).some(k=>k=="spookhuis"||k=="eng")).length}</b><small>spookhuizen</small></div><div><b>${huizen.filter(h=>h.extra.length).length}</b><small>met extra's</small></div></div>
  <div class="big">
   <a class="main" href="#/kaart"><b>👻</b><span>Spookykaart</span><small>Zie welke huizen meedoen en loop erheen</small></a>
   <a href="#/meedoen"><b>🎃</b><span>Meedoen</span><small>Meld je huis aan in 30 seconden</small></a>
-  <a href="#/datum"><b>📅</b><span>Datumprikker</span><small>Stem mee over de datum</small></a>
+  ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":"Stem mee over de datum"}</small></a>`}
   <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
  </div>
- <p class="m" style="text-align:center;margin-top:22px">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p>`;
+ <p class="m" style="text-align:center;margin-top:22px">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p><div class="credit">Beeld gebaseerd op een luchtfoto van Google Earth</div>`;
+ bindAgenda();
 }
 
 // ---- Meedoen ----
-let form={a:null,type:null,extra:[],eigen:""},POLY={};
+let form={a:null,doet:["aanbellen"],extra:[],eigen:""},POLY={};
 function meedoen(){
  app.className="";
- app.innerHTML=`<h2>Doe mee 🎃</h2><p class="m">Drie stappen, klaar in 30 seconden.</p><div class="meedoen"><div>
+ if(aanmeldenDicht()){app.innerHTML=`<div class="done"><b>⏳</b><h2>Aanmelden is gesloten</h2><p class="m">Aanmelden kon tot 3 dagen voor Halloween. Je kunt nog wel gewoon langs de deuren!</p><a class="btn" href="#/kaart">Naar de spookykaart</a></div>`;return}
+ app.innerHTML=`<h2>Doe mee 🎃</h2><p class="m">Drie stappen, klaar in 30 seconden.${dlTxt()?" "+dlTxt():""}</p><div class="meedoen"><div>
  <div class="step"><i>1</i>Zoek of tik jouw huis</div>
  <input id="zoek" placeholder="Typ je straat en huisnummer, bijv. Ameland 3" autocomplete="off"><div class="sugg" id="sg"></div>
  <div class="picked ${form.a?"ok":""}" id="pk">${form.a?"📍 "+esc(form.a):"Nog geen huis gekozen"}</div>
  <div class="pmap" id="pw"><div class="lmap" id="lmap"></div></div></div><div>
- <div class="step"><i>2</i>Wat doe je?</div>
- <div class="tiles">${Object.entries(TYPES).map(([k,[e,t]])=>`<button class="tile ${form.type==k?"on":""}" data-k="${k}"><b>${e}</b>${t}</button>`).join("")}</div>
+ <div class="step"><i>2</i>Wat is er bij jou? <span style="font-weight:400;color:var(--mu)">(meerdere mag)</span></div><p class="m" style="margin:-4px 0 10px">Snoep: aanbellen of een bak buiten. Griezelig: spookhuis of eng spookhuis.</p>
+ <div class="tiles">${Object.entries(TYPES).map(([k,[e,t]])=>`<button class="tile ${form.doet.includes(k)?"on":""}" data-k="${k}" aria-pressed="${form.doet.includes(k)}"><b>${e}</b>${t}<span class="s">${TYPES[k][2]}</span></button>`).join("")}</div>
  <div class="step"><i>3</i>Iets extra's? <span style="font-weight:400;color:var(--mu)">(mag leeg)</span></div>
  <div class="chips">${EXTRA.map(x=>`<button class="chip ${form.extra.includes(x)?"on":""}" data-x="${x}">${x}</button>`).join("")}</div>
  <input id="eigen" maxlength="40" placeholder="Iets anders, bijv. heksensoep" value="${esc(form.eigen)}">
@@ -269,16 +341,17 @@ function meedoen(){
   const tk=q.split(" ");const r=LOTS.filter(l=>{const n=norm(l.a),parts=n.split(" ");return tk.every(t=>/^\d/.test(t)?parts[parts.length-1]==t:n.includes(t))}).sort((a,b)=>{const x=sortKey(a.a),y=sortKey(b.a);return x[0].localeCompare(y[0])||x[1]-y[1]}).slice(0,6);
   $("#sg").innerHTML=r.map(l=>`<button data-a="${esc(l.a)}">${esc(l.a)}${huizen.some(h=>h.adres==l.a)?" · doet al mee":""}</button>`).join("")||'<div class="empty" style="padding:12px">Dit adres ligt niet in het gebied.</div>';
   $("#sg").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("#zoek").value=b.dataset.a;kies(b.dataset.a,true)})};
- app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{form.type=b.dataset.k;app.querySelectorAll(".tile").forEach(x=>x.classList.toggle("on",x==b))});
+ app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const k=b.dataset.k,i=form.doet.indexOf(k);if(i<0){form.doet=form.doet.filter(x=>x!=RUIL[k]);form.doet.push(k)}else form.doet.splice(i,1);
+  app.querySelectorAll(".tile").forEach(t=>{const on=form.doet.includes(t.dataset.k);t.classList.toggle("on",on);t.setAttribute("aria-pressed",on)})});
  app.querySelectorAll(".chip[data-x]").forEach(b=>b.onclick=()=>{const v=b.dataset.x,i=form.extra.indexOf(v);i<0?form.extra.push(v):form.extra.splice(i,1);b.classList.toggle("on")});
  $("#eigen").oninput=e=>form.eigen=e.target.value;
  $("#go").onclick=()=>{
   if(!form.a)return fout("Kies eerst jouw huis (zoeken of op de kaart tikken).");
-  if(!form.type)return fout("Kies wat je doet: snoep, spookhuis of versierd.");
+  if(!form.doet.length)return fout("Kies minstens één ding: aanbellen, snoepbak, spookhuis of eng spookhuis.");
   const extra=[...form.extra,...(form.eigen.trim()?["✨ "+form.eigen.trim()]:[])];
   const a=form.a;$("#go").disabled=true;$("#go").textContent="Bezig…";
-  rpc("aanmelden",{p_adres:a,p_type:form.type,p_extra:extra}).then(()=>{form={a:null,type:null,extra:[],eigen:""};
-  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. Na een korte controle door de organisatie staat je huis op de kaart.</p><a class="btn" href="#/kaart">Bekijk de spookykaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a></div>`;scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
+  rpc("aanmelden",{p_adres:a,p_doet:form.doet,p_extra:extra}).then(()=>{form={a:null,doet:["aanbellen"],extra:[],eigen:""};
+  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. Na een korte controle door de organisatie staat je huis op de kaart.</p><a class="btn" href="#/kaart">Bekijk de spookykaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a>${agendaHTML()}</div>`;bindAgenda();scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
 }
 function fout(t){$("#err").textContent=t}
 
@@ -287,25 +360,49 @@ function flyer(){
  app.className="";
  let qr="";try{const q=qrcode(0,"M");q.addData(SITE);q.make();qr=q.createSvgTag({cellSize:4,margin:0,scalable:true})}catch(e){}
  app.innerHTML=`<button class="btn noprint" onclick="print()" style="margin:4px 0 16px">🖨️ Print de flyer</button>
- <div class="flyer"><h1>Halloween in de buurt</h1><div style="text-align:center;color:var(--mu)">De Eilanden &amp; Dichtersbuurt</div><div style="text-align:center;font-size:18px;font-weight:800;margin-top:4px">${esc(EVENT.datum)} · ${esc(EVENT.tijd)}</div>
+ <div class="flyer"><h1>Halloween in de buurt</h1><div style="text-align:center;color:var(--mu)">De Eilanden &amp; Dichtersbuurt</div><div style="text-align:center;font-size:18px;font-weight:800;margin-top:4px">${wanneer()}</div>
  <div class="fmap"><div class="lmap" id="lmap"></div></div>
  <div class="legend" style="margin-bottom:10px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
- <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${TYPES[h.type][0]} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
+ <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${doetIco(h)} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
  <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div>
  <p style="text-align:center;font-size:14px;color:var(--mu);margin:14px 0 0">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p></div>`;
  const m=basis($("#lmap"),{pad:[6,6]});pins(m);
 }
 
 // ---- Datumprikker ----
+function tok(){let t="";try{t=localStorage.getItem("stemtoken")||""}catch(e){}if(!/^[a-f0-9]{32}$/.test(t)){t=[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,"0")).join("");try{localStorage.setItem("stemtoken",t)}catch(e){}}return t}
+function optDag(x){return x.dag?dagTxt(x.dag):esc(x.label)}
+function optTijd(x){return x.van?tijdTxt(x.van,x.tot)+" uur":""}
+function voorbij(x){return x.dag&&x.dag<new Date().toISOString().slice(0,10)}
+const KEUZES=[["ja","✅","Kan ik"],["misschien","🤔","Misschien"],["nee","❌","Kan niet"]];
 async function datum(){
  app.className="";
- app.innerHTML=`<h2>📅 Welke dag past?</h2><p class="m">Stem mee over de datum van Halloween in de buurt.</p><div id="pk2" class="empty">Laden…</div>`;
- let o=[],st=[];try{[o,st]=await Promise.all([get("prikker_opties?select=*&order=volgorde"),get("prikker_stemmen?select=optie_id,naam,keuze")])}catch(e){$("#pk2").textContent="Kon niet laden.";return}
- let naam="";try{naam=localStorage.getItem("naam")||""}catch(e){}
- $("#pk2").outerHTML=`${EVENT.prikker===false?'<div class="picked">De datumprikker is gesloten.</div>':`<input id="nm" placeholder="Je naam of huisnummer" value="${esc(naam)}" maxlength="40">`}
- <div class="list" style="margin-top:12px">${o.map(x=>{const s=st.filter(v=>v.optie_id==x.id),c=k=>s.filter(v=>v.keuze==k).length;return `<div class="row" style="flex-wrap:wrap;cursor:default"><span class="t">${esc(x.label)}<small>✅ ${c("ja")} · 🤔 ${c("misschien")} · ❌ ${c("nee")}</small></span>${EVENT.prikker===false?"":`<span class="chips">${[["ja","✅"],["misschien","🤔"],["nee","❌"]].map(([k,e])=>`<button class="chip ${s.some(v=>v.naam==naam&&v.keuze==k)?"on":""}" data-o="${x.id}" data-k="${k}">${e}</button>`).join("")}</span>`}</div>`}).join("")||'<div class="empty">Nog geen opties.</div>'}</div><div class="err" id="err"></div>`;
- app.querySelectorAll("[data-o]").forEach(b=>b.onclick=async()=>{const n=$("#nm").value.trim();if(!n){$("#err").textContent="Vul eerst je naam in.";$("#nm").focus();return}
-  try{localStorage.setItem("naam",n)}catch(e){}try{await rpc("stem",{p_optie:b.dataset.o,p_naam:n,p_keuze:b.dataset.k});datum()}catch(m){$("#err").textContent=m}});
+ app.innerHTML=`<h2>📅 Welke dag past?</h2><div id="pk2" class="empty">Laden…</div>`;
+ let o=[],st=[];try{[o,st]=await Promise.all([get("prikker_opties?select=*&order=dag,van,volgorde"),rpc("prikker_stand",{p_token:tok()})])}catch(e){$("#pk2").textContent="Kon de datumprikker niet laden. Probeer het later opnieuw.";return}
+ const S={};(st||[]).forEach(s=>S[s.optie_id]=s);
+ const open=EVENT.prikker!==false;
+ const teken=()=>{
+  const rows=o.map(x=>({x,s:S[x.id]||{ja:0,misschien:0,nee:0,mijn:null}}));
+  const score=r=>r.s.ja*2+r.s.misschien, top=Math.max(0,...rows.map(score));
+  const klaar=rows.filter(r=>r.s.mijn).length;
+  $("#pk").innerHTML=`${!open?`<div class="pinfo">${EVENT.datum?`🎃 <b>De datum staat vast: ${esc(EVENT.datum)}${EVENT.tijd?" · "+esc(EVENT.tijd):""}</b>`:"🔒 De datumprikker is gesloten."}${agendaHTML()}<small>Hieronder zie je hoe er gestemd is.</small></div>`
+   :`<div class="pinfo">Tik per dag aan of je kunt. Je stem is <b>anoniem</b> en je kunt hem altijd aanpassen.<br><small>${klaar?`✔️ Je hebt ${klaar} van de ${rows.length} dagen ingevuld.`:"Je hebt nog niet gestemd."}</small></div>`}
+  ${rows.map(({x,s})=>{const n=s.ja+s.misschien+s.nee,lead=top>0&&score({s})==top,oud=voorbij(x);
+   return `<div class="popt ${lead?"lead":""} ${oud?"oud":""}">
+    <div class="ph"><div><b>${optDag(x)}</b>${optTijd(x)?`<small>🕖 ${optTijd(x)}</small>`:""}</div>${lead?`<span class="badge">⭐ ${open?"Favoriet":"Meeste stemmen"}</span>`:""}</div>
+    <div class="pbar">${n?`<i class="j" style="flex:${s.ja}"></i><i class="m" style="flex:${s.misschien}"></i><i class="n" style="flex:${s.nee}"></i>`:""}</div>
+    <div class="pcnt"><span>✅ ${s.ja} kan</span><span>🤔 ${s.misschien} misschien</span><span>❌ ${s.nee} kan niet</span></div>
+    ${open&&!oud?`<div class="pk3">${KEUZES.map(([k,e,t])=>`<button class="pkb ${k} ${s.mijn==k?"on":""}" data-o="${x.id}" data-k="${k}" aria-pressed="${s.mijn==k}"><span>${e}</span>${t}</button>`).join("")}</div>`:""}
+   </div>`}).join("")||'<div class="empty">Er zijn nog geen datums om uit te kiezen.</div>'}
+  <div class="err" id="err"></div>`;
+  bindAgenda();
+  app.querySelectorAll("[data-o]").forEach(b=>b.onclick=async()=>{
+   const id=b.dataset.o,k=b.dataset.k,s=S[id]||(S[id]={ja:0,misschien:0,nee:0,mijn:null}),oud=s.mijn,nieuw=oud==k?null:k;
+   if(oud)s[oud]--;if(nieuw)s[nieuw]++;s.mijn=nieuw;teken();
+   try{await rpc("stem",{p_optie:id,p_token:tok(),p_keuze:nieuw});toast(nieuw?"Opgeslagen ✓":"Stem weggehaald")}
+   catch(m){if(nieuw)s[nieuw]--;if(oud)s[oud]++;s.mijn=oud;teken();$("#err").textContent=m}});
+ };
+ $("#pk2").outerHTML=`<div id="pk"></div>`;teken();
 }
 
 // ---- Beheer (geheime link) ----
@@ -314,11 +411,11 @@ async function beheer(){
  const k=new URLSearchParams(location.hash.split("?")[1]||"").get("k")||sessionStorage.getItem("bk")||"";
  if(!k){app.innerHTML='<div class="empty">Geen toegang.</div>';return}
  let lijst;try{lijst=await rpc("beheer_lijst",{p_key:k});sessionStorage.setItem("bk",k)}catch(m){app.innerHTML=`<div class="empty">${esc(m)}</div>`;return}
- const [o,st]=await Promise.all([get("prikker_opties?select=*&order=volgorde"),get("prikker_stemmen?select=optie_id,keuze")]);
+ const [o,st]=await Promise.all([get("prikker_opties?select=*&order=dag,van,volgorde"),rpc("prikker_stand",{})]);
  const nieuw=lijst.filter(h=>!h.goedgekeurd),ok=lijst.filter(h=>h.goedgekeurd);
- const rij=h=>`<div class="row" style="flex-wrap:wrap;cursor:default"><span class="e">${TYPES[h.type][0]}</span><span class="t">${esc(h.adres)}<small>${TYPES[h.type][1]}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span>
+ const rij=h=>`<div class="row" style="flex-wrap:wrap;cursor:default"><span class="e">${prim(h)}</span><span class="t">${esc(h.adres)}<small>${doetTxt(h)}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span>
   <span class="chips">${h.goedgekeurd?`<button class="chip" data-a="afkeuren" data-id="${h.id}">Verbergen</button>`:`<button class="chip on" data-a="goedkeuren" data-id="${h.id}">✓ Goedkeuren</button>`}
-  <select class="chip" style="width:auto;margin:0" data-type="${h.id}">${Object.entries(TYPES).map(([t,[e,n]])=>`<option value="${t}" ${t==h.type?"selected":""}>${e} ${n}</option>`).join("")}</select>
+  ${Object.entries(TYPES).map(([t,[e,n]])=>`<button class="chip ${DOET(h).includes(t)?"on":""}" data-doet="${t}" data-hid="${h.id}" title="${n}">${e}</button>`).join("")}
   <button class="chip" data-a="verwijderen" data-id="${h.id}">🗑️</button></span></div>`;
  app.innerHTML=`<h2>🔧 Beheer</h2>
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
@@ -326,23 +423,27 @@ async function beheer(){
  <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
  <h2>📍 Gebied (postcodes)</h2><p class="m">Alle adressen met deze postcodes kunnen meedoen. Zoek postcodes op via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.</p><textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea><button class="btn ghost" id="bpcs">Gebied opslaan</button>
  <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
- <h2>Evenement</h2><input id="bd" value="${esc(EVENT.datum)}" placeholder="Datum"><input id="bt" value="${esc(EVENT.tijd)}" placeholder="Tijd"><input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
+ <h2>Evenement</h2><p class="m">Vul de definitieve datum in, of kies hieronder een datum uit de prikker. Aanmelden sluit dan automatisch 3 dagen ervoor.</p>
+ <div class="tr3"><label>Datum<input type="date" id="bdag" value="${EVENT.dag||""}"></label><label>Van<input type="time" id="bvan" value="${hm(EVENT.van)}"></label><label>Tot<input type="time" id="btot" value="${hm(EVENT.tot)}"></label></div>
+ <input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
  <div class="chips" style="margin-top:10px"><button class="chip ${EVENT.prikker!==false?"on":""}" id="bp">📅 Datumprikker open</button></div>
  <button class="btn" id="bs">Opslaan</button>
- <h2>Datumprikker</h2><div class="list">${o.map(x=>{const s=st.filter(v=>v.optie_id==x.id),c=q=>s.filter(v=>v.keuze==q).length;return `<div class="row" style="cursor:default"><span class="t">${esc(x.label)}<small>✅ ${c("ja")} · 🤔 ${c("misschien")} · ❌ ${c("nee")}</small></span><button class="chip" data-del="${x.id}">🗑️</button></div>`}).join("")}</div>
- <input id="bo" placeholder="Nieuwe optie, bijv. Zaterdag 31 oktober 17:00–20:00"><button class="btn ghost" id="bad">Optie toevoegen</button><div class="err" id="err"></div>`;
+ <h2>Datumprikker</h2><div class="list">${o.map(x=>{const c=st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0};return `<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<small>✅ ${c.ja} · 🤔 ${c.misschien} · ❌ ${c.nee}</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}<button class="chip" data-del="${x.id}">🗑️</button></span></div>`}).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
+ <div class="tr3"><label>Datum<input type="date" id="odag"></label><label>Van<input type="time" id="ovan" value="17:00"></label><label>Tot<input type="time" id="otot" value="20:00"></label></div><button class="btn ghost" id="bad">Datum toevoegen</button><div class="err" id="err"></div>`;
  const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m}};
  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(b.dataset.a=="verwijderen"&&!confirm("Verwijderen?"))return;doe("beheer_huis",{p_id:b.dataset.id,p_actie:b.dataset.a})});
- app.querySelectorAll("[data-type]").forEach(s=>s.onchange=()=>doe("beheer_huis",{p_id:s.dataset.type,p_actie:"bewerken",p_type:s.value}));
+ app.querySelectorAll("[data-doet]").forEach(b=>b.onclick=()=>{const h=lijst.find(x=>x.id==b.dataset.hid),d=DOET(h),k=b.dataset.doet,n=d.includes(k)?d.filter(x=>x!=k):[...d.filter(x=>x!=RUIL[k]),k];if(!n.length)return $("#err").textContent="Minstens één ding aan laten.";doe("beheer_huis",{p_id:h.id,p_actie:"bewerken",p_doet:n})});
+ const bewaar=(dag,van,tot,open)=>doe("beheer_instellingen",{p_datum:dag?dagTxt(dag):"",p_tijd:tijdTxt(van,tot),p_mededeling:$("#bm").value,p_prikker_open:open,p_dag:dag||null,p_van:van||null,p_tot:tot||null});
+ app.querySelectorAll("[data-kies]").forEach(b=>b.onclick=()=>{const x=o.find(q=>q.id==b.dataset.kies);if(confirm(`${dagTxt(x.dag)} vastzetten als Halloween-datum en de datumprikker sluiten?`))bewaar(x.dag,hm(x.van),hm(x.tot),false)});
  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>doe("beheer_optie",{p_label:"",p_verwijder:b.dataset.del}));
  $("#bp").onclick=()=>$("#bp").classList.toggle("on");
  $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  $("#blos").onclick=async()=>{const l=$("#blo").value.toUpperCase().split(/[,;\n]+/).map(x=>x.trim().replace(/^(\d{4})\s*([A-Z]{2})\s+/,"$1$2 ")).filter(x=>/^\d{4}[A-Z]{2} \d+[A-Z]?(-[A-Z0-9]+)?$/.test(x));try{$("#blos").textContent="Laden…";await rpc("beheer_losse",{p_key:k,p_losse:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
- $("#bs").onclick=()=>doe("beheer_instellingen",{p_datum:$("#bd").value,p_tijd:$("#bt").value,p_mededeling:$("#bm").value,p_prikker_open:$("#bp").classList.contains("on")});
- $("#bad").onclick=()=>{const v=$("#bo").value.trim();if(v)doe("beheer_optie",{p_label:v})};
+ $("#bs").onclick=()=>bewaar($("#bdag").value,$("#bvan").value,$("#btot").value,$("#bp").classList.contains("on"));
+ $("#bad").onclick=()=>{const d=$("#odag").value;if(!d)return $("#err").textContent="Kies eerst een datum.";doe("beheer_optie",{p_label:dagTxt(d)+" "+tijdTxt($("#ovan").value,$("#otot").value),p_dag:d,p_van:$("#ovan").value||null,p_tot:$("#otot").value||null})};
 }
 
-function route(){$(".sheet")?.remove();if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
+function route(){$(".sheet")?.remove();const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
  ({kaart,meedoen,flyer,datum,beheer}[p]||start)();scrollTo(0,0)}
