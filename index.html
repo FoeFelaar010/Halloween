@@ -122,15 +122,17 @@ const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
 async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
-async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[]})}catch(e){console.log(e)}}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[]})}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
 function zetLots(d){LOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)}));HULL=maakRand()}
-async function laadGebied(pcs){
- const key="gebied2:"+pcs.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
+async function laadGebied(pcs,losse=[]){
+ const key="gebied3:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
  const adr=[];await Promise.all(pcs.map(async pc=>{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=100&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc);const j=await r.json();
   for(const d of j.response.docs){const m=d.centroide_ll.match(/POINT\(([\d.]+) ([\d.]+)\)/);adr.push({a:d.straatnaam+" "+d.huisnummer+(d.huisletter||"")+(d.huisnummertoevoeging?"-"+d.huisnummertoevoeging:""),lng:+m[1],lat:+m[2]})}}));
+ await Promise.all(losse.map(async x=>{const [pc,nr]=x.split(" ");const hn=parseInt(nr);const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=20&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc+"&fq=huisnummer:"+hn);const j=await r.json();
+  for(const d of j.response.docs){const t=String(d.huisnummer)+(d.huisletter||""),tt=t+(d.huisnummertoevoeging?"-"+d.huisnummertoevoeging:"");if(tt!=nr.toUpperCase()&&t!=nr.toUpperCase())continue;const m=d.centroide_ll.match(/POINT\(([\d.]+) ([\d.]+)\)/);adr.push({a:d.straatnaam+" "+tt,lng:+m[1],lat:+m[2]})}}));
  if(!adr.length){zetLots([]);return}
  const la=adr.map(a=>a.lat),lo=adr.map(a=>a.lng);
  const bb=[Math.min(...la)-3e-4,Math.min(...lo)-4e-4,Math.max(...la)+3e-4,Math.max(...lo)+4e-4].map(v=>v.toFixed(6)).join(",");
@@ -308,6 +310,7 @@ async function beheer(){
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
  <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
  <h2>📍 Gebied (postcodes)</h2><p class="m">Alle adressen met deze postcodes kunnen meedoen. Zoek postcodes op via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.</p><textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea><button class="btn ghost" id="bpcs">Gebied opslaan</button>
+ <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
  <h2>Evenement</h2><input id="bd" value="${esc(EVENT.datum)}" placeholder="Datum"><input id="bt" value="${esc(EVENT.tijd)}" placeholder="Tijd"><input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
  <div class="chips" style="margin-top:10px"><button class="chip ${EVENT.prikker!==false?"on":""}" id="bp">📅 Datumprikker open</button></div>
  <button class="btn" id="bs">Opslaan</button>
@@ -318,7 +321,8 @@ async function beheer(){
  app.querySelectorAll("[data-type]").forEach(s=>s.onchange=()=>doe("beheer_huis",{p_id:s.dataset.type,p_actie:"bewerken",p_type:s.value}));
  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>doe("beheer_optie",{p_label:"",p_verwijder:b.dataset.del}));
  $("#bp").onclick=()=>$("#bp").classList.toggle("on");
- $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes);beheer()}catch(m){$("#err").textContent=m}};
+ $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
+ $("#blos").onclick=async()=>{const l=$("#blo").value.toUpperCase().split(/[,;\n]+/).map(x=>x.trim().replace(/^(\d{4})\s*([A-Z]{2})\s+/,"$1$2 ")).filter(x=>/^\d{4}[A-Z]{2} \d+[A-Z]?(-[A-Z0-9]+)?$/.test(x));try{$("#blos").textContent="Laden…";await rpc("beheer_losse",{p_key:k,p_losse:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  $("#bs").onclick=()=>doe("beheer_instellingen",{p_datum:$("#bd").value,p_tijd:$("#bt").value,p_mededeling:$("#bm").value,p_prikker_open:$("#bp").classList.contains("on")});
  $("#bad").onclick=()=>{const v=$("#bo").value.trim();if(v)doe("beheer_optie",{p_label:v})};
 }
@@ -329,5 +333,5 @@ function route(){$(".sheet")?.remove();if(MAP){MAP.remove();MAP=null}if(WATCH!==
  ({kaart,meedoen,flyer,datum,beheer}[p]||start)();scrollTo(0,0)}
 addEventListener("hashchange",route);
 app.innerHTML='<div class="empty" style="padding-top:30vh">🎃 Laden…</div>';
-laad().then(()=>laadGebied(EVENT.postcodes||[])).catch(e=>console.log(e)).then(route);
+laad().then(()=>laadGebied(EVENT.postcodes||[],EVENT.losse||[])).catch(e=>console.log(e)).then(route);
 </script></body></html>
