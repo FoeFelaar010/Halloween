@@ -195,7 +195,7 @@ async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?selec
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
-function zetLots(d){LOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)}));HULL=strakRand(maakRand())}
+function zetLots(d){LOTS=d.map(([a,lat,lng,p])=>({a,lat,lng,p:p||sq(lat,lng)})).filter(l=>!RAND.length||randAfst(l.lat,l.lng)<20);HULL=strakRand(maakRand())}
 async function laadGebied(pcs,losse=[]){
  const key="gebied3:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
  const adr=[];await Promise.all(pcs.map(async pc=>{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=100&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc);const j=await r.json();
@@ -213,6 +213,7 @@ async function laadGebied(pcs,losse=[]){
  zetLots(d);
 }
 // rand om het gebied: convex omhulsel van alle percelen, iets ruimer
+function randAfst(la,lo){const k=Math.cos(52*Math.PI/180)*111320,m=111320,R=RAND;let c=false,d=1e9;const x=lo*k,y=la*m;for(let i=0,j=R.length-1;i<R.length;j=i++){const x1=R[i][1]*k,y1=R[i][0]*m,x2=R[j][1]*k,y2=R[j][0]*m;if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c;const dx=x2-x1,dy=y2-y1,t=Math.max(0,Math.min(1,((x-x1)*dx+(y-y1)*dy)/(dx*dx+dy*dy||1)));d=Math.min(d,Math.hypot(x-x1-t*dx,y-y1-t*dy))}return c?0:d}
 function strakRand(H){if(!H||H.length<4)return H;const k=Math.cos(52*Math.PI/180)*111320,m=111320;let P=H.map(([a,o])=>[o*k,a*m]);if(P[0][0]==P[P.length-1][0]&&P[0][1]==P[P.length-1][1])P=P.slice(0,-1);
  const dp=(pts,t)=>{if(pts.length<3)return pts;const [x1,y1]=pts[0],[x2,y2]=pts[pts.length-1];let mx=0,mi=0;const L=Math.hypot(x2-x1,y2-y1)||1e-9;for(let i=1;i<pts.length-1;i++){const d=Math.abs((y2-y1)*pts[i][0]-(x2-x1)*pts[i][1]+x2*y1-y2*x1)/L;if(d>mx){mx=d;mi=i}}if(mx>t){const a=dp(pts.slice(0,mi+1),t),b=dp(pts.slice(mi),t);return a.slice(0,-1).concat(b)}return [pts[0],pts[pts.length-1]]};
  const inP=(R,x,y)=>{let c=false;for(let i=0,j=R.length-1;i<R.length;j=i++){const [x1,y1]=R[i],[x2,y2]=R[j];if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c}return c};
