@@ -143,6 +143,11 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
  .tabs a.on{box-shadow:inset 0 -3px 0 var(--or)}
  .big a{min-height:150px}.big>a:last-child:nth-child(even){grid-column:auto;min-height:150px}
 }
+.pagebg{position:fixed;inset:0;background:url(bg.webp?v=1) center 35%/cover;opacity:.32;pointer-events:none;z-index:0}
+.pagebg::after{content:"";position:absolute;inset:0;background:linear-gradient(#16101f66,#16101fee 70%)}
+main{position:relative;z-index:1}
+body[data-p=""] .pagebg,body[data-p="kaart"] .pagebg{display:none}
+@media print{.pagebg{display:none}}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -157,7 +162,7 @@ const TYPES={aanbellen:["🎃","Aanbellen","Hier kun je aanbellen"],bak:["🍬",
 const DOET=h=>{const d=h.doet&&h.doet.length?h.doet:[{snoep:"aanbellen",versierd:"aanbellen"}[h.type]||h.type];return Object.keys(TYPES).filter(k=>d.includes(k))};
 const prim=h=>{const d=DOET(h);return TYPES[["eng","spookhuis","aanbellen","bak"].find(k=>d.includes(k))||"aanbellen"][0]};
 const doetTxt=h=>{const d=DOET(h);return [...d.map(k=>TYPES[k][0]+" "+TYPES[k][1]),...(d.includes("aanbellen")||d.includes("bak")?[]:["🚫 Geen snoep"])].join(" · ")};
-const RUIL={spookhuis:"eng",eng:"spookhuis"};
+const RUIL={spookhuis:"eng",eng:"spookhuis",aanbellen:"bak",bak:"aanbellen"};
 const doetIco=h=>DOET(h).map(k=>TYPES[k][0]).join("");
 const hm=t=>(t||"").slice(0,5);
 const DAGF=new Intl.DateTimeFormat("nl-NL",{weekday:"long",day:"numeric",month:"long"});
@@ -331,7 +336,7 @@ function meedoen(){
  <input id="zoek" placeholder="Typ je straat en huisnummer, bijv. Ameland 3" autocomplete="off"><div class="sugg" id="sg"></div>
  <div class="picked ${form.a?"ok":""}" id="pk">${form.a?"📍 "+esc(form.a):"Nog geen huis gekozen"}</div>
  <div class="pmap" id="pw"><div class="lmap" id="lmap"></div></div></div><div>
- <div class="step"><i>2</i>Wat is er bij jou? <span style="font-weight:400;color:var(--mu)">(meerdere mag)</span></div><p class="m" style="margin:-4px 0 10px">Snoep: aanbellen of een bak buiten. Griezelig: spookhuis of eng spookhuis.</p>
+ <div class="step"><i>2</i>Wat is er bij jou? <span style="font-weight:400;color:var(--mu)">(1 per rij)</span></div><p class="m" style="margin:-4px 0 10px">Kies per rij er één: <b>hoe krijgen kinderen snoep</b> (aanbellen of een bak buiten) en <b>hoe eng is het</b> (spookhuis of eng spookhuis). Een rij mag ook leeg.</p>
  <div class="tiles">${Object.entries(TYPES).map(([k,[e,t]])=>`<button class="tile ${form.doet.includes(k)?"on":""}" data-k="${k}" aria-pressed="${form.doet.includes(k)}"><b>${e}</b>${t}<span class="s">${TYPES[k][2]}</span></button>`).join("")}</div>
  <div class="step"><i>3</i>Iets extra's? <span style="font-weight:400;color:var(--mu)">(mag leeg)</span></div>
  <div class="chips">${EXTRA.map(x=>`<button class="chip ${form.extra.includes(x)?"on":""}" data-x="${x}">${x}</button>`).join("")}</div>
@@ -453,7 +458,7 @@ async function beheer(){
  $("#bad").onclick=()=>{const d=$("#odag").value;if(!d)return $("#err").textContent="Kies eerst een datum.";doe("beheer_optie",{p_label:dagTxt(d)+" "+tijdTxt($("#ovan").value,$("#otot").value),p_dag:d,p_van:$("#ovan").value||null,p_tot:$("#otot").value||null})};
 }
 
-function route(){$(".sheet")?.remove();const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
+function route(){$(".sheet")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
  ({kaart,meedoen,flyer,datum,beheer}[p]||start)();scrollTo(0,0)}
