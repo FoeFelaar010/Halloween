@@ -103,6 +103,7 @@ input:focus,textarea:focus{border-color:var(--or)}
  main{max-width:960px}.hero h1{font-size:64px}
  .meedoen{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.pmap{height:70vh;position:sticky;top:80px}
 }
+.spooky .leaflet-tile-pane{filter:invert(1) grayscale(1) brightness(1.05) contrast(1.1) sepia(.5) hue-rotate(225deg) saturate(2.2)}.lmap.spooky{background:#0d0814}.spooky .leaflet-overlay-pane path[stroke-dasharray]{filter:drop-shadow(0 0 6px #ff7a1a)}.spooky .mk{box-shadow:0 0 14px 4px #ff7a1aaa}.spooky .num{color:#ffb366;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -115,7 +116,7 @@ const SITE=location.origin+location.pathname;
 const EVENT={datum:"Zaterdag 31 oktober",tijd:"17:00 – 20:00",postcodes:[]};
 const TYPES={snoep:["🍬","Snoep"],spookhuis:["👻","Spookhuis"],versierd:["🎃","Versierd"]};
 const EXTRA=["🍭 Suikerspin","🔥 Marshmallows","🍫 Chocomel","📸 Fotohoekje","🎶 Muziek","🎭 Schminken"];
-let huizen=[],LOTS=[],HULL=null,MAP=null,LAYER="kaart",ME=null,WATCH=null;
+let huizen=[],LOTS=[],HULL=null,MAP=null,LAYER=(()=>{try{return localStorage.getItem("laag")||"spooky"}catch(e){return "spooky"}})(),ME=null,WATCH=null;
 
 // ---- Database (Supabase; bewoners hebben geen account nodig) ----
 const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtbGt3Y25kYmRwbWRqYWxoamp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1NTk2NDIsImV4cCI6MjEwOTEzNTY0Mn0.GQjQ9S_tqE_7PFgMmSHuoB8RNX1Wd8nEW9x90EifDV8";
@@ -163,8 +164,8 @@ function basis(el,opt={}){
  const m=L.map(el,{zoomSnap:.5,maxZoom:20,zoomControl:false,attributionControl:true});MAP=m;
  (LAYER=="sat"?L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:20,maxNativeZoom:19,attribution:"Esri"})
   :L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap"})).addTo(m);
- el.classList.toggle("sat",LAYER=="sat");
- if(HULL){L.polygon([[[89,-179],[89,179],[-89,179],[-89,-179]],HULL],{stroke:false,fillColor:"#16101f",fillOpacity:LAYER=="sat"?.55:.62,interactive:false}).addTo(m);
+ el.classList.toggle("sat",LAYER=="sat");el.classList.toggle("spooky",LAYER=="spooky");
+ if(HULL){L.polygon([[[89,-179],[89,179],[-89,179],[-89,-179]],HULL],{stroke:false,fillColor:LAYER=="spooky"?"#000":"#16101f",fillOpacity:LAYER=="spooky"?.72:(LAYER=="sat"?.55:.62),interactive:false}).addTo(m);
   L.polygon(HULL,{color:"#ff7a1a",weight:3,dashArray:"10 8",fill:false,interactive:false}).addTo(m);
   m.setMaxBounds(L.latLngBounds(HULL).pad(1.2))}
  thuis(m,opt.pad);
@@ -174,7 +175,7 @@ function knoppen(wrap,top){
  const c=document.createElement("div");c.className="ctl";c.style.top=top+"px";
  c.innerHTML=`<button title="Inzoomen" data-c="in">+</button><button title="Uitzoomen" data-c="uit">−</button><button title="Terug naar de buurt" data-c="home">🏠</button><button title="Mijn locatie" data-c="gps">📍</button>`;
  wrap.append(c);
- const lay=document.createElement("div");lay.className="lay";lay.innerHTML=`<button data-l="kaart" class="${LAYER=="kaart"?"on":""}">Kaart</button><button data-l="sat" class="${LAYER=="sat"?"on":""}">Satelliet</button>`;wrap.append(lay);
+ const lay=document.createElement("div");lay.className="lay";lay.innerHTML=`<button data-l="spooky" class="${LAYER=="spooky"?"on":""}">🌙 Spooky</button><button data-l="kaart" class="${LAYER=="kaart"?"on":""}">Licht</button><button data-l="sat" class="${LAYER=="sat"?"on":""}">Satelliet</button>`;wrap.append(lay);
  c.querySelector('[data-c=in]').onclick=()=>MAP.zoomIn();c.querySelector('[data-c=uit]').onclick=()=>MAP.zoomOut();
  c.querySelector('[data-c=home]').onclick=()=>thuis();
  c.querySelector('[data-c=gps]').onclick=e=>gps(e.currentTarget);
@@ -201,7 +202,7 @@ function kaart(){
  <div class="map" id="mw"><div class="lmap" id="lmap"></div>
  <div class="drawer" id="dr"><div class="hd"><b>👻 ${huizen.length} huizen doen mee</b><small>Tik om de lijst te ${"openen"}</small></div><div class="bd">${EVENT.mededeling?`<div class="note" style="margin:0 0 10px">📢 ${esc(EVENT.mededeling)}</div>`:""}${lijstHTML()}</div></div></div></div>`;
  const m=basis($("#lmap"));pins(m);
- const lay=knoppen($("#mw"),62);lay.querySelectorAll("button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;const c=m.getCenter(),z=m.getZoom();kaart();MAP.setView(c,z)});
+ const lay=knoppen($("#mw"),62);lay.querySelectorAll("button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;try{localStorage.setItem("laag",LAYER)}catch(e){}const c=m.getCenter(),z=m.getZoom();kaart();MAP.setView(c,z)});
  const dr=$("#dr");dr.querySelector(".hd").onclick=()=>{dr.classList.toggle("open");dr.querySelector(".hd small").textContent=dr.classList.contains("open")?"Tik om te sluiten":"Tik om de lijst te openen"};
  app.querySelectorAll(".row[data-h]").forEach(r=>r.onclick=()=>{const l=lot(r.dataset.h);dr.classList.remove("open");if(l)MAP.flyTo([l.lat,l.lng],19,{duration:.8});sheet(r.dataset.h)});
 }
@@ -240,9 +241,9 @@ function meedoen(){
  <div class="chips">${EXTRA.map(x=>`<button class="chip ${form.extra.includes(x)?"on":""}" data-x="${x}">${x}</button>`).join("")}</div>
  <input id="eigen" maxlength="40" placeholder="Iets anders, bijv. heksensoep" value="${esc(form.eigen)}">
  <button class="btn" id="go">Aanmelden</button><div class="err" id="err"></div></div></div>`;
- const m=basis($("#lmap"),{pad:[8,8]});knoppen($("#pw"),62).querySelectorAll("button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;const c=m.getCenter(),z=m.getZoom();meedoen();MAP.setView(c,z)});
+ const m=basis($("#lmap"),{pad:[8,8]});knoppen($("#pw"),62).querySelectorAll("button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;try{localStorage.setItem("laag",LAYER)}catch(e){}const c=m.getCenter(),z=m.getZoom();meedoen();MAP.setView(c,z)});
  const sat=LAYER=="sat";POLY={};
- const stijl=(a)=>{const t=huizen.some(h=>h.adres==a),sel=form.a==a;return{color:sel?"#2fbf6b":"#ff7a1a",weight:sel?3:2,fillColor:sel?"#2fbf6b":(t?"#ff7a1a":"#ffe7d1"),fillOpacity:sel?.75:(t?.8:(sat?.15:.45))}};
+ const stijl=(a)=>{const t=huizen.some(h=>h.adres==a),sel=form.a==a;return{color:sel?"#2fbf6b":"#ff7a1a",weight:sel?3:2,fillColor:sel?"#2fbf6b":(t?"#ff7a1a":"#ffe7d1"),fillOpacity:sel?.75:(t?.8:(sat||LAYER=="spooky"?.15:.45))}};
  LOTS.forEach(l=>{const r=L.polygon(l.p,stijl(l.a)).addTo(m);POLY[l.a]=r;
   r.bindTooltip(l.a.match(/\d+[A-Za-z]?/)[0],{permanent:true,direction:"center",className:"num"});r.on("click",()=>kies(l.a))});
  const el=$("#lmap");const upd=()=>el.classList.toggle("hidenum",m.getZoom()<17.5);m.on("zoomend",upd);upd();
@@ -275,7 +276,7 @@ function flyer(){
  <div class="flyer"><h1>Halloween in de buurt</h1><div style="text-align:center;color:var(--mu)">De Eilanden &amp; Dichtersbuurt</div><div style="text-align:center;font-size:18px;font-weight:800;margin-top:4px">${esc(EVENT.datum)} · ${esc(EVENT.tijd)}</div>
  <div class="fmap"><div class="lmap" id="lmap"></div></div>
  <div class="legend" style="margin-bottom:10px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
- <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${TYPES[h.type][0]} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>esc(x.split(" ")[0])).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
+ <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${TYPES[h.type][0]} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
  <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div>
  <p style="text-align:center;font-size:14px;color:var(--mu);margin:14px 0 0">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p></div>`;
  const m=basis($("#lmap"),{pad:[6,6]});pins(m);
