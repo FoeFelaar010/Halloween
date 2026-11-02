@@ -149,6 +149,11 @@ main{position:relative;z-index:1}
 body[data-p=""] .pagebg,body[data-p="kaart"] .pagebg{display:none}
 @media print{.pagebg{display:none}}
 .rpt{width:24px;height:24px;border-radius:50%;background:#fff;border:5px solid #7c3aed;box-shadow:0 1px 5px #0009;cursor:grab}
+.mk{position:absolute!important;left:50%;top:50%;transform:translate(-50%,-50%);transition:width .15s,height .15s,font-size .15s}
+.mk.hl{transform:translate(-50%,-50%) scale(1.35)}
+.zm .mk{width:28px;height:28px;font-size:15px;border-width:2.5px}
+.zs .mk{width:20px;height:20px;font-size:11px;border-width:2px}.zs .mk i{width:12px;height:12px;font-size:8px;right:-4px;bottom:-4px;border-width:1px}
+.zs.spooky .mk{box-shadow:0 0 8px 2px #ff7a1aaa}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -264,7 +269,8 @@ function basis(el,opt={}){
  if(HULL){L.polygon([[[89,-179],[89,179],[-89,179],[-89,-179]],HULL],{stroke:false,fillColor:LAYER=="spooky"?"#000":"#16101f",fillOpacity:LAYER=="spooky"?.72:(LAYER=="sat"?.55:.62),interactive:false}).addTo(m);
   L.polygon(HULL,{color:"#ff7a1a",weight:3,dashArray:"10 8",fill:false,interactive:false}).addTo(m);
   m.setMaxBounds(L.latLngBounds(HULL).pad(1.2))}
- thuis(m,opt.pad);
+ const zc=()=>{const z=m.getZoom(),v=huizen.length>40?.5:0;el.classList.toggle("zs",z<16.5+v);el.classList.toggle("zm",z>=16.5+v&&z<17.5+v)};m.on("zoomend",zc);
+ thuis(m,opt.pad);zc();
  return m}
 function thuis(m=MAP,pad){if(!m)return;if(HULL)m.fitBounds(HULL,{padding:pad||[16,16]});else m.setView([51.9865,4.4925],16)}
 function knoppen(wrap,top){
