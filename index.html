@@ -275,7 +275,7 @@ function flyer(){
  <div class="flyer"><h1>Halloween in de buurt</h1><div style="text-align:center;color:var(--mu)">De Eilanden &amp; Dichtersbuurt</div><div style="text-align:center;font-size:18px;font-weight:800;margin-top:4px">${esc(EVENT.datum)} · ${esc(EVENT.tijd)}</div>
  <div class="fmap"><div class="lmap" id="lmap"></div></div>
  <div class="legend" style="margin-bottom:10px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
- <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${TYPES[h.type][0]} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
+ <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${TYPES[h.type][0]} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>esc(x.split(" ")[0])).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
  <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div>
  <p style="text-align:center;font-size:14px;color:var(--mu);margin:14px 0 0">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p></div>`;
  const m=basis($("#lmap"),{pad:[6,6]});pins(m);
