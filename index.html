@@ -115,7 +115,7 @@ function makeMap(pick,hl,onPick){
  if(GEO){
   m=L.map(el,{zoomSnap:0.5,maxZoom:20,tap:true});
   (LAYER=="sat"?L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:20,maxNativeZoom:19,attribution:"Esri"}):
-   L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",attribution:"© OpenStreetMap © CARTO"})).addTo(m);
+   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap"})).addTo(m);
  }else{
   m=L.map(el,{crs:L.CRS.Simple,minZoom:-3,maxZoom:2,zoomSnap:0.25,attributionControl:false,tap:true});
   el.style.background="#f1efe9";if(!pick)LOTS.forEach(l=>L.polygon(l.p.map(q=>P(q[0],q[1])),{color:"#fff",weight:1,fillColor:"#ddd6c8",fillOpacity:1,interactive:false}).addTo(m));
