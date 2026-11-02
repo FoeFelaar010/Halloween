@@ -167,7 +167,7 @@ const EVENT={datum:"Zaterdag 31 oktober",tijd:"17:00 – 20:00",postcodes:[]};
 const TYPES={aanbellen:["🎃","Aanbellen","Hier kun je aanbellen"],bak:["🍬","Snoepbak","Bak snoep staat buiten"],spookhuis:["👻","Spookhuis","Een beetje griezelig"],eng:["💀","Eng spookhuis","Alleen voor durfals!"]};
 const DOET=h=>{const d=h.doet&&h.doet.length?h.doet:[{snoep:"aanbellen",versierd:"aanbellen"}[h.type]||h.type];return Object.keys(TYPES).filter(k=>d.includes(k))};
 const prim=h=>{const d=DOET(h);return TYPES[["eng","spookhuis","aanbellen","bak"].find(k=>d.includes(k))||"aanbellen"][0]};
-const doetTxt=h=>{const d=DOET(h);return [...d.map(k=>TYPES[k][0]+" "+TYPES[k][1]),...(d.includes("aanbellen")||d.includes("bak")?[]:["🚫 Geen snoep"])].join(" · ")};
+const doetTxt=h=>{const d=DOET(h);return [...d.map(k=>TYPES[k][0]+" "+TYPES[k][1])].join(" · ")};
 const RUIL={spookhuis:"eng",eng:"spookhuis",aanbellen:"bak",bak:"aanbellen"};
 const doetIco=h=>DOET(h).map(k=>TYPES[k][0]).join("");
 const hm=t=>(t||"").slice(0,5);
@@ -211,7 +211,7 @@ function splitPerceel(g,as){const k=Math.cos(52*Math.PI/180)*111320,m=111320;con
   let P=G;if(hi!==null)P=clip(P,u,hi);if(lo!==null)P=clip(P,[-u[0],-u[1]],-lo);const s=ds(A[i]);P=clip(P,v,s+16);P=clip(P,[-v[0],-v[1]],-(s-16));
   if(P.length>=3)res[i]=P.map(([x,y])=>[+(y/m).toFixed(6),+(x/k).toFixed(6)])});return res}
 async function laadGebied(pcs,losse=[]){
- const key="gebied4:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
+ const key="gebied5:"+pcs.join(",")+"|"+losse.join(",");try{const c=JSON.parse(localStorage.getItem(key)||"null");if(c&&Date.now()-c.t<7*864e5){zetLots(c.d);return}}catch(e){}
  const adr=[];await Promise.all(pcs.map(async pc=>{const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=100&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc);const j=await r.json();
   for(const d of j.response.docs){const m=d.centroide_ll.match(/POINT\(([\d.]+) ([\d.]+)\)/);adr.push({a:d.straatnaam+" "+d.huisnummer+(d.huisletter||"")+(d.huisnummertoevoeging?"-"+d.huisnummertoevoeging:""),lng:+m[1],lat:+m[2]})}}));
  await Promise.all(losse.map(async x=>{const [pc,nr]=x.split(" ");const hn=parseInt(nr);const r=await fetch("https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=20&fl=straatnaam,huisnummer,huisletter,huisnummertoevoeging,centroide_ll&q=*:*&fq=postcode:"+pc+"&fq=huisnummer:"+hn);const j=await r.json();
@@ -222,8 +222,11 @@ async function laadGebied(pcs,losse=[]){
  let P=[];try{const r=await fetch("https://service.pdok.nl/kadaster/kadastralekaart/wfs/v5_0?service=WFS&version=2.0.0&request=GetFeature&typeNames=kadastralekaart:Perceel&outputFormat=application/json&srsName=urn:ogc:def:crs:EPSG::4326&count=5000&bbox="+bb+",urn:ogc:def:crs:EPSG::4326");P=(await r.json()).features.filter(f=>f.geometry.type=="Polygon").map(f=>({id:f.id,g:f.geometry.coordinates[0]}))}catch(e){console.log(e)}
  const ins=(x,y,g)=>{let c=false;for(let i=0,j=g.length-1;i<g.length;j=i++){const a=g[i],b=g[j];if(((a[1]>y)!=(b[1]>y))&&(x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0]))c=!c}return c};
  const cnt=new Map();for(const a of adr){a.p=P.find(q=>ins(a.lng,a.lat,q.g));if(a.p)cnt.set(a.p.id,(cnt.get(a.p.id)||0)+1)}
+ let B=[];try{const r=await fetch("https://service.pdok.nl/lv/bag/wfs/v2_0?service=WFS&version=2.0.0&request=GetFeature&typeNames=bag:pand&outputFormat=application/json&srsName=urn:ogc:def:crs:EPSG::4326&count=5000&bbox="+bb+",urn:ogc:def:crs:EPSG::4326");B=(await r.json()).features.filter(f=>f.geometry.type=="Polygon").map(f=>({id:f.id,g:f.geometry.coordinates[0]}))}catch(e){console.log(e)}
+ const bg=new Map();for(const a of adr){if(a.p&&cnt.get(a.p.id)==1)continue;a.b=B.find(q=>ins(a.lng,a.lat,q.g));if(a.b){if(!bg.has(a.b.id))bg.set(a.b.id,[]);bg.get(a.b.id).push(a)}}
+ for(const [id,as] of bg){if(as.length==1)as[0].pand=as[0].b.g.slice(0,-1).map(q=>[+q[1].toFixed(6),+q[0].toFixed(6)]);else{const r=splitPerceel(as[0].b.g,as);as.forEach((a,i)=>{if(r[i])a.pand=r[i]})}}
  const grp=new Map();for(const a of adr)if(a.p&&cnt.get(a.p.id)>1){if(!grp.has(a.p.id))grp.set(a.p.id,[]);grp.get(a.p.id).push(a)}for(const [id,as] of grp){const r=splitPerceel(as[0].p.g,as);as.forEach((a,i)=>a.strip=r[i])}
- const seen=new Set(),d=[];for(const a of adr){if(seen.has(a.a))continue;seen.add(a.a);let poly=a.strip||0;if(a.p&&cnt.get(a.p.id)==1){let g=a.p.g.slice(0,-1);if(g.length>40)g=g.filter((_,i)=>i%Math.ceil(g.length/40)==0);poly=g.map(q=>[+q[1].toFixed(6),+q[0].toFixed(6)])}d.push([a.a,+a.lat.toFixed(6),+a.lng.toFixed(6),poly])}
+ const seen=new Set(),d=[];for(const a of adr){if(seen.has(a.a))continue;seen.add(a.a);let poly=a.pand||a.strip||0;if(a.p&&cnt.get(a.p.id)==1){let g=a.p.g.slice(0,-1);if(g.length>40)g=g.filter((_,i)=>i%Math.ceil(g.length/40)==0);poly=g.map(q=>[+q[1].toFixed(6),+q[0].toFixed(6)])}d.push([a.a,+a.lat.toFixed(6),+a.lng.toFixed(6),poly])}
  try{for(const k of Object.keys(localStorage))if(k.startsWith("gebied"))localStorage.removeItem(k);localStorage.setItem(key,JSON.stringify({t:Date.now(),d}))}catch(e){}
  zetLots(d);
 }
@@ -379,7 +382,7 @@ function meedoen(){
  <input id="zoek" placeholder="Typ je straat en huisnummer, bijv. Ameland 3" autocomplete="off"><div class="sugg" id="sg"></div>
  <div class="picked ${form.a?"ok":""}" id="pk">${form.a?"📍 "+esc(form.a):"Nog geen huis gekozen"}</div>
  <div class="pmap" id="pw"><div class="lmap" id="lmap"></div></div></div><div>
- <div class="step"><i>2</i>Wat is er bij jou? <span style="font-weight:400;color:var(--mu)">(1 per rij)</span></div><p class="m" style="margin:-4px 0 10px">Kies per rij er één: <b>hoe krijgen kinderen snoep</b> (aanbellen of een bak buiten) en <b>hoe eng is het</b> (spookhuis of eng spookhuis). Een rij mag ook leeg.</p>
+ <div class="step"><i>2</i>Wat is er bij jou? <span style="font-weight:400;color:var(--mu)">(1 per rij)</span></div><p class="m" style="margin:-4px 0 10px">Kies <b>hoe kinderen snoep krijgen</b>: aanbellen of een bak buiten. Doe je ook iets griezeligs? Kies dan <b>spookhuis</b> of <b>eng spookhuis</b> (mag ook leeg).</p>
  <div class="tiles">${Object.entries(TYPES).map(([k,[e,t]])=>`<button class="tile ${form.doet.includes(k)?"on":""}" data-k="${k}" aria-pressed="${form.doet.includes(k)}"><b>${e}</b>${t}<span class="s">${TYPES[k][2]}</span></button>`).join("")}</div>
  <div class="step"><i>3</i>Iets extra's? <span style="font-weight:400;color:var(--mu)">(mag leeg)</span></div>
  <div class="chips">${EXTRA.map(x=>`<button class="chip ${form.extra.includes(x)?"on":""}" data-x="${x}">${x}</button>`).join("")}</div>
@@ -399,13 +402,13 @@ function meedoen(){
   const tk=q.split(" ");const r=LOTS.filter(l=>{const n=norm(l.a),parts=n.split(" ");return tk.every(t=>/^\d/.test(t)?parts[parts.length-1]==t:n.includes(t))}).sort((a,b)=>{const x=sortKey(a.a),y=sortKey(b.a);return x[0].localeCompare(y[0])||x[1]-y[1]}).slice(0,6);
   $("#sg").innerHTML=r.map(l=>`<button data-a="${esc(l.a)}">${esc(l.a)}${huizen.some(h=>h.adres==l.a)?" · doet al mee":""}</button>`).join("")||'<div class="empty" style="padding:12px">Dit adres ligt niet in het gebied.</div>';
   $("#sg").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("#zoek").value=b.dataset.a;kies(b.dataset.a,true)})};
- app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const k=b.dataset.k,i=form.doet.indexOf(k);if(i<0){form.doet=form.doet.filter(x=>x!=RUIL[k]);form.doet.push(k)}else form.doet.splice(i,1);
+ app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{const k=b.dataset.k,i=form.doet.indexOf(k);if(i<0){form.doet=form.doet.filter(x=>x!=RUIL[k]);form.doet.push(k)}else if(k!="aanbellen"&&k!="bak")form.doet.splice(i,1);
   app.querySelectorAll(".tile").forEach(t=>{const on=form.doet.includes(t.dataset.k);t.classList.toggle("on",on);t.setAttribute("aria-pressed",on)})});
  app.querySelectorAll(".chip[data-x]").forEach(b=>b.onclick=()=>{const v=b.dataset.x,i=form.extra.indexOf(v);i<0?form.extra.push(v):form.extra.splice(i,1);b.classList.toggle("on")});
  $("#eigen").oninput=e=>form.eigen=e.target.value;
  $("#go").onclick=()=>{
   if(!form.a)return fout("Kies eerst jouw huis (zoeken of op de kaart tikken).");
-  if(!form.doet.length)return fout("Kies minstens één ding: aanbellen, snoepbak, spookhuis of eng spookhuis.");
+  if(!form.doet.some(x=>x=="aanbellen"||x=="bak"))return fout("Kies hoe kinderen snoep krijgen: aanbellen of een snoepbak buiten.");
   const extra=[...form.extra,...(form.eigen.trim()?["✨ "+form.eigen.trim()]:[])];
   const a=form.a;$("#go").disabled=true;$("#go").textContent="Bezig…";
   rpc("aanmelden",{p_adres:a,p_doet:form.doet,p_extra:extra}).then(()=>{form={a:null,doet:["aanbellen"],extra:[],eigen:""};
