@@ -23,7 +23,7 @@ h2{font-size:20px;margin:16px 0 4px}p.m{color:var(--mu);margin:0 0 12px;font-siz
 .lay button{border:0;background:#fff;color:#3c4043;font:600 13px Inter,sans-serif;padding:9px 12px;cursor:pointer}.lay button.on{background:#e8f0fe;color:#1a73e8}
 .mk{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;box-shadow:0 2px 6px #0007;border:2.5px solid var(--or)}
 .mk.hl{transform:scale(1.35);box-shadow:0 0 0 6px #ff7a1a77,0 2px 6px #0007}
-.num{background:none;border:0;box-shadow:none;color:#3c4043;font:700 11px Inter,sans-serif;text-shadow:0 0 3px #fff,0 0 3px #fff;padding:0}
+.num{background:none;border:0;box-shadow:none;color:#c2410c;font:800 14px Inter,sans-serif;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;padding:0}
 .num:before{display:none}
 .sat .num{color:#fff;text-shadow:0 0 3px #000,0 0 3px #000}
 .hidenum .num{display:none}
@@ -146,7 +146,7 @@ function makeMap(pick,hl,onPick){
  if(pick){
   const sat=LAYER=="sat"&&GEO;
   LOTS.forEach(l=>{const t=huizen.some(h=>h.adres==l.a),sel=form.a==l.a;
-   const r=L.polygon(l.p.map(q=>proj(l,q[0],q[1])),{color:sel?"#2fbf6b":(sat?"#fff":"#7a7f87"),weight:sel?3:1.2,fillColor:sel?"#2fbf6b":(t?"#ff7a1a":"#fff"),fillOpacity:sel?.7:(t?.75:.05),interactive:true}).addTo(m);
+   const r=L.polygon(l.p.map(q=>proj(l,q[0],q[1])),{color:sel?"#2fbf6b":"#ff7a1a",weight:sel?3:2,fillColor:sel?"#2fbf6b":(t?"#ff7a1a":"#ffe7d1"),fillOpacity:sel?.7:(t?.75:(sat?.15:.45)),interactive:true}).addTo(m);
    r.bindTooltip(l.a.match(/\d+/)[0],{permanent:true,direction:"center",className:"num"});
    r.on("click",()=>onPick(l.a,t));});
   const upd=()=>el.classList.toggle("hidenum",m.getZoom()<(GEO?17.5:-0.5));m.on("zoomend",upd);upd();
