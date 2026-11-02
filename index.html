@@ -64,6 +64,237 @@ input:focus{border-color:var(--or)}
 </style></head><body>
 <header><h1>Halloween in de buurt</h1><div class="sub">De Eilanden &amp; Dichtersbuurt</div><div class="sub" id="datum"></div></header>
 <main id="app"></main>
+<nav class="tabs"><a href="#/" data-t=""><b>🗺️</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+
+const MW=1800,MH=1600;
+const LOTS=[["De Eilanden 31",1,134,35,160,35,160,155,134,155],["De Eilanden 30",1,160,35,187,35,187,155,160,155],["De Eilanden 29",1,187,35,213,35,213,155,187,155],["De Eilanden 28",1,213,35,239,35,239,155,213,155],["De Eilanden 27",1,239,35,265,35,265,155,239,155],["De Eilanden 26",1,265,35,292,35,292,155,265,155],["De Eilanden 25",1,292,35,318,35,318,155,292,155],["De Eilanden 24",1,318,35,344,35,344,155,318,155],["De Eilanden 23",1,344,35,371,35,371,155,344,155],["De Eilanden 22",1,371,35,397,35,397,155,371,155],["De Eilanden 21",1,397,35,423,35,423,155,397,155],["De Eilanden 20",1,423,35,450,35,450,155,423,155],["De Eilanden 32",1,80,197,190,197,190,250,80,250],["De Eilanden 33",1,80,250,190,250,190,303,80,303],["De Eilanden 34",1,80,303,190,303,190,356,80,356],["De Eilanden 35",1,80,357,190,357,190,410,80,410],["De Eilanden 36",1,80,410,190,410,190,463,80,463],["De Eilanden 37",1,80,552,190,552,190,605,80,605],["De Eilanden 38",1,80,605,190,605,190,658,80,658],["De Eilanden 39",1,80,659,190,659,190,712,80,712],["De Eilanden 40",1,80,712,190,712,190,765,80,765],["De Eilanden 41",1,80,765,190,765,190,818,80,818],["De Eilanden 42",1,80,819,190,819,190,872,80,872],["De Eilanden 43",1,80,872,190,872,190,925,80,925],["De Eilanden 44",1,80,925,190,925,190,978,80,978],["De Eilanden 45",1,80,978,190,978,190,1031,80,1031],["De Eilanden 46",1,80,1086,190,1086,190,1139,80,1139],["De Eilanden 47",1,80,1139,190,1139,190,1192,80,1192],["De Eilanden 48",1,80,1192,190,1192,190,1245,80,1245],["De Eilanden 49",1,80,1246,190,1246,190,1299,80,1299],["De Eilanden 50",1,80,1299,190,1299,190,1352,80,1352],["De Eilanden 51",1,80,1352,190,1352,190,1405,80,1405],["De Eilanden 52",1,80,1406,190,1406,190,1459,80,1459],["Schiermonnikoog 4",1,240,274,264,274,264,367,240,367],["Ameland 8",1,240,367,264,367,264,460,240,460],["Schiermonnikoog 3",1,264,274,288,274,288,367,264,367],["Ameland 6",1,264,367,288,367,288,460,264,460],["Schiermonnikoog 2",1,288,274,312,274,312,367,288,367],["Ameland 4",1,288,367,312,367,312,460,288,460],["Schiermonnikoog 1",1,312,274,336,274,336,367,312,367],["Ameland 2",1,312,367,336,367,336,460,312,460],["Ameland 7",1,240,553,264,553,264,646,240,646],["Terschelling 8",1,240,646,264,646,264,739,240,739],["Ameland 5",1,264,553,288,553,288,646,264,646],["Terschelling 6",1,264,646,288,646,288,739,264,739],["Ameland 3",1,288,553,312,553,312,646,288,646],["Terschelling 4",1,288,646,312,646,312,739,288,739],["Ameland 1",1,312,553,336,553,336,646,312,646],["Terschelling 2",1,312,646,336,646,336,739,312,739],["Terschelling 7",1,240,826,264,826,264,919,240,919],["Vlieland 8",1,240,919,264,919,264,1012,240,1012],["Terschelling 5",1,264,826,288,826,288,919,264,919],["Vlieland 6",1,264,919,288,919,288,1012,264,1012],["Terschelling 3",1,288,826,312,826,312,919,288,919],["Vlieland 4",1,288,919,312,919,312,1012,288,1012],["Terschelling 1",1,312,826,336,826,336,919,312,919],["Vlieland 2",1,312,919,336,919,336,1012,312,1012],["Vlieland 7",1,240,1105,264,1105,264,1198,240,1198],["Texel 4",1,240,1198,264,1198,264,1291,240,1291],["Vlieland 5",1,264,1105,288,1105,288,1198,264,1198],["Texel 3",1,264,1198,288,1198,288,1291,264,1291],["Vlieland 3",1,288,1105,312,1105,312,1198,288,1198],["Texel 2",1,288,1198,312,1198,312,1291,288,1291],["Vlieland 1",1,312,1105,336,1105,336,1198,312,1198],["Texel 1",1,312,1198,336,1198,336,1291,312,1291],["De Eilanden 19",1,388,179,500,179,500,205,388,205],["De Eilanden 18",1,388,205,500,205,500,232,388,232],["De Eilanden 17",1,388,232,500,232,500,258,388,258],["De Eilanden 16",1,388,258,500,258,500,284,388,284],["De Eilanden 15",1,388,284,500,284,500,311,388,311],["De Eilanden 14",1,388,310,500,310,500,337,388,337],["De Eilanden 13",1,388,337,500,337,500,363,388,363],["De Eilanden 12",1,388,363,500,363,500,390,388,390],["De Eilanden 11",1,388,389,500,389,500,416,388,416],["De Eilanden 10",1,388,416,500,416,500,442,388,442],["De Eilanden 9",1,388,442,500,442,500,468,388,468],["De Eilanden 8",1,388,546,500,546,500,572,388,572],["De Eilanden 7",1,388,572,500,572,500,599,388,599],["De Eilanden 6",1,388,599,500,599,500,625,388,625],["De Eilanden 5",1,388,625,500,625,500,651,388,651],["De Eilanden 4",1,388,651,500,651,500,678,388,678],["De Eilanden 3",1,388,678,500,678,500,704,388,704],["De Eilanden 2",1,388,704,500,704,500,730,388,730],["De Eilanden 1",1,388,730,500,730,500,756,388,756],["De Eilanden 86",1,388,835,500,835,500,861,388,861],["De Eilanden 85",1,388,861,500,861,500,888,388,888],["De Eilanden 84",1,388,888,500,888,500,914,388,914],["De Eilanden 83",1,388,914,500,914,500,940,388,940],["De Eilanden 82",1,388,940,500,940,500,967,388,967],["De Eilanden 81",1,388,967,500,967,500,993,388,993],["De Eilanden 80",1,388,993,500,993,500,1019,388,1019],["De Eilanden 79",1,388,1019,500,1019,500,1046,388,1046],["De Eilanden 78",1,388,1124,500,1124,500,1150,388,1150],["De Eilanden 77",1,388,1150,500,1150,500,1177,388,1177],["De Eilanden 76",1,388,1177,500,1177,500,1203,388,1203],["De Eilanden 75",1,388,1203,500,1203,500,1229,388,1229],["De Eilanden 74",1,388,1229,500,1229,500,1256,388,1256],["De Eilanden 73",1,388,1256,500,1256,500,1282,388,1282],["De Eilanden 72",1,388,1282,500,1282,500,1308,388,1308],["De Eilanden 71",1,388,1308,500,1308,500,1334,388,1334],["De Eilanden 70",1,388,1334,500,1334,500,1361,388,1361],["De Eilanden 69",1,388,1361,500,1361,500,1387,388,1387],["De Eilanden 53-68 (appartementen)",1,250,1435,465,1435,465,1510,250,1510],["Brederodestraat 1",2,768,258,794,258,794,350,768,350],["Brederodestraat 3",2,794,258,820,258,820,350,794,350],["Brederodestraat 5",2,820,258,846,258,846,350,820,350],["Brederodestraat 7",2,846,258,872,258,872,350,846,350],["Brederodestraat 9",2,872,258,899,258,899,350,872,350],["Brederodestraat 11",2,899,258,925,258,925,350,899,350],["Brederodestraat 13",2,925,258,951,258,951,350,925,350],["Brederodestraat 15",2,951,258,977,258,977,350,951,350],["Brederodestraat 17",2,1040,260,1069,258,1069,354,1040,355],["Brederodestraat 19",2,1069,258,1098,255,1098,352,1069,354],["Brederodestraat 21",2,1098,255,1127,252,1127,351,1098,352],["Brederodestraat 23",2,1127,252,1156,250,1156,350,1127,351],["Brederodestraat 25",2,1156,250,1185,248,1185,349,1156,350],["Brederodestraat 27",2,1185,248,1214,245,1214,348,1185,349],["Brederodestraat 29",2,1214,245,1243,242,1243,346,1214,348],["Brederodestraat 31",2,1243,242,1272,240,1272,345,1243,346],["Brederodestraat 33",2,1272,240,1301,238,1301,344,1272,345],["Brederodestraat 35",2,1301,238,1330,235,1330,342,1301,344],["Brederodestraat 37",2,1330,235,1359,232,1359,341,1330,342],["Brederodestraat 39",2,1359,232,1388,230,1388,340,1359,341],["Brederodestraat 2",2,753,400,779,400,779,525,753,525],["Brederodestraat 4",2,779,400,805,400,805,525,779,525],["Brederodestraat 6",2,805,400,830,400,830,525,805,525],["Brederodestraat 8",2,830,400,856,400,856,525,830,525],["Brederodestraat 10",2,856,400,882,400,882,525,856,525],["Brederodestraat 12",2,882,400,908,400,908,525,882,525],["Brederodestraat 14",2,908,400,933,400,933,525,908,525],["Brederodestraat 16",2,933,400,959,400,959,525,933,525],["Brederodestraat 18",2,959,400,985,400,985,525,959,525],["Brederodestraat 20",2,1040,390,1067,389,1067,514,1040,515],["Brederodestraat 22",2,1067,389,1094,388,1094,514,1067,514],["Brederodestraat 24",2,1094,388,1121,388,1121,513,1094,514],["Brederodestraat 26",2,1121,388,1148,387,1148,512,1121,513],["Brederodestraat 28",2,1148,387,1175,386,1175,511,1148,512],["Brederodestraat 30",2,1175,386,1202,385,1202,510,1175,511],["Brederodestraat 32",2,1202,385,1228,385,1228,510,1202,510],["Brederodestraat 34",2,1228,385,1255,384,1255,509,1228,510],["Brederodestraat 36",2,1255,384,1282,383,1282,508,1255,509],["Brederodestraat 38",2,1282,383,1309,382,1309,507,1282,508],["Brederodestraat 40",2,1309,382,1336,382,1336,506,1309,507],["Brederodestraat 42",2,1336,382,1363,381,1363,506,1336,506],["Brederodestraat 44",2,1363,381,1390,380,1390,505,1363,506],["Catsstraat 1",2,750,525,776,525,776,634,750,635],["Catsstraat 3",2,776,525,801,525,801,634,776,634],["Catsstraat 5",2,801,525,827,525,827,633,801,634],["Catsstraat 7",2,827,525,852,525,852,633,827,633],["Catsstraat 9",2,852,525,878,525,878,632,852,633],["Catsstraat 11",2,878,525,903,525,903,632,878,632],["Catsstraat 13",2,903,525,929,525,929,631,903,632],["Catsstraat 15",2,929,525,954,525,954,631,929,631],["Catsstraat 17",2,954,525,980,525,980,630,954,631],["Catsstraat 19",2,1035,515,1061,514,1061,634,1035,635],["Catsstraat 21",2,1061,514,1088,514,1088,634,1061,634],["Catsstraat 23",2,1088,514,1114,513,1114,633,1088,634],["Catsstraat 25",2,1114,513,1141,512,1141,632,1114,633],["Catsstraat 27",2,1141,512,1167,511,1167,631,1141,632],["Catsstraat 29",2,1167,511,1194,511,1194,631,1167,631],["Catsstraat 31",2,1194,511,1220,510,1220,630,1194,631],["Catsstraat 33",2,1220,510,1246,509,1246,629,1220,630],["Catsstraat 35",2,1246,509,1273,509,1273,629,1246,629],["Catsstraat 37",2,1273,509,1299,508,1299,628,1273,629],["Catsstraat 39",2,1299,508,1326,507,1326,627,1299,628],["Catsstraat 41",2,1326,507,1352,506,1352,626,1326,627],["Catsstraat 43",2,1352,506,1379,506,1379,626,1352,626],["Catsstraat 45",2,1379,506,1405,505,1405,625,1379,626],["Catsstraat 2",2,743,700,769,699,769,813,743,815],["Catsstraat 4",2,769,699,795,699,795,812,769,813],["Catsstraat 6",2,795,699,820,698,820,810,795,812],["Catsstraat 8",2,820,698,846,698,846,808,820,810],["Catsstraat 10",2,846,698,872,697,872,807,846,808],["Catsstraat 12",2,872,697,898,697,898,805,872,807],["Catsstraat 14",2,898,697,923,696,923,803,898,805],["Catsstraat 16",2,923,696,949,696,949,802,923,803],["Catsstraat 18",2,949,696,975,695,975,800,949,802],["Catsstraat 20",2,1020,695,1047,694,1047,805,1020,805],["Catsstraat 22",2,1047,694,1074,694,1074,804,1047,805],["Catsstraat 24",2,1074,694,1101,693,1101,804,1074,804],["Catsstraat 26",2,1101,693,1128,692,1128,804,1101,804],["Catsstraat 28",2,1128,692,1155,692,1155,803,1128,804],["Catsstraat 30",2,1155,692,1182,691,1182,803,1155,803],["Catsstraat 32",2,1182,691,1209,690,1209,803,1182,803],["Catsstraat 34",2,1209,690,1236,690,1236,802,1209,803],["Catsstraat 36",2,1236,690,1263,689,1263,802,1236,802],["Catsstraat 38",2,1263,689,1290,688,1290,802,1263,802],["Catsstraat 40",2,1290,688,1317,688,1317,801,1290,802],["Catsstraat 42",2,1317,688,1344,687,1344,801,1317,801],["Catsstraat 44",2,1344,687,1371,686,1371,801,1344,801],["Catsstraat 46",2,1371,686,1398,686,1398,800,1371,801],["Catsstraat 48",2,1398,686,1425,685,1425,800,1398,800],["Hooftstraat 1",2,737,815,764,814,764,919,737,920],["Hooftstraat 3",2,764,814,791,814,791,919,764,919],["Hooftstraat 5",2,791,814,818,813,818,918,791,919],["Hooftstraat 7",2,818,813,845,813,845,918,818,918],["Hooftstraat 9",2,845,813,872,812,872,917,845,918],["Hooftstraat 11",2,872,812,899,812,899,917,872,917],["Hooftstraat 13",2,899,812,926,811,926,916,899,917],["Hooftstraat 15",2,926,811,953,811,953,916,926,916],["Hooftstraat 17",2,953,811,980,810,980,915,953,916],["Hooftstraat 19",2,1015,805,1041,805,1041,920,1015,920],["Hooftstraat 21",2,1041,805,1067,804,1067,919,1041,920],["Hooftstraat 23",2,1067,804,1093,804,1093,919,1067,919],["Hooftstraat 25",2,1093,804,1119,804,1119,919,1093,919],["Hooftstraat 27",2,1119,804,1145,803,1145,918,1119,919],["Hooftstraat 29",2,1145,803,1171,803,1171,918,1145,918],["Hooftstraat 31",2,1171,803,1197,803,1197,918,1171,918],["Hooftstraat 33",2,1197,803,1222,802,1222,918,1197,918],["Hooftstraat 35",2,1222,802,1248,802,1248,917,1222,918],["Hooftstraat 37",2,1248,802,1274,802,1274,917,1248,917],["Hooftstraat 39",2,1274,802,1300,802,1300,917,1274,917],["Hooftstraat 41",2,1300,802,1326,801,1326,916,1300,917],["Hooftstraat 43",2,1326,801,1352,801,1352,916,1326,916],["Hooftstraat 45",2,1352,801,1378,801,1378,916,1352,916],["Hooftstraat 47",2,1378,801,1404,800,1404,915,1378,916],["Hooftstraat 49",2,1404,800,1430,800,1430,915,1404,915],["Hooftstraat 2",2,730,980,757,979,757,1099,730,1100],["Hooftstraat 4",2,757,979,783,978,783,1099,757,1099],["Hooftstraat 6",2,783,978,810,977,810,1098,783,1099],["Hooftstraat 8",2,810,977,837,976,837,1098,810,1098],["Hooftstraat 10",2,837,976,863,974,863,1097,837,1098],["Hooftstraat 12",2,863,974,890,973,890,1097,863,1097],["Hooftstraat 14",2,890,973,917,972,917,1096,890,1097],["Hooftstraat 16",2,917,972,943,971,943,1096,917,1096],["Hooftstraat 18",2,943,971,970,970,970,1095,943,1096],["Hooftstraat 20",2,1020,970,1046,970,1046,1090,1020,1090],["Hooftstraat 22",2,1046,970,1072,970,1072,1090,1046,1090],["Hooftstraat 24",2,1072,970,1098,970,1098,1090,1072,1090],["Hooftstraat 26",2,1098,970,1124,970,1124,1090,1098,1090],["Hooftstraat 28",2,1124,970,1150,970,1150,1090,1124,1090],["Hooftstraat 30",2,1150,970,1176,970,1176,1090,1150,1090],["Hooftstraat 32",2,1176,970,1202,970,1202,1090,1176,1090],["Hooftstraat 34",2,1202,970,1228,970,1228,1090,1202,1090],["Hooftstraat 36",2,1228,970,1255,970,1255,1090,1228,1090],["Hooftstraat 38",2,1255,970,1281,970,1281,1090,1255,1090],["Hooftstraat 40",2,1281,970,1307,970,1307,1090,1281,1090],["Hooftstraat 42",2,1307,970,1333,970,1333,1090,1307,1090],["Hooftstraat 44",2,1333,970,1359,970,1359,1090,1333,1090],["Hooftstraat 46",2,1359,970,1385,970,1385,1090,1359,1090],["Hooftstraat 48",2,1385,970,1411,970,1411,1090,1385,1090],["Hooftstraat 50",2,1411,970,1437,970,1437,1090,1411,1090],["Vondelstraat 1",2,725,1100,751,1100,751,1204,725,1205],["Vondelstraat 3",2,751,1100,777,1099,777,1204,751,1204],["Vondelstraat 5",2,777,1099,803,1098,803,1204,777,1204],["Vondelstraat 7",2,803,1098,829,1098,829,1203,803,1204],["Vondelstraat 9",2,829,1098,855,1098,855,1202,829,1203],["Vondelstraat 11",2,855,1098,881,1097,881,1202,855,1202],["Vondelstraat 13",2,881,1097,907,1096,907,1202,881,1202],["Vondelstraat 15",2,907,1096,933,1096,933,1201,907,1202],["Vondelstraat 17",2,933,1096,959,1096,959,1200,933,1201],["Vondelstraat 19",2,959,1096,985,1095,985,1200,959,1200],["Vondelstraat 21",2,1035,1090,1061,1090,1061,1214,1035,1215],["Vondelstraat 23",2,1061,1090,1087,1090,1087,1214,1061,1214],["Vondelstraat 25",2,1087,1090,1113,1090,1113,1213,1087,1214],["Vondelstraat 27",2,1113,1090,1139,1090,1139,1212,1113,1213],["Vondelstraat 29",2,1139,1090,1165,1090,1165,1211,1139,1212],["Vondelstraat 31",2,1165,1090,1191,1090,1191,1211,1165,1211],["Vondelstraat 33",2,1191,1090,1218,1090,1218,1210,1191,1211],["Vondelstraat 35",2,1218,1090,1244,1090,1244,1209,1218,1210],["Vondelstraat 37",2,1244,1090,1270,1090,1270,1209,1244,1209],["Vondelstraat 39",2,1270,1090,1296,1090,1296,1208,1270,1209],["Vondelstraat 41",2,1296,1090,1322,1090,1322,1207,1296,1208],["Vondelstraat 43",2,1322,1090,1348,1090,1348,1206,1322,1207],["Vondelstraat 45",2,1348,1090,1374,1090,1374,1206,1348,1206],["Vondelstraat 47",2,1374,1090,1400,1090,1400,1205,1374,1206],["Vondelstraat 2",2,730,1275,757,1275,757,1369,730,1370],["Vondelstraat 4",2,757,1275,784,1275,784,1369,757,1369],["Vondelstraat 6",2,784,1275,812,1275,812,1368,784,1369],["Vondelstraat 8",2,812,1275,839,1275,839,1368,812,1368],["Vondelstraat 10",2,839,1275,866,1275,866,1367,839,1368],["Vondelstraat 12",2,866,1275,893,1275,893,1367,866,1367],["Vondelstraat 14",2,893,1275,921,1275,921,1366,893,1367],["Vondelstraat 16",2,921,1275,948,1275,948,1366,921,1366],["Vondelstraat 18",2,948,1275,975,1275,975,1365,948,1366],["Vondelstraat 20",2,1030,1270,1059,1270,1059,1375,1030,1375],["Vondelstraat 22",2,1059,1270,1088,1270,1088,1376,1059,1375],["Vondelstraat 24",2,1088,1270,1118,1270,1118,1376,1088,1376],["Vondelstraat 26",2,1118,1270,1147,1270,1147,1377,1118,1376],["Vondelstraat 28",2,1147,1270,1176,1270,1176,1377,1147,1377],["Vondelstraat 30",2,1176,1270,1205,1270,1205,1378,1176,1377],["Vondelstraat 32",2,1205,1270,1234,1270,1234,1378,1205,1378],["Vondelstraat 34",2,1234,1270,1263,1270,1263,1378,1234,1378],["Vondelstraat 36",2,1263,1270,1292,1270,1292,1379,1263,1378],["Vondelstraat 38",2,1292,1270,1322,1270,1322,1379,1292,1379],["Vondelstraat 40",2,1322,1270,1351,1270,1351,1380,1322,1379],["Vondelstraat 42",2,1351,1270,1380,1270,1380,1380,1351,1380]].map(([a,w,...c])=>({a,w,p:[[c[0],c[1]],[c[2],c[3]],[c[4],c[5]],[c[6],c[7]]]})).map(l=>({...l,cx:l.p.reduce((s,q)=>s+q[0],0)/4,cy:l.p.reduce((s,q)=>s+q[1],0)/4}));
+let LAYER="kaart",MAP=null;
+const EVENT={datum:"Zaterdag 31 oktober",tijd:"17:00 – 20:00"};
+const TYPES={snoep:["🍬","Snoep"],spookhuis:["👻","Spookhuis"],versierd:["🎃","Versierd"]};
+const EXTRA=["🍭 Suikerspin","🔥 Marshmallows","🍫 Chocomel","📸 Fotohoekje","🎶 Muziek","🎭 Schminken"];
+// Demo-data (later: database)
+let huizen=[];
+// ---- Database (Supabase, geen account nodig voor bewoners) ----
+const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtbGt3Y25kYmRwbWRqYWxoamp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1NTk2NDIsImV4cCI6MjEwOTEzNTY0Mn0.GQjQ9S_tqE_7PFgMmSHuoB8RNX1Wd8nEW9x90EifDV8";
+const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
+async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
+async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,extra"),get("instellingen?select=*")]);huizen=a;if(i[0]){EVENT.datum=i[0].datum;EVENT.tijd=i[0].tijd;EVENT.mededeling=i[0].mededeling;EVENT.prikker=i[0].prikker_open}$("#datum").textContent=`${EVENT.datum} · ${EVENT.tijd}`}catch(e){console.log(e)}}
+const $=s=>document.querySelector(s),app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const lot=a=>LOTS.find(l=>l.a==a);
+const sortKey=a=>{const m=a.match(/^(.*?) (\d+)/);return m?[m[1]=="De Eilanden"?"":m[1],+m[2]]:[a,0]};
+const sorted=()=>[...huizen].sort((a,b)=>{const x=sortKey(a.adres),y=sortKey(b.adres);return x[0].localeCompare(y[0])||x[1]-y[1]});
+$("#datum").textContent=`${EVENT.datum} · ${EVENT.tijd}`;
+
+function kaartHTML(){return `<div class="frame"><div class="lay"><button data-l="kaart" class="${LAYER=="kaart"?"on":""}">Kaart</button>${GEO?`<button data-l="sat" class="${LAYER=="sat"?"on":""}">Satelliet</button>`:""}</div><div class="lmap" id="lmap"></div></div>`}
+const P=(x,y)=>[-y,x];
+// ---- Georeferentie: echte kaart via OpenStreetMap (geen account/sleutel) ----
+const PLAATS="Bergschenhoek";
+const ANCHORS={1:["De Eilanden 31","De Eilanden 52","De Eilanden 69"],2:["Brederodestraat 1","Brederodestraat 39","Vondelstraat 2"]};
+let GEO=null; // {1:[a,b,c,d,e,f],2:[...]}
+function solve3(pts,vals){const[[x1,y1],[x2,y2],[x3,y3]]=pts;const D=x1*(y2-y3)-y1*(x2-x3)+(x2*y3-x3*y2);
+ const [v1,v2,v3]=vals;return[(v1*(y2-y3)-y1*(v2-v3)+(v2*y3-v3*y2))/D,(x1*(v2-v3)-v1*(x2-x3)+(x2*v3-x3*v2))/D,(x1*(y2*v3-y3*v2)-y1*(x2*v3-x3*v2)+v1*(x2*y3-x3*y2))/D]}
+async function geocode(adres){const u="https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=nl&street="+encodeURIComponent(adres)+"&city="+PLAATS;
+ const r=await fetch(u,{headers:{"Accept-Language":"nl"}});const j=await r.json();if(!j[0])throw adres;return[+j[0].lat,+j[0].lon]}
+async function georef(){
+ try{const c=JSON.parse(localStorage.getItem("geo-v1")||"null");if(c){GEO=c;return true}}catch(e){}
+ try{const out={};for(const w of [1,2]){const pts=[],la=[],lo=[];
+   for(const a of ANCHORS[w]){const l=LOTS.find(x=>x.a==a);const g=await geocode(a);pts.push([l.cx,l.cy]);la.push(g[0]);lo.push(g[1]);await new Promise(r=>setTimeout(r,1100))}
+   if(Math.max(...la)-Math.min(...la)>0.01||Math.max(...lo)-Math.min(...lo)>0.015)throw "adressen te ver uit elkaar";
+   out[w]=[...solve3(pts,la),...solve3(pts,lo)]}
+  GEO=out;try{localStorage.setItem("geo-v1",JSON.stringify(out))}catch(e){}return true}catch(e){console.log("Geen echte kaart:",e);return false}}
+const G=(w,x,y)=>{const t=GEO[w];return[t[0]*x+t[1]*y+t[2],t[3]*x+t[4]*y+t[5]]};
+const proj=(l,x,y)=>GEO?G(l.w,x,y):P(x,y);
+function makeMap(pick,hl,onPick){
+ if(MAP){MAP.remove();MAP=null}
+ const el=$("#lmap");if(!el)return;
+ let m;
+ if(GEO){
+  m=L.map(el,{zoomSnap:0.5,maxZoom:20,tap:true});
+  (LAYER=="sat"?L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:20,maxNativeZoom:19,attribution:"Esri"}):
+   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap"})).addTo(m);
+ }else{
+  m=L.map(el,{crs:L.CRS.Simple,minZoom:-3,maxZoom:2,zoomSnap:0.25,attributionControl:false,tap:true});
+  el.style.background="#f1efe9";if(!pick)LOTS.forEach(l=>L.polygon(l.p.map(q=>P(q[0],q[1])),{color:"#fff",weight:1,fillColor:"#ddd6c8",fillOpacity:1,interactive:false}).addTo(m));
+ }
+ MAP=m;el.classList.toggle("sat",LAYER=="sat"&&!!GEO);
+ const ll=LOTS.flatMap(l=>l.p.map(q=>proj(l,q[0],q[1])));
+ const w1=LOTS.filter(l=>l.w==1&&l.cy>150&&l.cy<540).flatMap(l=>l.p.map(q=>proj(l,q[0],q[1])));
+ m.fitBounds(pick?w1:ll,{padding:[10,10]});
+ if(!pick&&hl){const l=LOTS.find(l=>l.a==hl);if(l)m.setView(proj(l,l.cx,l.cy),GEO?19:0.5)}
+ if(pick){
+  const sat=LAYER=="sat"&&GEO;
+  LOTS.forEach(l=>{const t=huizen.some(h=>h.adres==l.a),sel=form.a==l.a;
+   const r=L.polygon(l.p.map(q=>proj(l,q[0],q[1])),{color:sel?"#2fbf6b":(sat?"#fff":"#7a7f87"),weight:sel?3:1.2,fillColor:sel?"#2fbf6b":(t?"#ff7a1a":"#fff"),fillOpacity:sel?.7:(t?.75:.05),interactive:true}).addTo(m);
+   r.bindTooltip(l.a.match(/\d+/)[0],{permanent:true,direction:"center",className:"num"});
+   r.on("click",()=>onPick(l.a,t));});
+  const upd=()=>el.classList.toggle("hidenum",m.getZoom()<(GEO?17.5:-0.5));m.on("zoomend",upd);upd();
+ }else{
+  huizen.forEach(h=>{const l=LOTS.find(x=>x.a==h.adres);if(!l)return;
+   const mk=L.marker(proj(l,l.cx,l.cy),{icon:L.divIcon({className:"",html:`<div class="mk ${hl==h.adres?"hl":""}">${TYPES[h.type][0]}</div>`,iconSize:[34,34],iconAnchor:[17,17]})}).addTo(m);
+   mk.on("click",()=>sheet(h.adres));});
+ }
+ document.querySelectorAll(".lay button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;const c=m.getCenter(),z=m.getZoom();document.querySelectorAll(".lay button").forEach(x=>x.classList.toggle("on",x==b));makeMap(pick,hl,onPick);MAP.setView(c,z)});
+}
+function kaart(hl){
+ app.innerHTML=`${EVENT.mededeling?`<div class="picked" style="margin-top:12px">📢 ${esc(EVENT.mededeling)}</div>`:""}<h2>${huizen.length} huizen doen mee</h2><p class="m">Tik op een huis voor meer info.</p>
+ ${kaartHTML()}
+ <div class="legend">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
+ <h2>Alle adressen</h2><div class="list">${sorted().map(h=>`<div class="row" data-h="${esc(h.adres)}"><span class="e">${TYPES[h.type][0]}</span><span class="t">${esc(h.adres)}<small>${TYPES[h.type][1]}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span></div>`).join("")||'<div class="empty">Nog niemand. Wees de eerste!</div>'}</div>
+ <a class="btn" href="#/meedoen">🎃 Doe ook mee</a>`;
+ makeMap(false,hl);
+ app.querySelectorAll(".row").forEach(r=>r.onclick=()=>{kaart(r.dataset.h);$(".frame").scrollIntoView({behavior:"smooth"});sheet(r.dataset.h)});
+}
+function sheet(a){$(".sheet")?.remove();const h=huizen.find(x=>x.adres==a);const d=document.createElement("div");d.className="sheet";
+ d.innerHTML=`<button class="x" aria-label="Sluiten">✕</button><h3>${TYPES[h.type][0]} ${esc(h.adres)}</h3><div>${TYPES[h.type][1]}</div>${h.extra.length?`<p>⭐ ${h.extra.map(esc).join(" · ")}</p>`:""}`;
+ document.body.append(d);d.querySelector(".x").onclick=()=>d.remove()}
+
+let form={a:null,type:null,extra:[],eigen:""};
+function meedoen(){
+ app.innerHTML=`<h2>Doe mee 🎃</h2><p class="m">Drie stappen, klaar in 30 seconden.</p>
+ <div class="step"><i>1</i>Tik op jouw huis</div>
+ ${kaartHTML()}
+ <div class="picked ${form.a?"ok":""}" id="pk">${form.a?"📍 "+esc(form.a):"Nog geen huis gekozen"}</div>
+ <div class="step"><i>2</i>Wat doe je?</div>
+ <div class="tiles">${Object.entries(TYPES).map(([k,[e,t]])=>`<button class="tile ${form.type==k?"on":""}" data-k="${k}"><b>${e}</b>${t}</button>`).join("")}</div>
+ <div class="step"><i>3</i>Iets extra's? <span style="font-weight:400;color:var(--mu)">(mag leeg)</span></div>
+ <div class="chips">${EXTRA.map(x=>`<button class="chip ${form.extra.includes(x)?"on":""}" data-x="${x}">${x}</button>`).join("")}</div>
+ <input id="eigen" maxlength="40" placeholder="Iets anders, bijv. heksensoep" value="${esc(form.eigen)}">
+ <button class="btn" id="go">Aanmelden</button><div class="err" id="err"></div>`;
+ const pick=(a,t)=>{if(t){$("#err").textContent=a+" doet al mee.";return}const c=MAP.getCenter(),z=MAP.getZoom();form.a=a;makeMap(true,null,pick);MAP.setView(c,z);const p=$("#pk");p.textContent="📍 "+a;p.classList.add("ok");$("#err").textContent=""};
+ makeMap(true,null,pick);
+ app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>{form.type=b.dataset.k;app.querySelectorAll(".tile").forEach(x=>x.classList.toggle("on",x==b))});
+ app.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{const v=b.dataset.x,i=form.extra.indexOf(v);i<0?form.extra.push(v):form.extra.splice(i,1);b.classList.toggle("on")});
+ $("#eigen").oninput=e=>form.eigen=e.target.value;
+ $("#go").onclick=()=>{
+  if(!form.a)return fout("Tik eerst op jouw huis op de kaart.");
+  if(!form.type)return fout("Kies wat je doet: snoep, spookhuis of versierd.");
+  const extra=[...form.extra,...(form.eigen.trim()?["✨ "+form.eigen.trim()]:[])];
+  const a=form.a;$("#go").disabled=true;$("#go").textContent="Bezig…";
+  rpc("aanmelden",{p_adres:a,p_type:form.type,p_extra:extra}).then(()=>{form={a:null,type:null,extra:[],eigen:""};
+  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. Zodra de organisatie het heeft gecontroleerd, staat je huis op de kaart.</p><a class="btn" href="#/">Bekijk de kaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a></div>`;scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
+}
+function fout(t){$("#err").textContent=t}
+
+function flyer(){
+ app.innerHTML=`<button class="btn noprint" onclick="print()" style="margin:8px 0 16px">🖨️ Print de flyer</button>
+ <div class="flyer"><h1>Halloween in de buurt</h1><div class="sub" style="text-align:center">De Eilanden &amp; Dichtersbuurt</div><div class="sub" style="text-align:center;font-size:16px;color:#fff">${EVENT.datum} · ${EVENT.tijd}</div>
+ <div class="frame"><div class="lmap" id="lmap" style="height:70vh"></div></div>
+ <div class="legend" style="margin-bottom:12px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
+ <ol class="fl">${sorted().map(h=>`<li>${TYPES[h.type][0]} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")}</ol>
+ <p style="text-align:center;font-size:14px;color:var(--mu);margin:14px 0 0">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p></div>`
+ makeMap(false);}
+
+async function datum(){
+ app.innerHTML=`<h2>📅 Welke dag past?</h2><p class="m">Stem mee over de datum van Halloween in de buurt.</p><div id="pk2" class="empty">Laden…</div>`;
+ let o=[],st=[];try{[o,st]=await Promise.all([get("prikker_opties?select=*&order=volgorde"),get("prikker_stemmen?select=optie_id,naam,keuze")])}catch(e){$("#pk2").textContent="Kon niet laden.";return}
+ const naam=localStorage.getItem("naam")||"";
+ $("#pk2").outerHTML=`${EVENT.prikker===false?'<div class="picked">De datumprikker is gesloten.</div>':`<input id="nm" placeholder="Je naam of huisnummer" value="${esc(naam)}" maxlength="40">`}
+ <div class="list" style="margin-top:12px">${o.map(x=>{const s=st.filter(v=>v.optie_id==x.id),c=k=>s.filter(v=>v.keuze==k).length;return `<div class="row" style="flex-wrap:wrap;cursor:default"><span class="t">${esc(x.label)}<small>✅ ${c("ja")} · 🤔 ${c("misschien")} · ❌ ${c("nee")}</small></span>${EVENT.prikker===false?"":`<span class="chips">${[["ja","✅"],["misschien","🤔"],["nee","❌"]].map(([k,e])=>`<button class="chip ${s.some(v=>v.naam==naam&&v.keuze==k)?"on":""}" data-o="${x.id}" data-k="${k}">${e}</button>`).join("")}</span>`}</div>`}).join("")||'<div class="empty">Nog geen opties.</div>'}</div><div class="err" id="err"></div>`;
+ app.querySelectorAll("[data-o]").forEach(b=>b.onclick=async()=>{const n=$("#nm").value.trim();if(!n){$("#err").textContent="Vul eerst je naam in.";$("#nm").focus();return}
+  try{localStorage.setItem("naam",n)}catch(e){}try{await rpc("stem",{p_optie:b.dataset.o,p_naam:n,p_keuze:b.dataset.k});datum()}catch(m){$("#err").textContent=m}});
+}
+async function beheer(){
+ const k=new URLSearchParams(location.hash.split("?")[1]||"").get("k")||sessionStorage.getItem("bk")||"";
+ if(!k){app.innerHTML='<div class="empty">Geen toegang.</div>';return}
+ let lijst;try{lijst=await rpc("beheer_lijst",{p_key:k});sessionStorage.setItem("bk",k)}catch(m){app.innerHTML=`<div class="empty">${esc(m)}</div>`;return}
+ const [o,st]=await Promise.all([get("prikker_opties?select=*&order=volgorde"),get("prikker_stemmen?select=optie_id,keuze")]);
+ const nieuw=lijst.filter(h=>!h.goedgekeurd),ok=lijst.filter(h=>h.goedgekeurd);
+ const rij=h=>`<div class="row" style="flex-wrap:wrap;cursor:default"><span class="e">${TYPES[h.type][0]}</span><span class="t">${esc(h.adres)}<small>${TYPES[h.type][1]}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span>
+  <span class="chips">${h.goedgekeurd?`<button class="chip" data-a="afkeuren" data-id="${h.id}">Verbergen</button>`:`<button class="chip on" data-a="goedkeuren" data-id="${h.id}">✓ Goedkeuren</button>`}
+  <select class="chip" data-type="${h.id}">${Object.entries(TYPES).map(([t,[e,n]])=>`<option value="${t}" ${t==h.type?"selected":""}>${e} ${n}</option>`).join("")}</select>
+  <button class="chip" data-a="verwijderen" data-id="${h.id}">🗑️</button></span></div>`;
+ app.innerHTML=`<h2>🔧 Beheer</h2>
+ <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
+ <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
+ <h2>Evenement</h2><input id="bd" value="${esc(EVENT.datum)}" placeholder="Datum"><input id="bt" value="${esc(EVENT.tijd)}" placeholder="Tijd"><input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
+ <label class="chips" style="margin-top:10px"><button class="chip ${EVENT.prikker!==false?"on":""}" id="bp">📅 Datumprikker open</button></label>
+ <button class="btn" id="bs">Opslaan</button>
+ <h2>Datumprikker</h2><div class="list">${o.map(x=>{const s=st.filter(v=>v.optie_id==x.id),c=q=>s.filter(v=>v.keuze==q).length;return `<div class="row" style="cursor:default"><span class="t">${esc(x.label)}<small>✅ ${c("ja")} · 🤔 ${c("misschien")} · ❌ ${c("nee")}</small></span><button class="chip" data-del="${x.id}">🗑️</button></div>`}).join("")}</div>
+ <input id="bo" placeholder="Nieuwe optie, bijv. Zaterdag 31 oktober 17:00–20:00"><button class="btn ghost" id="bad">Optie toevoegen</button><div class="err" id="err"></div>`;
+ const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m}};
+ app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(b.dataset.a=="verwijderen"&&!confirm("Verwijderen?"))return;doe("beheer_huis",{p_id:b.dataset.id,p_actie:b.dataset.a})});
+ app.querySelectorAll("[data-type]").forEach(s=>s.onchange=()=>doe("beheer_huis",{p_id:s.dataset.type,p_actie:"bewerken",p_type:s.value}));
+ app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>doe("beheer_optie",{p_label:"",p_verwijder:b.dataset.del}));
+ $("#bp").onclick=()=>$("#bp").classList.toggle("on");
+ $("#bs").onclick=()=>doe("beheer_instellingen",{p_datum:$("#bd").value,p_tijd:$("#bt").value,p_mededeling:$("#bm").value,p_prikker_open:$("#bp").classList.contains("on")});
+ $("#bad").onclick=()=>{const v=$("#bo").value.trim();if(v)doe("beheer_optie",{p_label:v})};
+}
+function route(){$(".sheet")?.remove();if(MAP){MAP.remove();MAP=null}const p=(location.hash||"#/").slice(2).split("?")[0];
+ document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
+ ({meedoen,flyer,datum,beheer}[p]||kaart)();scrollTo(0,0)}
+addEventListener("hashchange",route);
+laad().then(()=>{route();georef().then(ok=>{const p=(location.hash||"#/").slice(2).split("?")[0];if(ok&&["","meedoen","flyer"].includes(p))route()})});
+</script></body></html>
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Halloween in de buurt</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#16101f;--card:#221a2e;--line:#352a45;--or:#ff7a1a;--tx:#f5f1fa;--mu:#a99bbd;--ok:#2fbf6b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 Inter,system-ui,sans-serif;padding-bottom:84px}
+header{padding:20px 16px 8px;text-align:center}
+h1{font-family:Creepster,cursive;font-weight:400;color:var(--or);font-size:34px;margin:0;letter-spacing:1px}
+.sub{color:var(--mu);font-size:14px;margin-top:2px}
+main{max-width:560px;margin:0 auto;padding:8px 16px 24px}
+h2{font-size:20px;margin:16px 0 4px}p.m{color:var(--mu);margin:0 0 12px;font-size:15px}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:#1d1528ee;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:5}
+.tabs a{flex:1;text-align:center;color:var(--mu);text-decoration:none;font-size:12px;font-weight:600;padding:6px 0;border-radius:12px}
+.tabs a b{display:block;font-size:22px;line-height:1.2}
+.tabs a.on{color:var(--tx);background:var(--card)}
+.frame{border-radius:20px;overflow:hidden;border:1px solid var(--line);margin:12px 0;position:relative}
+.lmap{height:62vh;min-height:380px;background:#c8e6c0}
+.leaflet-container{font-family:Inter,system-ui,sans-serif}
+.lay{position:absolute;top:10px;right:10px;z-index:500;display:flex;background:#fff;border-radius:12px;box-shadow:0 2px 8px #0004;overflow:hidden}
+.lay button{border:0;background:#fff;color:#3c4043;font:600 13px Inter,sans-serif;padding:9px 12px;cursor:pointer}.lay button.on{background:#e8f0fe;color:#1a73e8}
+.mk{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;box-shadow:0 2px 6px #0007;border:2.5px solid var(--or)}
+.mk.hl{transform:scale(1.35);box-shadow:0 0 0 6px #ff7a1a77,0 2px 6px #0007}
+.num{background:none;border:0;box-shadow:none;color:#3c4043;font:700 11px Inter,sans-serif;text-shadow:0 0 3px #fff,0 0 3px #fff;padding:0}
+.num:before{display:none}
+.sat .num{color:#fff;text-shadow:0 0 3px #000,0 0 3px #000}
+.hidenum .num{display:none}
+.mk{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;box-shadow:0 2px 8px #000a;border:2px solid var(--or);cursor:pointer}
+.mk.hl{width:40px;height:40px;font-size:22px;z-index:3;box-shadow:0 0 0 5px #ff7a1a88,0 2px 8px #000a}
+.lot{position:absolute;box-shadow:inset 0 0 0 1.5px #fff;display:flex;align-items:center;justify-content:center;color:#fff;font:700 12px Inter,sans-serif;line-height:1;text-shadow:0 0 3px #000,0 0 3px #000;cursor:pointer}
+.lot.taken{background:#ff7a1acc;color:#16101f;text-shadow:none;cursor:default}
+.lot.sel{background:var(--ok);box-shadow:inset 0 0 0 2px #fff,0 0 0 3px var(--ok);z-index:2}
+.legend{display:flex;gap:14px;justify-content:center;color:var(--mu);font-size:14px;flex-wrap:wrap}
+.list{background:var(--card);border-radius:18px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line);cursor:pointer;min-height:56px}
+.row:first-child{border-top:0}.row .e{font-size:24px;width:30px;text-align:center}.row .t{flex:1}.row small{display:block;color:var(--mu);font-size:13px}
+.empty{color:var(--mu);text-align:center;padding:24px}
+.step{display:flex;align-items:center;gap:10px;margin:22px 0 8px;font-weight:700}
+.step i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--or);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:14px}
+.picked{background:var(--card);border-radius:14px;padding:14px 16px;font-weight:600;min-height:52px}
+.picked.ok{background:var(--ok);color:#06210f}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{background:var(--card);border:2px solid transparent;border-radius:16px;padding:16px 4px;text-align:center;color:var(--tx);font:600 14px Inter,sans-serif;cursor:pointer}
+.tile b{display:block;font-size:30px;line-height:1.3}.tile.on{border-color:var(--or);background:#3a2410}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card);border:2px solid transparent;color:var(--tx);border-radius:999px;padding:10px 14px;font:600 14px Inter,sans-serif;cursor:pointer;min-height:44px}
+.chip.on{border-color:var(--or);background:#3a2410}
+input{width:100%;background:var(--card);border:2px solid transparent;color:var(--tx);border-radius:14px;padding:14px 16px;font:16px Inter,sans-serif;margin-top:8px;outline:none}
+input:focus{border-color:var(--or)}
+.btn{display:block;width:100%;border:0;border-radius:16px;background:var(--or);color:#1a0e00;font:700 17px Inter,sans-serif;padding:17px;margin-top:22px;cursor:pointer;text-align:center;text-decoration:none}
+.btn.ghost{background:var(--card);color:var(--tx)}
+.err{color:#ff8a80;font-size:14px;margin-top:8px;min-height:20px}
+.done{text-align:center;padding:30px 8px}.done b{font-size:64px;display:block}
+.sheet{position:fixed;left:12px;right:12px;bottom:92px;max-width:536px;margin:auto;background:#fff;color:#1d1528;border-radius:20px;padding:16px 18px;box-shadow:0 10px 40px #000c;z-index:6}
+.sheet h3{margin:0 0 4px;font-size:18px}.sheet .x{position:absolute;right:10px;top:8px;border:0;background:none;font-size:22px;cursor:pointer;padding:6px}
+.sheet p{margin:6px 0 0;color:#4d4060}
+/* flyer */
+.flyer{background:#16101f;border-radius:16px;padding:18px;border:1px solid var(--line)}
+.flyer h1{font-size:40px;text-align:center}
+.fl{columns:2;column-gap:16px;font-size:14px;margin:0;padding-left:20px}.fl li{margin:3px 0;break-inside:avoid}
+@media print{.tabs,.noprint{display:none!important}body{padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}main{max-width:none}}
+</style></head><body>
+<header><h1>Halloween in de buurt</h1><div class="sub">De Eilanden &amp; Dichtersbuurt</div><div class="sub" id="datum"></div></header>
+<main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🗺️</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
