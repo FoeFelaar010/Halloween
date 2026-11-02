@@ -151,7 +151,7 @@ body[data-p=""] .pagebg,body[data-p="kaart"] .pagebg{display:none}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/hull.js@1.0.6/dist/hull.js"></script>
 <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
 const $=s=>document.querySelector(s),app=$("#app");
@@ -214,6 +214,7 @@ async function laadGebied(pcs,losse=[]){
 }
 // rand om het gebied: convex omhulsel van alle percelen, iets ruimer
 function maakRand(){
+ if(window.hull&&LOTS.length>2){const k=Math.cos(52*Math.PI/180)*111320,m=111320;const h=hull(LOTS.flatMap(l=>l.p).map(([la,lo])=>[lo*k,la*m]),110);if(h&&h.length>3)return h.map(([x,y])=>[y/m,x/k])}
  const pts=LOTS.flatMap(l=>l.p).map(([la,lo])=>[lo,la]);if(pts.length<3)return null;
  pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);
  const lo=[],up=[];for(const p of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
