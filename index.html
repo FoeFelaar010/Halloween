@@ -104,6 +104,9 @@ input:focus,textarea:focus{border-color:var(--or)}
  .meedoen{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.pmap{height:70vh;position:sticky;top:80px}
 }
 .spooky .leaflet-tile-pane{filter:invert(1) grayscale(1) brightness(1.05) contrast(1.1) sepia(.5) hue-rotate(225deg) saturate(2.2)}.lmap.spooky{background:#0d0814}.spooky .leaflet-overlay-pane path[stroke-dasharray]{filter:drop-shadow(0 0 6px #ff7a1a)}.spooky .mk{box-shadow:0 0 14px 4px #ff7a1aaa}.spooky .num{color:#ffb366;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000}
+.mk{position:relative}.mk.vis{background:#e9e4ef;border-color:#2fbf6b;box-shadow:none}.mk.vis span{filter:grayscale(1);opacity:.45}.mk i{position:absolute;right:-7px;bottom:-7px;width:19px;height:19px;border-radius:50%;background:#2fbf6b;color:#fff;font:800 11px Inter,sans-serif;font-style:normal;display:flex;align-items:center;justify-content:center;border:2px solid #fff}.spooky .mk.vis{box-shadow:none}
+.row.vis{opacity:.5}.prog{background:var(--card);border-radius:16px;padding:12px 14px;margin-bottom:10px}.pt{display:flex;justify-content:space-between;align-items:center}.bar{height:8px;background:#352a45;border-radius:4px;margin:8px 0;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#ff7a1a,#2fbf6b);transition:width .3s}.tg{font-size:14px;color:var(--mu);display:flex;gap:8px;align-items:center;cursor:pointer}.tg input{width:auto;margin:0;accent-color:#ff7a1a}.lnk{background:none;border:0;color:var(--or);font:700 14px Inter,sans-serif;cursor:pointer}
+.sbtn{display:grid;gap:8px;margin-top:12px}.sbtn .btn{margin:0}.btn.okb{background:#2fbf6b;color:#06210f}.btn.zacht{background:#ece8f2;color:#3b2f4d}
 </style></head><body>
 <main id="app"></main>
 <nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
@@ -189,27 +192,38 @@ function gps(btn){
   if(eerst){MAP.setView(ll,Math.max(MAP.getZoom(),18));eerst=false}},
   ()=>{btn.classList.remove("on");WATCH=null;alert("Locatie niet beschikbaar. Sta locatie toe in je browser.")},{enableHighAccuracy:true,maximumAge:5000});
 }
-function pins(m,hl){
- huizen.forEach(h=>{const l=lot(h.adres);if(!l)return;
-  const mk=L.marker([l.lat,l.lng],{icon:L.divIcon({className:"",html:`<div class="mk ${hl==h.adres?"hl":""}">${TYPES[h.type][0]}</div>`,iconSize:[36,36],iconAnchor:[18,18]})}).addTo(m);
+const GKEY=()=>"geweest:"+(EVENT.datum||"");
+function geweest(){try{return new Set(JSON.parse(localStorage.getItem(GKEY())||"[]"))}catch(e){return new Set()}}
+function zetGeweest(a,aan){const s=geweest();aan?s.add(a):s.delete(a);try{localStorage.setItem(GKEY(),JSON.stringify([...s]))}catch(e){}}
+let VERBERG=false;
+function pins(m,hl){const g=geweest();
+ huizen.forEach(h=>{const l=lot(h.adres);if(!l)return;const v=g.has(h.adres);if(v&&VERBERG)return;
+  const mk=L.marker([l.lat,l.lng],{zIndexOffset:v?-500:0,icon:L.divIcon({className:"",html:`<div class="mk ${hl==h.adres?"hl":""} ${v?"vis":""}"><span>${TYPES[h.type][0]}</span>${v?"<i>✓</i>":""}</div>`,iconSize:[36,36],iconAnchor:[18,18]})}).addTo(m);
   mk.on("click",()=>{sheet(h.adres);m.panTo([l.lat,l.lng])})});
 }
-function lijstHTML(){return `<div class="list">${sorted().map(h=>`<div class="row" data-h="${esc(h.adres)}"><span class="e">${TYPES[h.type][0]}</span><span class="t">${esc(h.adres)}<small>${TYPES[h.type][1]}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span><span style="color:var(--mu)">›</span></div>`).join("")||'<div class="empty">Nog niemand. Wees de eerste! <a href="#/meedoen" style="color:var(--or)">Doe mee</a></div>'}</div>
- <div class="legend" style="margin-top:12px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>`}
+function voortgang(){const g=geweest(),t=huizen.length,n=huizen.filter(h=>g.has(h.adres)).length;
+ return{n,t,html:t?`<div class="prog"><div class="pt"><b>${n==t?"🎉 Alles gehad!":"🍬 "+n+" van "+t+" bezocht"}</b>${n?`<button class="lnk" data-reset>Opnieuw</button>`:""}</div><div class="bar"><i style="width:${n/t*100}%"></i></div><label class="tg"><input type="checkbox" data-verberg ${VERBERG?"checked":""}> Verberg huizen waar ik al was</label></div>`:""}}
+function lijstHTML(){const g=geweest();const rows=sorted().sort((a,b)=>g.has(a.adres)-g.has(b.adres));
+ return `${voortgang().html}<div class="list">${rows.map(h=>{const v=g.has(h.adres);return `<div class="row ${v?"vis":""}" data-h="${esc(h.adres)}"><span class="e">${v?"✅":TYPES[h.type][0]}</span><span class="t">${esc(h.adres)}<small>${v?"Geweest · ":""}${TYPES[h.type][1]}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span><span style="color:var(--mu)">›</span></div>`}).join("")||'<div class="empty">Nog niemand. Wees de eerste! <a href="#/meedoen" style="color:var(--or)">Doe mee</a></div>'}</div>
+ <div class="legend" style="margin-top:12px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}<span>✅ Geweest</span></div>`}
+function herteken(){if(!MAP||(location.hash||"").slice(2).split("?")[0]!="kaart")return;const c=MAP.getCenter(),z=MAP.getZoom(),open=$("#dr")?.classList.contains("open");kaart();MAP.setView(c,z);if(open)$("#dr").classList.add("open")}
 function kaart(){
- app.className="full";
+ app.className="full";const vg=voortgang();
  app.innerHTML=`<div class="kp"><aside class="side"><div class="top"><h1 style="font-size:30px">Spookykaart</h1><p class="m" style="margin:4px 0 0">${huizen.length} huizen doen mee · ${esc(EVENT.datum)} ${esc(EVENT.tijd)}</p>${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}</div><div class="bd">${lijstHTML()}</div></aside>
  <div class="map" id="mw"><div class="lmap" id="lmap"></div>
- <div class="drawer" id="dr"><div class="hd"><b>👻 ${huizen.length} huizen doen mee</b><small>Tik om de lijst te ${"openen"}</small></div><div class="bd">${EVENT.mededeling?`<div class="note" style="margin:0 0 10px">📢 ${esc(EVENT.mededeling)}</div>`:""}${lijstHTML()}</div></div></div></div>`;
+ <div class="drawer" id="dr"><div class="hd"><b>👻 ${huizen.length} huizen${vg.n?` · ✅ ${vg.n} bezocht`:" doen mee"}</b><small>Tik om de lijst te openen</small></div><div class="bd">${EVENT.mededeling?`<div class="note" style="margin:0 0 10px">📢 ${esc(EVENT.mededeling)}</div>`:""}${lijstHTML()}</div></div></div></div>`;
  const m=basis($("#lmap"));pins(m);
  const lay=knoppen($("#mw"),62);lay.querySelectorAll("button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;try{localStorage.setItem("laag",LAYER)}catch(e){}const c=m.getCenter(),z=m.getZoom();kaart();MAP.setView(c,z)});
  const dr=$("#dr");dr.querySelector(".hd").onclick=()=>{dr.classList.toggle("open");dr.querySelector(".hd small").textContent=dr.classList.contains("open")?"Tik om te sluiten":"Tik om de lijst te openen"};
  app.querySelectorAll(".row[data-h]").forEach(r=>r.onclick=()=>{const l=lot(r.dataset.h);dr.classList.remove("open");if(l)MAP.flyTo([l.lat,l.lng],19,{duration:.8});sheet(r.dataset.h)});
+ app.querySelectorAll("[data-verberg]").forEach(c=>c.onchange=()=>{VERBERG=c.checked;herteken()});
+ app.querySelectorAll("[data-reset]").forEach(b=>b.onclick=()=>{if(!confirm("Alle vinkjes wissen en opnieuw beginnen?"))return;try{localStorage.removeItem(GKEY())}catch(e){}herteken()});
 }
-function sheet(a){$(".sheet")?.remove();const h=huizen.find(x=>x.adres==a);if(!h)return;const l=lot(a);const d=document.createElement("div");d.className="sheet";
- d.innerHTML=`<button class="x" aria-label="Sluiten">✕</button><h3>${TYPES[h.type][0]} ${esc(h.adres)}</h3><div style="color:#4d4060">${TYPES[h.type][1]}</div>${h.extra.length?`<p>⭐ ${h.extra.map(esc).join(" · ")}</p>`:""}
- ${l?`<a class="btn" target="_blank" href="https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${l.lat},${l.lng}">🚶 Loop hierheen</a>`:""}`;
- document.body.append(d);d.querySelector(".x").onclick=()=>d.remove()}
+function sheet(a){$(".sheet")?.remove();const h=huizen.find(x=>x.adres==a);if(!h)return;const l=lot(a);const v=geweest().has(a);const d=document.createElement("div");d.className="sheet";
+ d.innerHTML=`<button class="x" aria-label="Sluiten">✕</button><h3>${TYPES[h.type][0]} ${esc(h.adres)}</h3><div style="color:#4d4060">${TYPES[h.type][1]}${v?" · ✅ geweest":""}</div>${h.extra.length?`<p>⭐ ${h.extra.map(esc).join(" · ")}</p>`:""}
+ <div class="sbtn"><button class="btn ${v?"zacht":"okb"}" data-gw>${v?"↩️ Toch niet geweest":"✅ Hier geweest!"}</button>${l&&!v?`<a class="btn" target="_blank" href="https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${l.lat},${l.lng}">🚶 Loop hierheen</a>`:""}</div>`;
+ document.body.append(d);d.querySelector(".x").onclick=()=>d.remove();
+ d.querySelector("[data-gw]").onclick=()=>{zetGeweest(a,!v);d.remove();herteken()}}
 
 // ---- Start ----
 function start(){
