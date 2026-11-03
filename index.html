@@ -383,8 +383,7 @@ function start(){
   ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":"Stem mee over de datum"}</small></a>`}
   <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
  </div>
- <div class="wweek" id="wweek"></div>
- <div class="hregels"><span>🚶 Op de stoep</span><span>🧒 Kleintjes met een volwassene</span><span>💡 Lamp uit? Niet aanbellen</span><span>🙏 Zeg dankjewel</span></div>`;
+ <div class="wweek" id="wweek"></div>`;
  bindAgenda();weekWeer();
 }
 
@@ -461,8 +460,7 @@ function flyer(){
  <div class="fmap"><div class="lmap" id="lmap"></div></div>
  <div class="legend" style="margin-bottom:10px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
  <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${doetIco(h)} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
- <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div>
- <div class="regels"><b>📜 Spookregels</b><span>🚶 Blijf op de stoep</span><span>🧒 Kleintjes met een volwassene</span><span>💡 Lamp uit = niet aanbellen</span><span>🙏 Zeg dankjewel</span></div></div>`;
+ <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div></div>`;
  const m=basis($("#lmap"),{pad:[6,6]});pins(m);
 }
 
