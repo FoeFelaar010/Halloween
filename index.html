@@ -133,6 +133,21 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
+.hregels{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}.hregels span{background:#1d1528cc;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13px;color:var(--tx);white-space:nowrap}
+.wweek{margin-top:16px;background:#1d1528cc;border:1px solid var(--line);border-radius:20px;padding:10px 8px 8px;backdrop-filter:blur(6px)}
+.wkop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;padding:0 4px 8px}.wkop b{color:#c4b5fd;font-size:13px}.wkop span{color:var(--mu);font-size:12px}
+.wrij{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.wrij::-webkit-scrollbar{display:none}
+.wd{background:var(--card);border:2px solid transparent;border-radius:12px;padding:6px 0;min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
+.wd .wdn{font-weight:700;font-size:12px;color:var(--mu)}.wd small{font-size:10px;color:var(--mu);white-space:nowrap}.wd i{font-style:normal;font-size:20px;line-height:1.3}.wd b{font-size:12px;white-space:nowrap}.wd b em{font-style:normal;color:var(--mu);font-weight:600}
+.wd.nu{border-color:#e9e4ef}.wd.nu .wdn{color:var(--tx)}.wd.ev{border-color:var(--or);background:#3a2410}.wd .evt{font-size:12px}.wd .rg{color:#93c5fd}
+.testbalk{position:sticky;top:0;z-index:1200;background:repeating-linear-gradient(45deg,#7c3aed,#7c3aed 12px,#6d28d9 12px,#6d28d9 24px);color:#fff;text-align:center;font:700 13px Inter,sans-serif;padding:6px 10px}
+@media(min-width:900px){.testbalk{position:fixed;left:0;right:0;top:var(--tabh)}}
+.tbox{background:var(--card);border:2px dashed var(--line);border-radius:16px;padding:14px;margin:10px 0 6px}.tbox.aan{border-color:#8b5cf6;background:#241a3a}
+.chip.rood{background:#3d1616;border-color:#ff6b6b;color:#ffd6d6}
+.regels{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;align-items:center;margin-top:14px;font-size:14px;color:var(--tx)}.regels b{width:100%;text-align:center;color:var(--or);font-size:15px}
+.weer{margin:16px auto 0;max-width:640px;background:linear-gradient(135deg,#221a2e,#2d1b45);border:1px solid #4c3a6b;border-radius:20px;padding:16px 18px;text-align:center;box-shadow:0 0 24px #7c3aed33}
+.weer .wk{font-weight:800;color:#c4b5fd}.weer .wr{font-size:20px;font-weight:800;margin-top:6px}.weer .wt{color:var(--mu);margin-top:4px}
+.weer .wz{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:14px}.weer .wz b{color:var(--or)}.weer .wn{color:var(--mu);font-size:12px;margin-top:8px}
 html{scrollbar-gutter:stable;overflow-y:scroll}
 .hero .when.soon{color:var(--tx);text-decoration:none;border-color:#7a3d10;background:#3a2410}.hero .when.soon u{text-decoration-color:var(--or);text-underline-offset:3px}
 .big a{align-items:center;text-align:center;justify-content:center}.big>a:last-child:nth-child(even){grid-column:1/-1;min-height:96px}
@@ -197,7 +212,7 @@ const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
 async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
-async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[]}catch(e){console.log(e)}}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[];EVENT.test=!!(i[0]&&i[0].testmodus)}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
@@ -368,8 +383,9 @@ function start(){
   ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":"Stem mee over de datum"}</small></a>`}
   <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
  </div>
- <p class="m" style="text-align:center;margin-top:22px">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p>`;
- bindAgenda();
+ <div class="wweek" id="wweek"></div>
+ <div class="hregels"><span>🚶 Op de stoep</span><span>🧒 Kleintjes met een volwassene</span><span>💡 Lamp uit? Niet aanbellen</span><span>🙏 Zeg dankjewel</span></div>`;
+ bindAgenda();weekWeer();
 }
 
 // ---- Meedoen ----
@@ -412,11 +428,31 @@ function meedoen(){
   const extra=[...form.extra,...(form.eigen.trim()?["✨ "+form.eigen.trim()]:[])];
   const a=form.a;$("#go").disabled=true;$("#go").textContent="Bezig…";
   rpc("aanmelden",{p_adres:a,p_doet:form.doet,p_extra:extra}).then(()=>{form={a:null,doet:["aanbellen"],extra:[],eigen:""};
-  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. Na een korte controle door de organisatie staat je huis op de kaart.</p><a class="btn" href="#/kaart">Bekijk de spookykaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a>${agendaHTML()}</div>`;bindAgenda();scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
+  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. ${EVENT.test?"🧪 Testmodus: je huis staat meteen op de kaart.":"Na een korte controle door de organisatie staat je huis op de kaart."}</p><a class="btn" href="#/kaart">Bekijk de spookykaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a>${agendaHTML()}</div>`;bindAgenda();scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
 }
 function fout(t){$("#err").textContent=t}
 
 // ---- Flyer ----
+function zonOnder(d){const lat=51.986,lng=4.493,r=Math.PI/180;const n=Math.round((Date.parse(d+"T12:00:00Z")-Date.UTC(2000,0,1,12))/864e5);const Js=n-lng/360,M=(357.5291+0.98560028*Js)%360,C=1.9148*Math.sin(M*r)+.02*Math.sin(2*M*r)+.0003*Math.sin(3*M*r),l=(M+C+282.9372)%360,Jt=2451545+Js+.0053*Math.sin(M*r)-.0069*Math.sin(2*l*r),dec=Math.asin(Math.sin(l*r)*Math.sin(23.44*r)),w=Math.acos((Math.sin(-.833*r)-Math.sin(lat*r)*Math.sin(dec))/(Math.cos(lat*r)*Math.cos(dec)))/r;return new Date((Jt+w/360-2440587.5)*864e5)}
+const uur=t=>t.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Amsterdam"});
+function spookWeer(c,wind){const w=wind>35?" De bezems vliegen vandaag hard! 🧹💨":"";
+ if(c==0)return["🌕","Heldere spooknacht, de maan kijkt mee."+w];if(c<=3)return["☁️","Wolken als spoken boven Boterdorp."+w];if(c<=48)return["🌫️","Mist! Perfect spookweer, houd elkaar goed vast."+w];
+ if(c<=67||(c>=80&&c<=82))return["☔","Heksenweer: regenjas of paraplu mee!"+w];if(c<=77||c==85||c==86)return["❄️","IJskoude geesten, trek je warmste jas aan."+w];return["⚡","Onweer: de geesten zijn boos. Kijk even of het doorgaat."+w]}
+async function weer(){const el=$("#weer");if(!el)return;const dag=EVENT.dag;
+ try{const j=await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=51.986&longitude=4.493&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max,wind_speed_10m_max&timezone=Europe%2FAmsterdam&forecast_days=16")).json();
+  const i=dag?j.daily.time.indexOf(dag):-1,zo=zonOnder(dag||new Date().toISOString().slice(0,10)),don=new Date(zo.getTime()+38*6e4);
+  let kop,regel,[ic,tekst]=["",""];
+  if(i>=0){[ic,tekst]=spookWeer(j.daily.weather_code[i],j.daily.wind_speed_10m_max[i]);kop=`Voorspelling voor ${esc(EVENT.datum||dagTxt(dag))}`;regel=`${ic} ${Math.round(j.daily.temperature_2m_min[i])}–${Math.round(j.daily.temperature_2m_max[i])}° · ☔ ${j.daily.precipitation_probability_max[i]}% kans op regen · 💨 ${Math.round(j.daily.wind_speed_10m_max[i])} km/u`}
+  else{[ic,tekst]=spookWeer(j.current.weather_code,j.current.wind_speed_10m);kop="Nu in Bergschenhoek";regel=`${ic} ${Math.round(j.current.temperature_2m)}° · 💨 ${Math.round(j.current.wind_speed_10m)} km/u`}
+  el.innerHTML=`<div class="wk">🔮 Spookweer · ${kop}</div><div class="wr">${regel}</div><div class="wt">${tekst}</div><div class="wz"><span>🌅 Zon onder <b>${uur(zo)}</b></span><span>🌑 Echt donker <b>${uur(don)}</b></span>${dag?"":"<span>(vandaag)</span>"}</div>${dag&&i<0?'<div class="wn">De voorspelling voor de avond zelf verschijnt hier 2 weken van tevoren.</div>':""}`}
+ catch(e){el.innerHTML='<div class="wk">🔮 Spookweer</div><div class="wn">Het weer kon niet geladen worden. Probeer het later opnieuw.</div>'}}
+async function weekWeer(){const el=$("#wweek");if(!el)return;
+ try{const j=await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=51.986&longitude=4.493&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&current=is_day,weather_code,temperature_2m&timezone=Europe%2FAmsterdam&forecast_days=7")).json();
+  const ic=(c,nacht)=>c==0?(nacht?"🌙":"☀️"):c<=2?(nacht?"🌙":"🌤️"):c==3?"☁️":c<=48?"🌫️":(c<=67||(c>=80&&c<=82))?"🌧️":(c<=77||c==85||c==86)?"❄️":"⛈️";
+  const D=new Intl.DateTimeFormat("nl-NL",{weekday:"short"}),M=new Intl.DateTimeFormat("nl-NL",{day:"numeric",month:"short"});
+  el.innerHTML=`<div class="wkop"><b>🔮 Spookweer in Bergschenhoek</b><span>🌅 zon onder ${uur(zonOnder(j.daily.time[0]))}</span></div><div class="wrij">${j.daily.time.map((d,i)=>{const t=new Date(d+"T12:00"),ev=d==EVENT.dag,r=j.daily.precipitation_probability_max[i];
+   return `<div class="wd ${i==0?"nu":""} ${ev?"ev":""}"><span class="wdn">${i==0?"nu":D.format(t).replace(".","")}</span><small>${M.format(t).replace(".","")}</small><i>${i==0?ic(j.current.weather_code,!j.current.is_day):ic(j.daily.weather_code[i])}</i><b>${Math.round(j.daily.temperature_2m_max[i])}°<em>/${Math.round(j.daily.temperature_2m_min[i])}°</em></b><small class="rg">${r>=30?"☔"+r+"%":"&nbsp;"}</small>${ev?'<small class="evt">🎃</small>':""}</div>`}).join("")}</div>`}
+ catch(e){el.remove()}}
 function flyer(){
  app.className="";
  let qr="";try{const q=qrcode(0,"M");q.addData(SITE);q.make();qr=q.createSvgTag({cellSize:4,margin:0,scalable:true})}catch(e){}
@@ -426,7 +462,7 @@ function flyer(){
  <div class="legend" style="margin-bottom:10px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
  <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${doetIco(h)} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
  <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div>
- <p style="text-align:center;font-size:14px;color:var(--mu);margin:14px 0 0">Blijf op de stoep · Kleintjes met een volwassene · Zeg dankjewel 🙏</p></div>`;
+ <div class="regels"><b>📜 Spookregels</b><span>🚶 Blijf op de stoep</span><span>🧒 Kleintjes met een volwassene</span><span>💡 Lamp uit = niet aanbellen</span><span>🙏 Zeg dankjewel</span></div></div>`;
  const m=basis($("#lmap"),{pad:[6,6]});pins(m);
 }
 
@@ -479,6 +515,7 @@ async function beheer(){
   ${Object.entries(TYPES).map(([t,[e,n]])=>`<button class="chip ${DOET(h).includes(t)?"on":""}" data-doet="${t}" data-hid="${h.id}" title="${n}">${e}</button>`).join("")}
   <button class="chip" data-a="verwijderen" data-id="${h.id}">🗑️</button></span></div>`;
  app.innerHTML=`<h2>🔧 Beheer</h2>
+ <div class="tbox ${EVENT.test?"aan":""}"><b>🧪 Testmodus ${EVENT.test?"staat AAN":"staat uit"}</b><p class="m" style="margin:4px 0 10px">${EVENT.test?"Nieuwe aanmeldingen komen direct op de kaart, zonder controle. Bovenaan de site staat een testbalk.":"Aanmeldingen moeten eerst door jou worden goedgekeurd."}</p><div class="chips"><button class="chip ${EVENT.test?"":"on"}" id="btest">${EVENT.test?"⏹️ Testmodus uitzetten":"🧪 Testmodus aanzetten"}</button><button class="chip rood" id="bwisalles">🗑️ Alle aangemelde huizen verwijderen</button></div></div>
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
  <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
@@ -492,6 +529,8 @@ async function beheer(){
  <button class="btn" id="bs">Opslaan</button>
  <h2>Datumprikker</h2><div class="list">${o.map(x=>{const c=st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0};return `<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<small>✅ ${c.ja} · 🤔 ${c.misschien} · ❌ ${c.nee}</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}<button class="chip" data-del="${x.id}">🗑️</button></span></div>`}).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
  <div class="tr3"><label>Datum<input type="date" id="odag"></label><label>Van<input type="time" id="ovan" value="17:00"></label><label>Tot<input type="time" id="otot" value="20:00"></label></div><button class="btn ghost" id="bad">Datum toevoegen</button><div class="err" id="err"></div>`;
+ $("#btest").onclick=()=>doe("beheer_test",{p_aan:!EVENT.test});
+ $("#bwisalles").onclick=()=>{const n=lijst.length;if(!n)return $("#err").textContent="Er staan geen huizen in.";if(prompt(`Weet je het zeker? Alle ${n} aangemelde huizen worden verwijderd. Typ WISSEN om door te gaan.`)!=="WISSEN")return;doe("beheer_wis_huizen",{})};
  const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m}};
  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(b.dataset.a=="verwijderen"&&!confirm("Verwijderen?"))return;doe("beheer_huis",{p_id:b.dataset.id,p_actie:b.dataset.a})});
  app.querySelectorAll("[data-doet]").forEach(b=>b.onclick=()=>{const h=lijst.find(x=>x.id==b.dataset.hid),d=DOET(h),k=b.dataset.doet,n=d.includes(k)?d.filter(x=>x!=k):[...d.filter(x=>x!=RUIL[k]),k];if(!n.length)return $("#err").textContent="Minstens één ding aan laten.";doe("beheer_huis",{p_id:h.id,p_actie:"bewerken",p_doet:n})});
@@ -506,7 +545,7 @@ async function beheer(){
  $("#bad").onclick=()=>{const d=$("#odag").value;if(!d)return $("#err").textContent="Kies eerst een datum.";doe("beheer_optie",{p_label:dagTxt(d)+" "+tijdTxt($("#ovan").value,$("#otot").value),p_dag:d,p_van:$("#ovan").value||null,p_tot:$("#otot").value||null})};
 }
 
-function route(){$(".sheet")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
+function route(){$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
  ({kaart,meedoen,flyer,datum,beheer}[p]||start)();scrollTo(0,0)}
