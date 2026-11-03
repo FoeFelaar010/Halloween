@@ -487,7 +487,7 @@ async function beheer(){
  <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
  <h2>Evenement</h2><p class="m">Vul de definitieve datum in, of kies hieronder een datum uit de prikker. Aanmelden sluit dan automatisch 3 dagen ervoor.</p>
  <div class="tr3"><label>Datum<input type="date" id="bdag" value="${EVENT.dag||""}"></label><label>Van<input type="time" id="bvan" value="${hm(EVENT.van)}"></label><label>Tot<input type="time" id="btot" value="${hm(EVENT.tot)}"></label></div>
- <input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
+ ${EVENT.dag?`<div class="chips" style="margin-top:8px"><button class="chip" id="bwis">🗑️ Gekozen datum wissen (prikker weer open)</button></div>`:""}<input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
  <div class="chips" style="margin-top:10px"><button class="chip ${EVENT.prikker!==false?"on":""}" id="bp">📅 Datumprikker open</button></div>
  <button class="btn" id="bs">Opslaan</button>
  <h2>Datumprikker</h2><div class="list">${o.map(x=>{const c=st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0};return `<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<small>✅ ${c.ja} · 🤔 ${c.misschien} · ❌ ${c.nee}</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}<button class="chip" data-del="${x.id}">🗑️</button></span></div>`}).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
@@ -501,6 +501,7 @@ async function beheer(){
  $("#bp").onclick=()=>$("#bp").classList.toggle("on");randEditor(k);
  $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  $("#blos").onclick=async()=>{const l=$("#blo").value.toUpperCase().split(/[,;\n]+/).map(x=>x.trim().replace(/^(\d{4})\s*([A-Z]{2})\s+/,"$1$2 ")).filter(x=>/^\d{4}[A-Z]{2} \d+[A-Z]?(-[A-Z0-9]+)?$/.test(x));try{$("#blos").textContent="Laden…";await rpc("beheer_losse",{p_key:k,p_losse:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
+ if($("#bwis"))$("#bwis").onclick=()=>{if(confirm("Gekozen datum wissen en de datumprikker weer openzetten?"))bewaar("","","",true)};
  $("#bs").onclick=()=>bewaar($("#bdag").value,$("#bvan").value,$("#btot").value,$("#bp").classList.contains("on"));
  $("#bad").onclick=()=>{const d=$("#odag").value;if(!d)return $("#err").textContent="Kies eerst een datum.";doe("beheer_optie",{p_label:dagTxt(d)+" "+tijdTxt($("#ovan").value,$("#otot").value),p_dag:d,p_van:$("#ovan").value||null,p_tot:$("#otot").value||null})};
 }
