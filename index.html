@@ -308,7 +308,7 @@ function geweest(){try{return new Set(JSON.parse(localStorage.getItem(GKEY())||"
 function zetGeweest(a,aan){const s=geweest();aan?s.add(a):s.delete(a);try{localStorage.setItem(GKEY(),JSON.stringify([...s]))}catch(e){}}
 let VERBERG=false;
 function pins(m,hl){const g=geweest();
- huizen.forEach(h=>{const l=lot(h.adres);if(!l)return;const v=g.has(h.adres);if(v&&VERBERG)return;
+ const PL=[];huizen.forEach(h=>{const l0=lot(h.adres);if(!l0)return;const n=PL.filter(p=>Math.abs(p[0]-l0.lat)<9e-5&&Math.abs(p[1]-l0.lng)<1.4e-4).length;PL.push([l0.lat,l0.lng]);const l=n?{lat:l0.lat+Math.cos(n*2.4)*8e-5,lng:l0.lng+Math.sin(n*2.4)*1.3e-4}:l0;const v=g.has(h.adres);if(v&&VERBERG)return;
   const mk=L.marker([l.lat,l.lng],{zIndexOffset:v?-500:0,icon:L.divIcon({className:"",html:`<div class="mk ${hl==h.adres?"hl":""} ${v?"vis":""}"><span>${prim(h)}</span>${v?"<i>✓</i>":""}</div>`,iconSize:[36,36],iconAnchor:[18,18]})}).addTo(m);
   mk.on("click",()=>{sheet(h.adres);m.panTo([l.lat,l.lng])})});
 }
