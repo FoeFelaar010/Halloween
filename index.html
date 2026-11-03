@@ -133,6 +133,21 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
+.tr2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:6px}.tr2 label{font-size:13px;color:var(--mu);min-width:0}.tr2 input{margin-top:4px;width:100%;min-width:0}
+.pmk{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px}
+.pst{display:flex;align-items:center;gap:10px;margin:14px 0 8px;flex-wrap:wrap}.pst:first-child{margin-top:0}.pst span{width:26px;height:26px;border-radius:50%;background:var(--or);color:#1a1020;font-weight:800;display:grid;place-items:center;font-size:14px}.pst b{font-size:16px}.pst small{color:var(--mu);margin-left:auto}
+.kal{display:flex;align-items:flex-start;gap:6px}.kms{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;min-width:0}
+.kn{background:none;border:0;color:#38bdf8;font-size:24px;cursor:pointer;padding:4px 6px;line-height:1}
+.kmt{text-align:center;font-weight:700;padding:6px 0 8px;border-bottom:1px solid var(--line);margin-bottom:6px;text-transform:capitalize}
+.kg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.kg i{font-style:normal;text-align:center;font-size:12px;color:var(--mu);padding:2px 0}
+.kd{aspect-ratio:1/1;border:1px solid var(--line);background:#1a1324;color:var(--tx);border-radius:8px;font:600 14px Inter,sans-serif;cursor:pointer;padding:0}.kd:hover:not(:disabled){border-color:#4ade80}.kd:disabled{opacity:.25;cursor:default}
+.kd.hw{border-color:var(--or)}.kd.on{background:#22c55e;border-color:#22c55e;color:#fff}
+.ptd{border-top:1px dashed var(--line);padding:10px 0}.ptd:first-child{border-top:0}.ptd>b{display:block;margin-bottom:6px}
+.ptr{display:flex;align-items:flex-end;gap:8px}.ptr label{font-size:12px;color:var(--mu);flex:1;min-width:0}.ptr input{width:100%;margin-top:3px;text-align:center}.ptr span{padding-bottom:12px;color:var(--mu)}
+.pdel{background:none;border:0;color:var(--mu);font-size:22px;cursor:pointer;padding:0 4px 8px}.pdel:hover{color:#ff6b6b}
+.plink{background:none;border:0;color:#38bdf8;cursor:pointer;padding:8px 0 0;font:600 14px Inter,sans-serif}
+.svbalk{background:linear-gradient(135deg,#2d1b45,#1d1528);border:1px solid #6d28d9;border-radius:14px;padding:10px 14px;margin:6px 0 10px;text-align:center}.svbalk b{color:var(--or)}
+
 .hregels{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}.hregels span{background:#1d1528cc;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13px;color:var(--tx);white-space:nowrap}
 .wweek{margin-top:16px;background:#1d1528cc;border:1px solid var(--line);border-radius:20px;padding:10px 8px 8px;backdrop-filter:blur(6px)}
 .wkop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;padding:0 4px 8px}.wkop b{color:#c4b5fd;font-size:13px}.wkop span{color:var(--mu);font-size:12px}
@@ -212,7 +227,7 @@ const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
 async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
-async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[];EVENT.test=!!(i[0]&&i[0].testmodus)}catch(e){console.log(e)}}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[];EVENT.test=!!(i[0]&&i[0].testmodus);EVENT.pstart=i[0]?.prikker_start||null;EVENT.pend=i[0]?.prikker_eind||null}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
@@ -380,7 +395,7 @@ function start(){
  <div class="big">
   <a class="main" href="#/kaart"><b>👻</b><span>Spookykaart</span><small>Zie welke huizen meedoen en loop erheen</small></a>
   <a href="#/meedoen"><b>🎃</b><span>Meedoen</span><small>Meld je huis aan in 30 seconden</small></a>
-  ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":"Stem mee over de datum"}</small></a>`}
+  ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":stemVenster().kort||"Stem mee over de datum"}</small></a>`}
   <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
  </div>
  <div class="wweek" id="wweek"></div>`;
@@ -470,18 +485,25 @@ function optDag(x){return x.dag?dagTxt(x.dag):esc(x.label)}
 function optTijd(x){return x.van?tijdTxt(x.van,x.tot)+" uur":""}
 function voorbij(x){return x.dag&&x.dag<new Date().toISOString().slice(0,10)}
 const KEUZES=[["ja","✅","Kan ik"],["misschien","🤔","Misschien"],["nee","❌","Kan niet"]];
+function stemVenster(){const v=new Date().toLocaleDateString("sv-SE",{timeZone:"Europe/Amsterdam"}),s=EVENT.pstart,e=EVENT.pend;
+ const kort=d=>new Date(d+"T12:00").toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"});
+ if(EVENT.prikker===false)return{open:false,st:"dicht",txt:"",kort:""};
+ if(s&&v<s)return{open:false,st:"voor",txt:`⏳ Stemmen start op <b>${kort(s)}</b>${e?` en kan t/m <b>${kort(e)}</b>`:""}.`,kort:`Stemmen vanaf ${kort(s)}`};
+ if(e&&v>e)return{open:false,st:"na",txt:`🔒 Stemmen kon t/m <b>${kort(e)}</b>. De organisatie kiest nu de datum.`,kort:"Stemmen is gesloten"};
+ const n=e?Math.round((Date.parse(e)-Date.parse(v))/864e5)+1:0;
+ return{open:true,st:"open",txt:e?`🗳️ Stemmen kan ${s?`van <b>${kort(s)}</b> `:""}t/m <b>${kort(e)}</b> · ${n<=1?"<b>laatste dag!</b>":`nog <b>${n} dagen</b>`}`:"",kort:e?`Stemmen kan t/m ${kort(e)}`:"Stem mee over de datum"}}
 async function datum(){
  app.className="";
  app.innerHTML=`<h2>📅 Welke dag past?</h2><div id="pk2" class="empty">Laden…</div>`;
  let o=[],st=[];try{[o,st]=await Promise.all([get("prikker_opties?select=*&order=dag,van,volgorde"),rpc("prikker_stand",{p_token:tok()})])}catch(e){$("#pk2").textContent="Kon de datumprikker niet laden. Probeer het later opnieuw.";return}
  const S={};(st||[]).forEach(s=>S[s.optie_id]=s);
- const open=EVENT.prikker!==false;
+ const SV=stemVenster(),open=SV.open;
  const teken=()=>{
   const rows=o.map(x=>({x,s:S[x.id]||{ja:0,misschien:0,nee:0,mijn:null}}));
   const score=r=>r.s.ja*2+r.s.misschien, top=Math.max(0,...rows.map(score));
   const klaar=rows.filter(r=>r.s.mijn).length;
-  $("#pk").innerHTML=`${!open?`<div class="pinfo">${EVENT.datum?`🎃 <b>De datum staat vast: ${esc(EVENT.datum)}${EVENT.tijd?" · "+esc(EVENT.tijd):""}</b>`:"🔒 De datumprikker is gesloten."}${agendaHTML()}<small>Hieronder zie je hoe er gestemd is.</small></div>`
-   :`<div class="pinfo">Tik per dag aan of je kunt. Je stem is <b>anoniem</b> en je kunt hem altijd aanpassen.<br><small>${klaar?`✔️ Je hebt ${klaar} van de ${rows.length} dagen ingevuld.`:"Je hebt nog niet gestemd."}</small></div>`}
+  $("#pk").innerHTML=`${!open?`<div class="pinfo">${EVENT.datum?`🎃 <b>De datum staat vast: ${esc(EVENT.datum)}${EVENT.tijd?" · "+esc(EVENT.tijd):""}</b>`:(SV.txt||"🔒 De datumprikker is gesloten.")}${agendaHTML()}${o.length&&SV.st!="voor"?"<small>Hieronder zie je hoe er gestemd is.</small>":""}</div>`
+   :`${SV.txt?`<div class="svbalk">${SV.txt}</div>`:""}<div class="pinfo">Tik per dag aan of je kunt. Je stem is <b>anoniem</b> en je kunt hem altijd aanpassen.<br><small>${klaar?`✔️ Je hebt ${klaar} van de ${rows.length} dagen ingevuld.`:"Je hebt nog niet gestemd."}</small></div>`}
   ${rows.map(({x,s})=>{const n=s.ja+s.misschien+s.nee,lead=top>0&&score({s})==top,oud=voorbij(x);
    return `<div class="popt ${lead?"lead":""} ${oud?"oud":""}">
     <div class="ph"><div><b>${optDag(x)}</b>${optTijd(x)?`<small>🕖 ${optTijd(x)}</small>`:""}</div>${lead?`<span class="badge">⭐ ${open?"Favoriet":"Meeste stemmen"}</span>`:""}</div>
@@ -520,27 +542,52 @@ async function beheer(){
  <h2>✏️ Rand van het gebied</h2><p class="m"><b>Sleep</b> de paarse bolletjes om de rand te verplaatsen. <b>Tik op de kaart</b> om een punt toe te voegen, <b>tik op een bolletje</b> om het weg te halen. Oranje = adressen uit je postcodes.</p><div class="chips" style="margin:10px 0"><button class="chip on" id="rsave">💾 Rand opslaan</button><button class="chip" id="rleeg">✏️ Opnieuw tekenen</button><button class="chip" id="rauto">🔄 Automatisch</button></div><div id="rinfo" class="m" style="margin:0 0 8px"></div><div style="height:62vh;position:relative;border-radius:18px;overflow:hidden"><div class="lmap" id="rmap"></div></div>
  <h2>📍 Gebied (postcodes)</h2><p class="m">Alle adressen met deze postcodes kunnen meedoen. Zoek postcodes op via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.</p><textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea><button class="btn ghost" id="bpcs">Gebied opslaan</button>
  <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
- <h2>Evenement</h2><p class="m">Vul de definitieve datum in, of kies hieronder een datum uit de prikker. Aanmelden sluit dan automatisch 3 dagen ervoor.</p>
+ <h2>📅 Datumprikker maken</h2>
+ <div class="pmk">
+  <div class="pst"><span>1</span><b>Welke data stel je voor?</b><small id="pnum"></small></div>
+  <div class="kal" id="kal"></div>
+  <div class="pst"><span>2</span><b>Welke tijd?</b></div>
+  <div id="ptijd"></div>
+  <div class="pst"><span>3</span><b>Hoelang kan er gestemd worden?</b></div>
+  <div class="tr2"><label>Stemmen vanaf<input type="date" id="pstart" value="${EVENT.pstart||""}"></label><label>Stemmen t/m<input type="date" id="peind" value="${EVENT.pend||""}"></label></div>
+  <p class="m" style="margin:6px 0 0">Leeg laten = direct open en geen sluitdatum. Na de sluitdatum gaat stemmen vanzelf dicht.</p>
+  <button class="btn" id="psave">💾 Datumprikker opslaan</button>
+ </div>
+ <h2>📊 Stemmen tot nu toe</h2><div class="list">${o.map(x=>({x,c:st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0}})).sort((a,b)=>(b.c.ja*2+b.c.misschien)-(a.c.ja*2+a.c.misschien)).map(({x,c},n)=>`<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${n==0&&c.ja+c.misschien?"⭐ ":""}${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<div class="pbar" style="margin:6px 0 4px">${c.ja+c.misschien+c.nee?`<i class="j" style="flex:${c.ja}"></i><i class="m" style="flex:${c.misschien}"></i><i class="n" style="flex:${c.nee}"></i>`:""}</div><small>✅ ${c.ja} kan · 🤔 ${c.misschien} misschien · ❌ ${c.nee} kan niet</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}</span></div>`).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
+ <h2>📌 Definitieve datum</h2><p class="m">Vul de definitieve datum in, of kies hieronder een datum uit de prikker. Aanmelden sluit dan automatisch 3 dagen ervoor.</p>
  <div class="tr3"><label>Datum<input type="date" id="bdag" value="${EVENT.dag||""}"></label><label>Van<input type="time" id="bvan" value="${hm(EVENT.van)}"></label><label>Tot<input type="time" id="btot" value="${hm(EVENT.tot)}"></label></div>
  ${EVENT.dag?`<div class="chips" style="margin-top:8px"><button class="chip" id="bwis">🗑️ Gekozen datum wissen (prikker weer open)</button></div>`:""}<input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
  <div class="chips" style="margin-top:10px"><button class="chip ${EVENT.prikker!==false?"on":""}" id="bp">📅 Datumprikker open</button></div>
- <button class="btn" id="bs">Opslaan</button>
- <h2>Datumprikker</h2><div class="list">${o.map(x=>{const c=st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0};return `<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<small>✅ ${c.ja} · 🤔 ${c.misschien} · ❌ ${c.nee}</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}<button class="chip" data-del="${x.id}">🗑️</button></span></div>`}).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
- <div class="tr3"><label>Datum<input type="date" id="odag"></label><label>Van<input type="time" id="ovan" value="17:00"></label><label>Tot<input type="time" id="otot" value="20:00"></label></div><button class="btn ghost" id="bad">Datum toevoegen</button><div class="err" id="err"></div>`;
+ <button class="btn" id="bs">Opslaan</button><div class="err" id="err"></div>`;
  $("#btest").onclick=()=>doe("beheer_test",{p_aan:!EVENT.test});
  $("#bwisalles").onclick=()=>{const n=lijst.length;if(!n)return $("#err").textContent="Er staan geen huizen in.";if(prompt(`Weet je het zeker? Alle ${n} aangemelde huizen worden verwijderd. Typ WISSEN om door te gaan.`)!=="WISSEN")return;doe("beheer_wis_huizen",{})};
- const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m}};
+ const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m;toast("⚠️ "+m)}};
  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(b.dataset.a=="verwijderen"&&!confirm("Verwijderen?"))return;doe("beheer_huis",{p_id:b.dataset.id,p_actie:b.dataset.a})});
  app.querySelectorAll("[data-doet]").forEach(b=>b.onclick=()=>{const h=lijst.find(x=>x.id==b.dataset.hid),d=DOET(h),k=b.dataset.doet,n=d.includes(k)?d.filter(x=>x!=k):[...d.filter(x=>x!=RUIL[k]),k];if(!n.length)return $("#err").textContent="Minstens één ding aan laten.";doe("beheer_huis",{p_id:h.id,p_actie:"bewerken",p_doet:n})});
  const bewaar=(dag,van,tot,open)=>doe("beheer_instellingen",{p_datum:dag?dagTxt(dag):"",p_tijd:tijdTxt(van,tot),p_mededeling:$("#bm").value,p_prikker_open:open,p_dag:dag||null,p_van:van||null,p_tot:tot||null});
  app.querySelectorAll("[data-kies]").forEach(b=>b.onclick=()=>{const x=o.find(q=>q.id==b.dataset.kies);if(confirm(`${dagTxt(x.dag)} vastzetten als Halloween-datum en de datumprikker sluiten?`))bewaar(x.dag,hm(x.van),hm(x.tot),false)});
- app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>doe("beheer_optie",{p_label:"",p_verwijder:b.dataset.del}));
  $("#bp").onclick=()=>$("#bp").classList.toggle("on");randEditor(k);
  $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  $("#blos").onclick=async()=>{const l=$("#blo").value.toUpperCase().split(/[,;\n]+/).map(x=>x.trim().replace(/^(\d{4})\s*([A-Z]{2})\s+/,"$1$2 ")).filter(x=>/^\d{4}[A-Z]{2} \d+[A-Z]?(-[A-Z0-9]+)?$/.test(x));try{$("#blos").textContent="Laden…";await rpc("beheer_losse",{p_key:k,p_losse:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#err").textContent=m}};
  if($("#bwis"))$("#bwis").onclick=()=>{if(confirm("Gekozen datum wissen en de datumprikker weer openzetten?"))bewaar("","","",true)};
  $("#bs").onclick=()=>bewaar($("#bdag").value,$("#bvan").value,$("#btot").value,$("#bp").classList.contains("on"));
- $("#bad").onclick=()=>{const d=$("#odag").value;if(!d)return $("#err").textContent="Kies eerst een datum.";doe("beheer_optie",{p_label:dagTxt(d)+" "+tijdTxt($("#ovan").value,$("#otot").value),p_dag:d,p_van:$("#ovan").value||null,p_tot:$("#otot").value||null})};
+ const SEL=o.filter(x=>x.dag).map(x=>({id:x.id,dag:x.dag,van:hm(x.van)||"19:00",tot:hm(x.tot)||"21:00"}));
+ const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`,vnd=iso(new Date());
+ let km=(()=>{const d=SEL.length?new Date(SEL[SEL.length-1].dag+"T12:00"):new Date();return new Date(d.getFullYear(),d.getMonth()-(SEL.length?1:0),1)})();
+ const maand=m=>{const y=m.getFullYear(),mo=m.getMonth(),n=new Date(y,mo+1,0).getDate(),off=(new Date(y,mo,1).getDay()+6)%7;let h=`<div class="km"><div class="kmt">${m.toLocaleDateString("nl-NL",{month:"long",year:"numeric"})}</div><div class="kg">${["ma","di","wo","do","vr","za","zo"].map(d=>`<i>${d}</i>`).join("")}${"<span></span>".repeat(off)}`;
+  for(let d=1;d<=n;d++){const q=iso(new Date(y,mo,d)),oud=q<vnd;h+=`<button class="kd ${SEL.some(x=>x.dag==q)?"on":""} ${q.endsWith("-10-31")?"hw":""}" data-kd="${q}" ${oud?"disabled":""}>${d}</button>`}return h+"</div></div>"};
+ const weg=i=>{const x=SEL[i],c=x.id&&st.find(v=>v.optie_id==x.id);if(c&&c.ja+c.misschien+c.nee&&!confirm(`${dagTxt(x.dag)} heeft al ${c.ja+c.misschien+c.nee} stemmen. Toch weghalen?`))return false;SEL.splice(i,1);return true};
+ const tekenK=()=>{$("#kal").innerHTML=`<button class="kn" id="kp" aria-label="Vorige maand">←</button><div class="kms">${maand(km)}${maand(new Date(km.getFullYear(),km.getMonth()+1,1))}</div><button class="kn" id="kv" aria-label="Volgende maand">→</button>`;
+  $("#kp").onclick=()=>{km=new Date(km.getFullYear(),km.getMonth()-1,1);tekenK()};$("#kv").onclick=()=>{km=new Date(km.getFullYear(),km.getMonth()+1,1);tekenK()};
+  app.querySelectorAll("[data-kd]").forEach(b=>b.onclick=()=>{const q=b.dataset.kd,i=SEL.findIndex(x=>x.dag==q);if(i>=0){if(!weg(i))return}else{if(SEL.length>=10)return toast("Maximaal 10 datums");const l=SEL[SEL.length-1];SEL.push({id:null,dag:q,van:l?l.van:"19:00",tot:l?l.tot:"21:00"});SEL.sort((a,b)=>a.dag<b.dag?-1:1)}tekenK();tekenT()})};
+ const tekenT=()=>{$("#pnum").textContent=SEL.length?`${SEL.length} ${SEL.length==1?"datum":"data"} gekozen`:"Tik dagen aan in de kalender";
+  $("#ptijd").innerHTML=SEL.map((x,i)=>`<div class="ptd"><b>${dagTxt(x.dag)}</b><div class="ptr"><label>start<input type="time" value="${x.van}" data-pv="${i}"></label><span>–</span><label>eind<input type="time" value="${x.tot}" data-pt="${i}"></label><button class="pdel" data-px="${i}" aria-label="Weghalen">✕</button></div>${i==0&&SEL.length>1?'<button class="plink" id="pkop">⇩ Kopieer deze tijd naar alle data</button>':""}</div>`).join("")||'<div class="empty" style="padding:14px">Nog geen datums gekozen.</div>';
+  app.querySelectorAll("[data-pv]").forEach(e=>e.oninput=()=>SEL[e.dataset.pv].van=e.value);
+  app.querySelectorAll("[data-pt]").forEach(e=>e.oninput=()=>SEL[e.dataset.pt].tot=e.value);
+  app.querySelectorAll("[data-px]").forEach(e=>e.onclick=()=>{if(weg(+e.dataset.px)){tekenK();tekenT()}});
+  if($("#pkop"))$("#pkop").onclick=()=>{SEL.forEach(x=>{x.van=SEL[0].van;x.tot=SEL[0].tot});tekenT();toast("Tijd gekopieerd ✓")}};
+ tekenK();tekenT();
+ $("#psave").onclick=async()=>{const a=$("#pstart").value||null,e=$("#peind").value||null;if(a&&e&&e<a)return toast("⚠️ De sluitdatum ligt voor de startdatum");if(SEL.some(x=>x.van&&x.tot&&x.tot<=x.van))return toast("⚠️ Eindtijd moet na de starttijd liggen");$("#psave").textContent="Opslaan…";await doe("beheer_prikker",{p_opties:SEL.map(x=>({id:x.id,dag:x.dag,van:x.van,tot:x.tot})),p_start:a,p_eind:e});toast("Datumprikker opgeslagen ✓")};
 }
 
 function route(){$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
