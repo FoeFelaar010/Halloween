@@ -132,7 +132,9 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
-.bhk{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;text-decoration:none;font-size:17px;opacity:.6;transition:opacity .2s}.bhk:hover,.bhk:focus{opacity:1}@media(max-width:899px){body.testm .bhk{top:44px}}
+.bhk{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;text-decoration:none;font-size:17px;opacity:.6;transition:opacity .2s}.bhk:hover,.bhk:focus,.bhu:hover,.bhu:focus{opacity:1}.bhu{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;background:none;border:0;padding:0;font-size:16px;opacity:.6;cursor:pointer;transition:opacity .2s}body.bhin .bhk{right:46px}@media(max-width:899px){body.testm .bhk,body.testm .bhu{top:44px}}
+.rvul{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:12px;margin:0 0 10px}.rvul>small{display:block;color:var(--mu);margin-top:6px}.rbox{margin-top:10px;display:flex;flex-direction:column;gap:6px}.rbox small{color:var(--mu)}
+.login{max-width:380px;margin:6vh auto 0;text-align:center}.login .lgi{font-size:44px}.login form{text-align:left}.login .lb{font-size:14px}.login .btn{margin-top:14px}.login .plink{margin-top:12px;font-weight:500}
 .org{text-align:center;color:var(--mu);font-size:14px;line-height:1.5;margin:18px 0 4px}.org b{color:var(--tx)}.org a{color:var(--or)}
 .eerste{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--card);border:1px dashed var(--or);border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--tx)}.eerste span{font-size:30px}.eerste b{display:block;font-size:16px}.eerste small{color:var(--mu);font-size:14px}
 .priv{background:#1a2a22;border:1px solid #2f5d45;border-radius:14px;padding:10px 12px;margin:14px 0 4px;font-size:14px;line-height:1.45;color:#d7eadf}
@@ -244,7 +246,11 @@ let huizen=[],LOTS=[],HULL=null,MAP=null,LAYER=(()=>{try{return localStorage.get
 const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZtbGt3Y25kYmRwbWRqYWxoamp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM1NTk2NDIsImV4cCI6MjEwOTEzNTY0Mn0.GQjQ9S_tqE_7PFgMmSHuoB8RNX1Wd8nEW9x90EifDV8";
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
-async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
+let SESS=null;try{SESS=JSON.parse(localStorage.getItem("sess")||"null")}catch(e){}
+function sessZet(j){SESS=j&&j.access_token?{access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+((j.expires_in||3600)-60)*1000,email:(j.user&&j.user.email)||(SESS&&SESS.email)||""}:null;try{SESS?localStorage.setItem("sess",JSON.stringify(SESS)):localStorage.removeItem("sess")}catch(e){}}
+async function auth(pad,body,token,method){const r=await fetch(SB+"/auth/v1/"+pad,{method:method||"POST",headers:{apikey:KEY,"Content-Type":"application/json",Authorization:"Bearer "+(token||KEY)},body:body?JSON.stringify(body):undefined});let j={};try{j=await r.json()}catch(e){}if(!r.ok){const c=j.error_code||j.code||"",m=j.msg||j.error_description||j.message||"";throw c=="invalid_credentials"||/invalid login/i.test(m)?"E-mailadres of wachtwoord klopt niet.":c=="over_email_send_rate_limit"||r.status==429?"Even wachten: er zijn net te veel mails of pogingen geweest. Probeer het over een paar minuten opnieuw.":c=="weak_password"||/password should/i.test(m)?"Kies een sterker wachtwoord (minstens 8 tekens).":c=="same_password"?"Kies een ander wachtwoord dan je huidige.":c=="email_not_confirmed"?"Bevestig eerst je e-mailadres via de mail die je hebt gekregen.":"Dat lukte niet. Probeer het opnieuw."}return j}
+async function sessToken(){if(!SESS)return null;if(Date.now()<SESS.exp)return SESS.access_token;try{sessZet(await auth("token?grant_type=refresh_token",{refresh_token:SESS.refresh_token}));return SESS.access_token}catch(e){sessZet(null);return null}}
+async function rpc(f,b){const tk=f.startsWith("beheer_")?await sessToken():null;const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:tk?{...H,Authorization:"Bearer "+tk}:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
 async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[];EVENT.test=!!(i[0]&&i[0].testmodus);EVENT.pstart=i[0]?.prikker_start||null;Object.assign(CONTACT,{naam:i[0]?.contact_naam||"",mail:i[0]?.contact_mail||"",whatsapp:i[0]?.contact_whatsapp||""});EVENT.pend=i[0]?.prikker_eind||null}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
@@ -294,6 +300,27 @@ function randEditor(k){
  m.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(pts.length<3)pts.push(p);else{const c=.616,d=(q,a,b)=>{const ax=a[1]*c,ay=a[0],bx=b[1]*c,by=b[0],qx=q[1]*c,qy=q[0],dx=bx-ax,dy=by-ay,t=Math.max(0,Math.min(1,((qx-ax)*dx+(qy-ay)*dy)/(dx*dx+dy*dy||1e-12)));return Math.hypot(qx-ax-t*dx,qy-ay-t*dy)};let best=0,bd=1e9;for(let i=0;i<pts.length;i++){const v=d(p,pts[i],pts[(i+1)%pts.length]);if(v<bd){bd=v;best=i+1}}pts.splice(best,0,p)}teken()});
  const b=L.latLngBounds(pts.length?pts:AL.map(l=>[l.lat,l.lng]));if(b.isValid())m.fitBounds(b,{padding:[20,20]});else m.setView([51.9855,4.4935],16);teken();
  const bewaar=async(r,t)=>{try{await rpc("beheer_rand",{p_key:k,p_rand:r});RAND=r;await laad();await laadGebied(EVENT.postcodes,EVENT.losse);toast(t)}catch(x){$("#rinfo").textContent=x}};
+ const zoekLaag=L.layerGroup().addTo(m);
+ $("#rzoek").onclick=async()=>{const R=$("#rres");if(pts.length<3)return R.innerHTML='<div class="err">Teken eerst een rand met minstens 3 punten.</div>';
+  R.innerHTML='<div class="m">🔎 Adressen zoeken…</div>';zoekLaag.clearLayers();
+  try{const la=pts.map(p=>p[0]),lo=pts.map(p=>p[1]),bb=[Math.min(...la)-.003,Math.min(...lo)-.0045,Math.max(...la)+.003,Math.max(...lo)+.0045].map(v=>v.toFixed(6)).join(",");
+   let F=[];for(let si=0;si<20000;si+=1000){const j=await (await fetch("https://service.pdok.nl/lv/bag/wfs/v2_0?service=WFS&version=2.0.0&request=GetFeature&typeNames=bag:verblijfsobject&outputFormat=application/json&srsName=urn:ogc:def:crs:EPSG::4326&count=1000&sortBy=identificatie&startIndex="+si+"&bbox="+bb+",urn:ogc:def:crs:EPSG::4326")).json();if(!(j.features||[]).length)break;F=F.concat(j.features)}
+   const PC=new Map(),seen=new Set();let binnen=0;
+   for(const f of F){const p=f.properties||{},g=f.geometry;if(!g||g.type!="Point"||!p.postcode||!p.huisnummer)continue;if(!/woonfunctie/.test(p.gebruiksdoel||"")||!/in gebruik|verbouwing/i.test(p.status||""))continue;
+    const nr=String(p.huisnummer)+(p.huisletter||"").toUpperCase()+(p.toevoeging?"-"+String(p.toevoeging).toUpperCase():""),id=p.postcode+" "+nr;if(seen.has(id))continue;seen.add(id);
+    const o=PC.get(p.postcode)||{in:[],uit:0};PC.set(p.postcode,o);if(inP(g.coordinates[1],g.coordinates[0])){o.in.push(nr);binnen++;L.circleMarker([g.coordinates[1],g.coordinates[0]],{radius:3,color:"#22c55e",weight:1,fillOpacity:.9,interactive:false}).addTo(zoekLaag)}else o.uit++}
+   const pcs=[],losse=[];for(const [pc,o] of [...PC].sort()){if(!o.in.length)continue;if(!o.uit)pcs.push(pc);else for(const nr of o.in)if(/^\d+[A-Z]?(-[A-Z0-9]+)?$/.test(nr))losse.push(pc+" "+nr)}
+   if(!binnen)return R.innerHTML='<div class="err">Geen woonadressen gevonden binnen deze rand.</div>';
+   const oud=new Set(EVENT.postcodes||[]),erbij=pcs.filter(p=>!oud.has(p)),eraf=[...oud].filter(p=>!pcs.includes(p));
+   R.innerHTML=`<div class="rbox"><b>✅ ${binnen} woonadressen binnen de rand</b> <small>(nu in gebied: ${(window.ALLOTS||LOTS).length})</small>
+    <div>📮 <b>${pcs.length}</b> ${pcs.length==1?"hele postcode":"hele postcodes"}${erbij.length?` · nieuw: ${erbij.join(", ")}`:""}${eraf.length?` · vervalt: ${eraf.join(", ")}`:""}</div>
+    <div>🏠 <b>${losse.length}</b> ${losse.length==1?"los huis":"losse huizen"} <small>(postcodes die maar deels binnen de lijn liggen)</small></div>
+    ${losse.length>120?'<div class="err">Dat zijn veel losse huizen. De site laadt dan trager. Trek de lijn liever om hele straten heen.</div>':""}
+    <p class="m" style="margin:8px 0">Groene stipjes op de kaart = gevonden adressen. Klopt het? Dan worden de rand, de postcodes en de losse huizen in één keer opgeslagen. Dit vervangt de huidige lijsten.</p>
+    <div class="chips"><button class="chip on" id="rneem">💾 Overnemen en opslaan</button><button class="chip" id="rniet">Annuleren</button></div></div>`;
+   $("#rniet").onclick=()=>{R.innerHTML="";zoekLaag.clearLayers()};
+   $("#rneem").onclick=async()=>{$("#rneem").textContent="Opslaan…";$("#rneem").disabled=true;try{const r=pts.map(p=>[+p[0].toFixed(6),+p[1].toFixed(6)]);await rpc("beheer_rand",{p_key:k,p_rand:r});await rpc("beheer_postcodes",{p_key:k,p_postcodes:pcs});await rpc("beheer_losse",{p_key:k,p_losse:losse});RAND=r;await laad();await laadGebied(EVENT.postcodes,EVENT.losse);toast("Gebied opgeslagen ✓");beheer()}catch(x){R.insertAdjacentHTML("beforeend",`<div class="err">${esc(String(x))}</div>`);$("#rneem").textContent="💾 Overnemen en opslaan";$("#rneem").disabled=false}};
+  }catch(x){R.innerHTML='<div class="err">Adressen ophalen lukte niet. Probeer het zo opnieuw.</div>';console.log(x)}};
  $("#rsave").onclick=()=>{if(pts.length<3)return $("#rinfo").textContent="Zet eerst minstens 3 punten.";bewaar(pts.map(p=>[+p[0].toFixed(6),+p[1].toFixed(6)]),"Rand opgeslagen ✓")};
  $("#rleeg").onclick=()=>{if(confirm("Rand helemaal opnieuw tekenen?")){pts=[];teken()}};
  $("#rauto").onclick=()=>{if(confirm("Geen getekende rand meer, maar automatisch om de huizen heen?"))bewaar([],"Rand staat op automatisch")};
@@ -563,8 +590,9 @@ async function datum(){
 async function beheer(){
  app.className="";
  const k=new URLSearchParams(location.hash.split("?")[1]||"").get("k")||bkGet();
- if(!k){app.innerHTML='<div class="empty">Geen toegang.</div>';return}
- let lijst;try{lijst=await rpc("beheer_lijst",{p_key:k});bkSet(k);if(location.hash.includes("k="))history.replaceState(null,"",location.pathname+location.search+"#/beheer");bhKnop()}catch(m){app.innerHTML=`<div class="empty">${esc(m)}</div>`;return}
+ if(!k&&!(await sessToken()))return inlog();
+ let lijst;try{lijst=await rpc("beheer_lijst",{p_key:k});if(k)bkSet(k);if(location.hash.includes("k="))history.replaceState(null,"",location.pathname+location.search+"#/beheer");bhKnop()}catch(m){if(m!="Geen toegang"){app.innerHTML=`<div class="empty">${esc(String(m))}</div>`;return}if(k)bkSet("");bhKnop();return inlog(SESS?"Dit account heeft geen toegang tot beheer. Vraag de organisator om je e-mailadres toe te voegen.":k?"Deze beheerlink werkt niet meer. Log in met je e-mailadres.":"")}
+ let admins=null;try{admins=await rpc("beheer_beheerders",{p_key:k})}catch(e){}
  const [o,st]=await Promise.all([get("prikker_opties?select=*&order=dag,van,volgorde"),rpc("prikker_stand",{})]);
  const nieuw=lijst.filter(h=>!h.goedgekeurd),ok=lijst.filter(h=>h.goedgekeurd);
  const rij=h=>`<div class="row" style="flex-wrap:wrap;cursor:default"><span class="e">${prim(h)}</span><span class="t">${esc(h.adres)}<small>${doetTxt(h)}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span>
@@ -576,7 +604,7 @@ async function beheer(){
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
  <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
- <h2>✏️ Rand van het gebied</h2><p class="m"><b>Sleep</b> de paarse bolletjes om de rand te verplaatsen. <b>Tik op de kaart</b> om een punt toe te voegen, <b>tik op een bolletje</b> om het weg te halen. Oranje = adressen uit je postcodes.</p><div class="chips" style="margin:10px 0"><button class="chip on" id="rsave">💾 Rand opslaan</button><button class="chip" id="rleeg">✏️ Opnieuw tekenen</button><button class="chip" id="rauto">🔄 Automatisch</button></div><div id="rinfo" class="m" style="margin:0 0 8px"></div><div style="height:62vh;position:relative;border-radius:18px;overflow:hidden"><div class="lmap" id="rmap"></div></div>
+ <h2>✏️ Rand van het gebied</h2><p class="m"><b>Sleep</b> de paarse bolletjes om de rand te verplaatsen. <b>Tik op de kaart</b> om een punt toe te voegen, <b>tik op een bolletje</b> om het weg te halen. Oranje = adressen uit je postcodes.</p><div class="chips" style="margin:10px 0"><button class="chip on" id="rsave">💾 Rand opslaan</button><button class="chip" id="rleeg">✏️ Opnieuw tekenen</button><button class="chip" id="rauto">🔄 Automatisch</button></div><div id="rinfo" class="m" style="margin:0 0 8px"></div><div class="rvul"><button class="chip" id="rzoek">🏘️ Gebied vullen vanuit de rand</button><small>Zoekt alle woonadressen binnen je lijn en zet de postcodes en losse huizen voor je klaar.</small><div id="rres"></div></div><div style="height:62vh;position:relative;border-radius:18px;overflow:hidden"><div class="lmap" id="rmap"></div></div>
  <h2>📍 Gebied (postcodes)</h2><p class="m">Alle adressen met deze postcodes kunnen meedoen. Zoek postcodes op via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.</p><textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea><button class="btn ghost" id="bpcs">Gebied opslaan</button>
  <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
  <h2>📅 Datumprikker maken</h2>
@@ -591,6 +619,15 @@ async function beheer(){
   <button class="btn" id="psave">💾 Datumprikker opslaan</button>
  </div>
  <h2>📊 Stemmen tot nu toe</h2><div class="list">${o.map(x=>({x,c:st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0}})).sort((a,b)=>(b.c.ja*2+b.c.misschien)-(a.c.ja*2+a.c.misschien)).map(({x,c},n)=>`<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${n==0&&c.ja+c.misschien?"⭐ ":""}${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<div class="pbar" style="margin:6px 0 4px">${c.ja+c.misschien+c.nee?`<i class="j" style="flex:${c.ja}"></i><i class="m" style="flex:${c.misschien}"></i><i class="n" style="flex:${c.nee}"></i>`:""}</div><small>✅ ${c.ja} kan · 🤔 ${c.misschien} misschien · ❌ ${c.nee} kan niet</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}</span></div>`).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
+ <h2>🔐 Beheerders &amp; inloggen</h2>
+ ${admins===null?`<p class="m">Inloggen met e-mail en wachtwoord is nog niet ingeschakeld in de database.</p>`:`
+ <p class="m">${SESS?`Je bent ingelogd als <b style="color:var(--tx)">${esc(SESS.email)}</b>.`:"Je gebruikt nu nog de oude beheerlink. Voeg hieronder je eigen e-mailadres toe en log daarna in met je account."}</p>
+ <div class="list">${admins.map(a=>`<div class="row" style="cursor:default"><span class="e">${a.account?"✅":"✉️"}</span><span class="t">${esc(a.email)}<small>${a.account?"Heeft een account":"Nog geen account: nodig uit via Supabase → Authentication → Users → Invite user"}</small></span><span class="chips"><button class="chip" data-bweg="${esc(a.email)}">🗑️</button></span></div>`).join("")||'<div class="empty">Nog geen beheerders met een account.</div>'}</div>
+ <label class="lb">E-mailadres van nieuwe beheerder<input id="bmail" type="email" maxlength="120" placeholder="naam@voorbeeld.nl" autocomplete="off"></label>
+ <button class="btn ghost" id="badd">Beheerder toevoegen</button>
+ ${SESS?`<label class="lb">Nieuw wachtwoord voor jezelf (minstens 8 tekens)<input id="bww" type="password" minlength="8" maxlength="72" autocomplete="new-password"></label>
+ <button class="btn ghost" id="bwws">Wachtwoord wijzigen</button>
+ ${admins.some(a=>a.sleutel)&&admins.some(a=>a.account)?`<div class="tbox" style="margin-top:14px"><b>🔗 Oude beheerlink</b><p class="m" style="margin:4px 0 10px">De link met de geheime sleutel werkt nog. Zet hem uit zodra inloggen met je account goed werkt.</p><button class="chip rood" id="bsluit">Oude beheerlink ongeldig maken</button></div>`:""}`:""}`}
  <h2>👋 Organisator &amp; contact</h2><p class="m">Dit zien bewoners onderaan de startpagina en bij Vragen. Leeg laten = niet tonen. Let op: wat je hier invult is voor iedereen zichtbaar.</p>
  <label class="lb">Naam (bijv. Joey van Terschelling)<input id="cnaam" maxlength="60" value="${esc(CONTACT.naam)}"></label>
  <label class="lb">E-mailadres voor vragen<input id="cmail" type="email" maxlength="120" value="${esc(CONTACT.mail)}" placeholder="bijv. halloween@…"></label>
@@ -604,7 +641,7 @@ async function beheer(){
  <p style="text-align:center;margin:28px 0 8px"><button class="plink" id="buit" style="color:var(--mu);font-weight:500">Uitloggen op dit apparaat</button></p>`;
  $("#btest").onclick=()=>doe("beheer_test",{p_aan:!EVENT.test});
  $("#bwisalles").onclick=()=>{const n=lijst.length;if(!n)return $("#err").textContent="Er staan geen huizen in.";if(prompt(`Weet je het zeker? Alle ${n} aangemelde huizen worden verwijderd. Typ WISSEN om door te gaan.`)!=="WISSEN")return;doe("beheer_wis_huizen",{})};
- const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m;toast("⚠️ "+m)}};
+ const doe=async(f,b)=>{try{await rpc(f,{p_key:k||"",...b});await laad();beheer()}catch(m){$("#err").textContent=m;toast("⚠️ "+m)}};
  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{if(b.dataset.a=="verwijderen"&&!confirm("Verwijderen?"))return;doe("beheer_huis",{p_id:b.dataset.id,p_actie:b.dataset.a})});
  app.querySelectorAll("[data-doet]").forEach(b=>b.onclick=()=>{const h=lijst.find(x=>x.id==b.dataset.hid),d=DOET(h),k=b.dataset.doet,n=d.includes(k)?d.filter(x=>x!=k):[...d.filter(x=>x!=RUIL[k]),k];if(!n.length)return $("#err").textContent="Minstens één ding aan laten.";doe("beheer_huis",{p_id:h.id,p_actie:"bewerken",p_doet:n})});
  const bewaar=(dag,van,tot,open)=>doe("beheer_instellingen",{p_datum:dag?dagTxt(dag):"",p_tijd:tijdTxt(van,tot),p_mededeling:$("#bm").value,p_prikker_open:open,p_dag:dag||null,p_van:van||null,p_tot:tot||null});
@@ -630,17 +667,47 @@ async function beheer(){
   app.querySelectorAll("[data-px]").forEach(e=>e.onclick=()=>{if(weg(+e.dataset.px)){tekenK();tekenT()}});
   if($("#pkop"))$("#pkop").onclick=()=>{SEL.forEach(x=>{x.van=SEL[0].van;x.tot=SEL[0].tot});tekenT();toast("Tijd gekopieerd ✓")}};
  tekenK();tekenT();
- $("#buit").onclick=()=>{if(confirm("Uitloggen op dit apparaat? Je hebt daarna je beheerlink weer nodig.")){bkSet("");bhKnop();location.hash="#/"}};
+ $("#buit").onclick=uitloggen;
+ if($("#badd"))$("#badd").onclick=async()=>{const e=$("#bmail").value.trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))return toast("⚠️ Dit e-mailadres klopt niet");await doe("beheer_beheerder",{p_email:e,p_weg:false});toast("Beheerder toegevoegd ✓")};
+ app.querySelectorAll("[data-bweg]").forEach(b=>b.onclick=async()=>{if(confirm(b.dataset.bweg+" verwijderen als beheerder?"))await doe("beheer_beheerder",{p_email:b.dataset.bweg,p_weg:true})});
+ if($("#bwws"))$("#bwws").onclick=async()=>{const w=$("#bww").value;if(w.length<8)return toast("⚠️ Minstens 8 tekens");try{await auth("user",{password:w},await sessToken(),"PUT");$("#bww").value="";toast("Wachtwoord gewijzigd ✓")}catch(m){toast("⚠️ "+m)}};
+ if($("#bsluit"))$("#bsluit").onclick=async()=>{if(prompt("De oude beheerlink werkt hierna nergens meer. Typ UITZETTEN om door te gaan.")!=="UITZETTEN")return;await doe("beheer_sleutel_uit",{});bkSet("");toast("Oude beheerlink staat uit ✓")};
  $("#csave").onclick=async()=>{const w=$("#cwa").value.trim(),m=$("#cmail").value.trim();if(w&&!waUrl(w))return toast("⚠️ De WhatsApp-link moet beginnen met https://chat.whatsapp.com/");if(m&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m))return toast("⚠️ Dit e-mailadres klopt niet");await doe("beheer_contact",{p_naam:$("#cnaam").value.trim(),p_mail:m,p_whatsapp:w});toast("Contact opgeslagen ✓")};
  $("#psave").onclick=async()=>{const a=$("#pstart").value||null,e=$("#peind").value||null;if(a&&e&&e<a)return toast("⚠️ De sluitdatum ligt voor de startdatum");if(SEL.some(x=>x.van&&x.tot&&x.tot<=x.van))return toast("⚠️ Eindtijd moet na de starttijd liggen");$("#psave").textContent="Opslaan…";await doe("beheer_prikker",{p_opties:SEL.map(x=>({id:x.id,dag:x.dag,van:x.van,tot:x.tot})),p_start:a,p_eind:e});toast("Datumprikker opgeslagen ✓")};
 }
 
+// ---- Inloggen beheer ----
+function inlog(melding){
+ app.className="";
+ app.innerHTML=`<div class="login"><div class="lgi">🕸️</div><h2>Beheer</h2><p class="m">Alleen voor de organisatie. Log in met je e-mailadres en wachtwoord.</p>
+ ${melding?`<div class="err" style="margin-bottom:8px">${esc(melding)}</div>`:""}
+ <form id="lf"><label class="lb">E-mailadres<input id="le" type="email" required autocomplete="username" value="${esc(SESS?SESS.email:"")}"></label>
+ <label class="lb">Wachtwoord<input id="lw" type="password" required autocomplete="current-password"></label>
+ <button class="btn" id="lgo">Inloggen</button></form>
+ <button class="plink" id="lver">Wachtwoord vergeten?</button>${SESS?'<button class="plink" id="luit" style="display:block;margin:6px auto 0">Uitloggen</button>':""}<div class="err" id="lerr"></div></div>`;
+ $("#lf").onsubmit=async e=>{e.preventDefault();$("#lerr").textContent="";$("#lgo").disabled=true;$("#lgo").textContent="Bezig…";try{sessZet(await auth("token?grant_type=password",{email:$("#le").value.trim(),password:$("#lw").value}));bhKnop();beheer()}catch(m){$("#lerr").textContent=m;$("#lgo").disabled=false;$("#lgo").textContent="Inloggen"}};
+ $("#lver").onclick=async()=>{const e=$("#le").value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e))return $("#lerr").textContent="Vul eerst je e-mailadres in.";try{await auth("recover?redirect_to="+encodeURIComponent(location.origin+location.pathname),{email:e});$("#lerr").style.color="var(--ok)";$("#lerr").textContent="Als dit adres bij ons bekend is, krijg je een mail met een link om een nieuw wachtwoord te kiezen."}catch(m){$("#lerr").textContent=m}};
+ if($("#luit"))$("#luit").onclick=()=>{sessZet(null);bhKnop();inlog()};
+}
+function nieuwWw(soort){
+ app.className="";
+ app.innerHTML=`<div class="login"><div class="lgi">🔑</div><h2>${soort=="invite"?"Welkom! Kies een wachtwoord":"Kies een nieuw wachtwoord"}</h2><p class="m">Voor ${esc(SESS.email||"je account")}. Minstens 8 tekens.</p>
+ <form id="nf"><label class="lb">Nieuw wachtwoord<input id="n1" type="password" required minlength="8" maxlength="72" autocomplete="new-password"></label>
+ <label class="lb">Nog een keer<input id="n2" type="password" required minlength="8" maxlength="72" autocomplete="new-password"></label>
+ <button class="btn" id="ngo">Opslaan</button></form><div class="err" id="nerr"></div></div>`;
+ $("#nf").onsubmit=async e=>{e.preventDefault();if($("#n1").value!=$("#n2").value)return $("#nerr").textContent="De twee wachtwoorden zijn niet gelijk.";try{await auth("user",{password:$("#n1").value},await sessToken(),"PUT");toast("Wachtwoord opgeslagen ✓");bhKnop();beheer()}catch(m){$("#nerr").textContent=m}};
+}
+// Link uit een mail van Supabase (wachtwoord vergeten / uitnodiging): tokens staan in de hash
+let MAILLINK=null;(()=>{const h=location.hash.slice(1);if(!/(^|&)(access_token|error_description)=/.test(h))return;const q=new URLSearchParams(h);history.replaceState(null,"",location.pathname+location.search+"#/beheer");if(q.get("access_token")){sessZet({access_token:q.get("access_token"),refresh_token:q.get("refresh_token"),expires_in:+q.get("expires_in")||3600});MAILLINK={soort:q.get("type")||"recovery"}}else MAILLINK={fout:"Deze link is verlopen of al gebruikt. Vraag een nieuwe aan via 'Wachtwoord vergeten?'."}})();
+
 function bkGet(){try{return localStorage.getItem("bk")||sessionStorage.getItem("bk")||""}catch(e){return ""}}
 function bkSet(k){try{if(k){localStorage.setItem("bk",k)}else{localStorage.removeItem("bk");sessionStorage.removeItem("bk")}}catch(e){}}
-function bhKnop(){const a=$(".bhk");if(bkGet()&&!a)document.body.insertAdjacentHTML("beforeend",'<a class="bhk noprint" href="#/beheer" title="Beheer" aria-label="Beheer">🕸️</a>');if(!bkGet()&&a)a.remove()}
+async function uitloggen(){if(!confirm(SESS?"Uitloggen op dit apparaat?":"Uitloggen op dit apparaat? Je hebt daarna je beheerlink of je account nodig."))return;if(SESS){try{await auth("logout?scope=local",null,SESS.access_token)}catch(e){}sessZet(null)}bkSet("");bhKnop();if((location.hash||"").startsWith("#/beheer"))location.hash="#/";toast("Uitgelogd ✓")}
+function bhKnop(){if(!$(".bhk"))document.body.insertAdjacentHTML("beforeend",'<a class="bhk noprint" href="#/beheer" title="Beheer" aria-label="Beheer">🕸️</a>');const u=$(".bhu"),in_=!!(bkGet()||SESS);if(in_&&!u){document.body.insertAdjacentHTML("beforeend",'<button class="bhu noprint" title="Uitloggen" aria-label="Uitloggen">🚪</button>');$(".bhu").onclick=uitloggen}if(!in_&&u)u.remove();document.body.classList.toggle("bhin",in_)}
 function route(){bhKnop();$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
+ if(MAILLINK){const ml=MAILLINK;MAILLINK=null;if(ml.fout)inlog(ml.fout);else auth('user',null,SESS.access_token,'GET').then(u=>{SESS.email=u.email||'';sessZet({...SESS,expires_in:3600,user:u});nieuwWw(ml.soort)}).catch(()=>inlog('Deze link is verlopen of al gebruikt. Vraag een nieuwe aan.'));scrollTo(0,0);return}
  ({kaart,meedoen,flyer,datum,beheer,help}[p]||start)();scrollTo(0,0)}
 addEventListener("hashchange",route);
 app.innerHTML='<div class="empty" style="padding-top:30vh">🎃 Laden…</div>';
