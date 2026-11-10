@@ -133,6 +133,18 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
+.faq{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;padding:14px 44px 14px 14px;font-weight:700;display:flex;gap:10px;align-items:center;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:16px;font-size:22px;color:var(--or);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq summary span{font-size:20px}
+.faq details>div{padding:0 14px 14px 44px;color:var(--mu);line-height:1.5}
+.faq a,.faqc a:not(.chip){color:var(--or)}
+.faqc{text-align:center;margin:18px 0 6px;background:var(--card);border-radius:16px;padding:14px}
+.chip{text-decoration:none}
+
 .tr2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:6px}.tr2 label{font-size:13px;color:var(--mu);min-width:0}.tr2 input{margin-top:4px;width:100%;min-width:0}
 .pmk{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px}
 .pst{display:flex;align-items:center;gap:10px;margin:14px 0 8px;flex-wrap:wrap}.pst:first-child{margin-top:0}.pst span{width:26px;height:26px;border-radius:50%;background:var(--or);color:#1a1020;font-weight:800;display:grid;place-items:center;font-size:14px}.pst b{font-size:16px}.pst small{color:var(--mu);margin-left:auto}
@@ -397,6 +409,7 @@ function start(){
   <a href="#/meedoen"><b>🎃</b><span>Meedoen</span><small>Meld je huis aan in 30 seconden</small></a>
   ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":stemVenster().kort||"Stem mee over de datum"}</small></a>`}
   <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
+  <a href="#/help"><b>❓</b><span>Vragen</span><small>Hoe werkt het?</small></a>
  </div>
  <div class="wweek" id="wweek"></div>`;
  bindAgenda();weekWeer();
@@ -477,6 +490,34 @@ function flyer(){
  <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${doetIco(h)} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
  <div class="qr">${qr}<div style="margin-top:4px">Scan voor de<br>live spookykaart</div></div></div></div>`;
  const m=basis($("#lmap"),{pad:[6,6]});pins(m);
+}
+
+// ---- Help / veelgestelde vragen ----
+// Contact: vul in zodra bekend (leeg = wordt niet getoond). WhatsApp: een uitnodigingslink van de groep.
+const CONTACT={naam:"",mail:"",whatsapp:""};
+function help(){
+ app.className="";
+ const wanneer=EVENT.dag?`Op <b>${esc(EVENT.datum||dagTxt(EVENT.dag))}</b>${EVENT.van?`, van ${tijdTxt(EVENT.van,EVENT.tot)} uur`:""}.`:`De datum staat nog niet vast. Iedereen mag meestemmen in de <a href="#/datum">datumprikker</a>.`;
+ const contact=CONTACT.mail||CONTACT.whatsapp?`neem contact op${CONTACT.naam?" met "+esc(CONTACT.naam):""}${CONTACT.mail?` via <a href="mailto:${esc(CONTACT.mail)}">${esc(CONTACT.mail)}</a>`:""}${CONTACT.whatsapp?`${CONTACT.mail?" of ":" via "}de <a href="${esc(CONTACT.whatsapp)}" target="_blank" rel="noopener">WhatsApp-groep</a>`:""}`:"laat het de organisatie weten";
+ const V=[
+  ["🎃","Wat is dit?","Een Halloween-avond voor De Eilanden en de Dichtersbuurt. Bewoners die meedoen zetten hun huis op de kaart. Kinderen zien zo precies waar ze langs kunnen."],
+  ["📅","Wanneer is het?",wanneer+(EVENT.dag?` <a href="#/" >Zet het in je agenda</a> via de startpagina.`:"")],
+  ["🧒","Voor wie is het?","Voor alle kinderen uit de buurt. Kleintjes lopen samen met een volwassene."],
+  ["🗺️","Hoe weet ik welke huizen meedoen?",`Kijk op de <a href="#/kaart">Spookykaart</a> of de flyer. Alleen bij huizen op de kaart mag je langs. Op de kaart kun je huizen afvinken als je er bent geweest.`],
+  ["🔍","Wat betekenen de icoontjes?",Object.values(TYPES).map(([e,n,t])=>`${e} <b>${n}</b>: ${t.toLowerCase()}`).join("<br>")],
+  ["🏠","Hoe doe ik mee met mijn huis?",`Via <a href="#/meedoen">Meedoen</a>, in 30 seconden. Je kiest je huis en wat je doet. Aanmelden kan tot 3 dagen voor Halloween. Meedoen is gratis.`],
+  ["🍬","Hoeveel snoep heb ik nodig?","Reken op zo'n 50 tot 100 stuks. Op? Doe dan je buitenlamp uit of haal de bak binnen."],
+  ["🚫","Ik doe niet mee. Komen er dan kinderen aan de deur?","Kinderen lopen alleen naar huizen op de kaart. Laat je buitenlamp uit en hang geen versiering op, dan is het voor iedereen duidelijk."],
+  ["🔒","Is mijn adres zichtbaar als ik meedoe?","Op de kaart staan alleen je adres en wat je doet. Geen naam, geen telefoonnummer. Na Halloween halen we alle aanmeldingen weg."],
+  ["✏️","Ik wil iets wijzigen of afmelden",`Geen probleem: ${contact}.`],
+  ["🥜","Hoe zit het met allergieën?","Kies als het kan voor snoep zonder noten, of leg iets zonder noten apart. Ouders: kijk het snoep thuis even na."],
+  ["🚸","Tips voor veilig lopen","Blijf op de stoep, steek over bij een oversteekplaats en neem een lampje of iets reflecterends mee. Zeg dankjewel!"],
+  ["☔","Gaat het door als het regent?","Ja. Op de startpagina zie je het weer voor de komende dagen. Een paraplu of regenjas maakt het alleen maar spookachtiger."],
+  ["📱","De site doet raar of laat oude informatie zien","Ververs de pagina. Op de telefoon kun je de site ook vastzetten op je beginscherm via Delen → 'Zet op beginscherm'."]
+ ];
+ app.innerHTML=`<h2>❓ Vragen</h2><p class="m">De meest gestelde vragen op een rij. Tik op een vraag.</p>
+ <div class="faq">${V.map(([e,q,a])=>`<details><summary><span>${e}</span>${q}</summary><div>${a}</div></details>`).join("")}</div>
+ ${CONTACT.mail||CONTACT.whatsapp?`<div class="faqc"><b>Staat je vraag er niet bij?</b><div class="chips" style="justify-content:center;margin-top:8px">${CONTACT.whatsapp?`<a class="chip on" href="${esc(CONTACT.whatsapp)}" target="_blank" rel="noopener">💬 WhatsApp-groep</a>`:""}${CONTACT.mail?`<a class="chip" href="mailto:${esc(CONTACT.mail)}">✉️ Mail ons</a>`:""}</div></div>`:""}`;
 }
 
 // ---- Datumprikker ----
@@ -593,7 +634,7 @@ async function beheer(){
 function route(){$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
- ({kaart,meedoen,flyer,datum,beheer}[p]||start)();scrollTo(0,0)}
+ ({kaart,meedoen,flyer,datum,beheer,help}[p]||start)();scrollTo(0,0)}
 addEventListener("hashchange",route);
 app.innerHTML='<div class="empty" style="padding-top:30vh">🎃 Laden…</div>';
 laad().then(()=>laadGebied(EVENT.postcodes||[],EVENT.losse||[])).catch(e=>console.log(e)).then(route);
