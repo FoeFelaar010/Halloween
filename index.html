@@ -133,8 +133,12 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
 .bhk{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;text-decoration:none;font-size:17px;opacity:.6;transition:opacity .2s}.bhk:hover,.bhk:focus,.bhu:hover,.bhu:focus{opacity:1}.bhu{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;background:none;border:0;padding:0;font-size:16px;opacity:.6;cursor:pointer;transition:opacity .2s}body.bhin .bhk{right:46px}@media(max-width:899px){body.testm .bhk,body.testm .bhu{top:44px}}
-.rvul{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:12px;margin:0 0 10px}.rvul>small{display:block;color:var(--mu);margin-top:6px}.rbox{margin-top:10px;display:flex;flex-direction:column;gap:6px}.rbox small{color:var(--mu)}
 .login{max-width:380px;margin:6vh auto 0;text-align:center}.login .lgi{font-size:44px}.login form{text-align:left}.login .lb{font-size:14px}.login .btn{margin-top:14px}.login .plink{margin-top:12px;font-weight:500}
+.gleg{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mu);margin:0 0 8px}.gleg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.gbalk{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}
+.gtel b{font-size:20px;color:var(--or)}.gtel small{color:var(--mu)}.gdif{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.gdif span{border-radius:99px;padding:3px 10px;font-size:13px;font-weight:700}.gdif .pl{background:#14532d;color:#bbf7d0}.gdif .mi{background:#7f1d1d;color:#fecaca}.gdif .ok{background:#1e293b;color:#cbd5e1}
+#gknop{margin-top:10px}#gknop:empty{display:none}.gnoot{display:block;width:100%;color:var(--mu);font-size:12px}
+.gadv{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 14px}.gadv summary{cursor:pointer;padding:12px 0;font-weight:600;color:var(--mu)}.gadv[open]{padding-bottom:14px}.gadv textarea{margin-top:6px;width:100%}
 .org{text-align:center;color:var(--mu);font-size:14px;line-height:1.5;margin:18px 0 4px}.org b{color:var(--tx)}.org a{color:var(--or)}
 .eerste{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--card);border:1px dashed var(--or);border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--tx)}.eerste span{font-size:30px}.eerste b{display:block;font-size:16px}.eerste small{color:var(--mu);font-size:14px}
 .priv{background:#1a2a22;border:1px solid #2f5d45;border-radius:14px;padding:10px 12px;margin:14px 0 4px;font-size:14px;line-height:1.45;color:#d7eadf}
@@ -288,48 +292,67 @@ async function laadGebied(pcs,losse=[]){
 }
 // rand om het gebied: convex omhulsel van alle percelen, iets ruimer
 function randAfst(la,lo){const k=Math.cos(52*Math.PI/180)*111320,m=111320,R=RAND;let c=false,d=1e9;const x=lo*k,y=la*m;for(let i=0,j=R.length-1;i<R.length;j=i++){const x1=R[i][1]*k,y1=R[i][0]*m,x2=R[j][1]*k,y2=R[j][0]*m;if((y1>y)!=(y2>y)&&x<(x2-x1)*(y-y1)/(y2-y1)+x1)c=!c;const dx=x2-x1,dy=y2-y1,t=Math.max(0,Math.min(1,((x-x1)*dx+(y-y1)*dy)/(dx*dx+dy*dy||1)));d=Math.min(d,Math.hypot(x-x1-t*dx,y-y1-t*dy))}return c?0:d}
+let RDRAFT=null,VOCACHE=null;
+addEventListener("beforeunload",e=>{if(RDRAFT){e.preventDefault();e.returnValue=""}});
 function randEditor(k){
  if(MAP){MAP.remove();MAP=null}
  const m=L.map($("#rmap"),{zoomSnap:.5,maxZoom:20});MAP=m;
  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,maxNativeZoom:19,attribution:"© OpenStreetMap"}).addTo(m);
- const AL=window.ALLOTS||LOTS;AL.forEach(l=>L.polygon(l.p,{weight:1,color:"#ff7a1a",fillColor:"#ff7a1a",fillOpacity:.3,interactive:false}).addTo(m));
- let pts=(RAND.length?RAND:(HULL||[])).map(p=>[p[0],p[1]]);if(pts.length>1&&pts[0][0]==pts[pts.length-1][0]&&pts[0][1]==pts[pts.length-1][1])pts.pop();
- const lijn=L.polygon([],{color:"#7c3aed",weight:3,fillColor:"#7c3aed",fillOpacity:.08,interactive:false}).addTo(m),grp=L.layerGroup().addTo(m);
+ const AL=window.ALLOTS||LOTS,NU=new Set(AL.map(l=>l.a));
+ AL.forEach(l=>L.polygon(l.p,{weight:1,color:"#ff7a1a",fillColor:"#ff7a1a",fillOpacity:.3,interactive:false}).addTo(m));
+ const opgeslagen=()=>{const p=(RAND.length?RAND:(HULL||[])).map(q=>[q[0],q[1]]);if(p.length>1&&p[0][0]==p[p.length-1][0]&&p[0][1]==p[p.length-1][1])p.pop();return p};
+ let pts=RDRAFT?RDRAFT.map(p=>[p[0],p[1]]):opgeslagen(),Z=null,bezig=0;
+ const lijn=L.polygon([],{color:"#7c3aed",weight:3,fillColor:"#7c3aed",fillOpacity:.08,interactive:false}).addTo(m),grp=L.layerGroup().addTo(m),dif=L.layerGroup().addTo(m);
  const icon=L.divIcon({className:"",html:'<div class="rpt"></div>',iconSize:[24,24],iconAnchor:[12,12]});
  const inP=(la,lo)=>{let c=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const [a1,o1]=pts[i],[a2,o2]=pts[j];if((o1>lo)!=(o2>lo)&&la<(a2-a1)*(lo-o1)/(o2-o1)+a1)c=!c}return c};
- const info=()=>{const n=pts.length<3?0:AL.filter(l=>!inP(l.lat,l.lng)).length;$("#rinfo").textContent=pts.length<3?"✏️ Tik op de kaart om punten te zetten (minstens 3).":n?`⚠️ ${n} adressen uit je postcodes liggen buiten de lijn en doen dan niet mee.`:"✅ Alle adressen uit je postcodes liggen binnen de lijn."};
- const teken=()=>{lijn.setLatLngs(pts);grp.clearLayers();pts.forEach((p,i)=>{const mk=L.marker(p,{icon,draggable:true}).addTo(grp);mk.on("drag",e=>{pts[i]=[e.latlng.lat,e.latlng.lng];lijn.setLatLngs(pts)});mk.on("dragend",info);mk.on("click",()=>{if(pts.length>3){pts.splice(i,1);teken()}})});info()};
- m.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(pts.length<3)pts.push(p);else{const c=.616,d=(q,a,b)=>{const ax=a[1]*c,ay=a[0],bx=b[1]*c,by=b[0],qx=q[1]*c,qy=q[0],dx=bx-ax,dy=by-ay,t=Math.max(0,Math.min(1,((qx-ax)*dx+(qy-ay)*dy)/(dx*dx+dy*dy||1e-12)));return Math.hypot(qx-ax-t*dx,qy-ay-t*dy)};let best=0,bd=1e9;for(let i=0;i<pts.length;i++){const v=d(p,pts[i],pts[(i+1)%pts.length]);if(v<bd){bd=v;best=i+1}}pts.splice(best,0,p)}teken()});
- const b=L.latLngBounds(pts.length?pts:AL.map(l=>[l.lat,l.lng]));if(b.isValid())m.fitBounds(b,{padding:[20,20]});else m.setView([51.9855,4.4935],16);teken();
- const bewaar=async(r,t)=>{try{await rpc("beheer_rand",{p_key:k,p_rand:r});RAND=r;await laad();await laadGebied(EVENT.postcodes,EVENT.losse);toast(t)}catch(x){$("#rinfo").textContent=x}};
- const zoekLaag=L.layerGroup().addTo(m);
- const zoekAdr=async()=>{const la=pts.map(p=>p[0]),lo=pts.map(p=>p[1]),bb=[Math.min(...la)-.003,Math.min(...lo)-.0045,Math.max(...la)+.003,Math.max(...lo)+.0045].map(v=>v.toFixed(6)).join(",");
-  let F=[];for(let si=0;si<20000;si+=1000){const j=await (await fetch("https://service.pdok.nl/lv/bag/wfs/v2_0?service=WFS&version=2.0.0&request=GetFeature&typeNames=bag:verblijfsobject&outputFormat=application/json&srsName=urn:ogc:def:crs:EPSG::4326&count=1000&sortBy=identificatie&startIndex="+si+"&bbox="+bb+",urn:ogc:def:crs:EPSG::4326")).json();if(!(j.features||[]).length)break;F=F.concat(j.features)}
-  const PC=new Map(),seen=new Set(),punten=[];
-  for(const f of F){const p=f.properties||{},g=f.geometry;if(!g||g.type!="Point"||!p.postcode||!p.huisnummer)continue;if(!/woonfunctie/.test(p.gebruiksdoel||"")||!/in gebruik|verbouwing/i.test(p.status||""))continue;
-   const nr=String(p.huisnummer)+(p.huisletter||"").toUpperCase()+(p.toevoeging?"-"+String(p.toevoeging).toUpperCase():""),id=p.postcode+" "+nr;if(seen.has(id))continue;seen.add(id);
-   const o=PC.get(p.postcode)||{in:[],uit:0};PC.set(p.postcode,o);if(inP(g.coordinates[1],g.coordinates[0])){o.in.push(nr);punten.push([g.coordinates[1],g.coordinates[0]])}else o.uit++}
-  const pcs=[],losse=[];for(const [pc,o] of [...PC].sort()){if(!o.in.length)continue;if(!o.uit)pcs.push(pc);else for(const nr of o.in)if(/^\d+[A-Z]?(-[A-Z0-9]+)?$/.test(nr))losse.push(pc+" "+nr)}
-  const oud=new Set(EVENT.postcodes||[]);return{binnen:punten.length,punten,pcs,losse,erbij:pcs.filter(p=>!oud.has(p)),eraf:[...oud].filter(p=>!pcs.includes(p))}};
- const stip=z=>{zoekLaag.clearLayers();z.punten.forEach(q=>L.circleMarker(q,{radius:3,color:"#22c55e",weight:1,fillOpacity:.9,interactive:false}).addTo(zoekLaag))};
  const randNu=()=>pts.map(p=>[+p[0].toFixed(6),+p[1].toFixed(6)]);
- const slaAllesOp=async z=>{const r=randNu();await rpc("beheer_rand",{p_key:k||"",p_rand:r});await rpc("beheer_postcodes",{p_key:k||"",p_postcodes:z.pcs});await rpc("beheer_losse",{p_key:k||"",p_losse:z.losse});RAND=r;await laad();await laadGebied(EVENT.postcodes,EVENT.losse);toast("Rand en gebied opgeslagen ✓");beheer()};
- $("#rzoek").onclick=async()=>{const R=$("#rres");if(pts.length<3)return R.innerHTML='<div class="err">Teken eerst een rand met minstens 3 punten.</div>';
-  R.innerHTML='<div class="m">🔎 Adressen zoeken…</div>';zoekLaag.clearLayers();
-  try{const z=await zoekAdr();if(!z.binnen)return R.innerHTML='<div class="err">Geen woonadressen gevonden binnen deze rand.</div>';stip(z);
-   R.innerHTML=`<div class="rbox"><b>✅ ${z.binnen} woonadressen binnen de rand</b> <small>(nu in gebied: ${(window.ALLOTS||LOTS).length})</small>
-    <div>📮 <b>${z.pcs.length}</b> ${z.pcs.length==1?"hele postcode":"hele postcodes"}${z.erbij.length?` · nieuw: ${z.erbij.join(", ")}`:""}${z.eraf.length?` · vervalt: ${z.eraf.join(", ")}`:""}</div>
-    <div>🏠 <b>${z.losse.length}</b> ${z.losse.length==1?"los huis":"losse huizen"} <small>(postcodes die maar deels binnen de lijn liggen)</small></div>
-    ${z.losse.length>120?'<div class="err">Dat zijn veel losse huizen. De site laadt dan trager. Trek de lijn liever om hele straten heen.</div>':""}
-    <p class="m" style="margin:8px 0">Groene stipjes op de kaart = gevonden adressen. Dit is alleen een voorbeeld. Met <b>Rand opslaan</b> wordt alles opgeslagen.</p></div>`;
-  }catch(x){R.innerHTML='<div class="err">Adressen ophalen lukte niet. Probeer het zo opnieuw.</div>';console.log(x)}};
- $("#rsave").onclick=async()=>{if(pts.length<3)return $("#rinfo").textContent="Zet eerst minstens 3 punten.";const B=$("#rsave"),tx=B.textContent;B.disabled=true;B.textContent="🔎 Adressen zoeken…";let z=null;try{z=await zoekAdr()}catch(e){console.log(e)}
-  const klaar=()=>{B.disabled=false;B.textContent=tx};
-  if(!z||!z.binnen){klaar();if(confirm((z?"Binnen deze rand zijn geen woonadressen gevonden.":"De adressen konden nu niet worden opgehaald.")+"\n\nAlleen de rand opslaan? De postcodes blijven dan zoals ze zijn."))bewaar(randNu(),"Rand opgeslagen ✓");return}
-  stip(z);if(!confirm(`Binnen deze rand liggen ${z.binnen} woonadressen (nu in het gebied: ${(window.ALLOTS||LOTS).length}).\n\n• ${z.pcs.length} hele postcodes${z.erbij.length?`, waarvan ${z.erbij.length} nieuw`:""}${z.eraf.length?`, ${z.eraf.length} vervallen`:""}\n• ${z.losse.length} losse huizen\n\nRand opslaan en het gebied hierop aanpassen?`)){klaar();return}
-  B.textContent="Opslaan…";try{await slaAllesOp(z)}catch(x){klaar();$("#rinfo").textContent="Opslaan lukte niet: "+x}};
- $("#rleeg").onclick=()=>{if(confirm("Rand helemaal opnieuw tekenen?")){pts=[];teken()}};
- $("#rauto").onclick=()=>{if(confirm("Geen getekende rand meer, maar automatisch om de huizen heen?"))bewaar([],"Rand staat op automatisch")};
+ const gewijzigd=()=>JSON.stringify(randNu())!=JSON.stringify(opgeslagen().map(p=>[+p[0].toFixed(6),+p[1].toFixed(6)]));
+ // alle woonadressen rond de lijn (BAG); één keer ophalen en hergebruiken zolang de lijn binnen dat vak blijft
+ const laadVO=async()=>{const la=pts.map(p=>p[0]),lo=pts.map(p=>p[1]),b=[Math.min(...la),Math.min(...lo),Math.max(...la),Math.max(...lo)];
+  if(VOCACHE&&b[0]>=VOCACHE.b[0]+.002&&b[1]>=VOCACHE.b[1]+.003&&b[2]<=VOCACHE.b[2]-.002&&b[3]<=VOCACHE.b[3]-.003)return VOCACHE.v;
+  const bb=[b[0]-.005,b[1]-.0075,b[2]+.005,b[3]+.0075],F=await wfsAlle("https://service.pdok.nl/lv/bag/wfs/v2_0","bag:verblijfsobject","identificatie",bb.map(v=>v.toFixed(6)).join(",")),seen=new Set(),v=[];
+  for(const f of F){const p=f.properties||{},g=f.geometry;if(!g||g.type!="Point"||!p.postcode||!p.huisnummer)continue;if(!/woonfunctie/.test(p.gebruiksdoel||"")||!/in gebruik|verbouwing/i.test(p.status||""))continue;
+   const nr=String(p.huisnummer)+(p.huisletter||"").toUpperCase()+(p.toevoeging?"-"+String(p.toevoeging).toUpperCase():""),id=p.postcode+" "+nr;if(seen.has(id))continue;seen.add(id);v.push({pc:p.postcode,nr,a:(p.openbare_ruimte||"")+" "+nr,lat:g.coordinates[1],lng:g.coordinates[0]})}
+  VOCACHE={b:bb,v};return v};
+ const reken=v=>{const PC=new Map(),erbij=[],blijft=new Set();let binnen=0;
+  for(const x of v){const o=PC.get(x.pc)||{in:[],uit:0};PC.set(x.pc,o);if(inP(x.lat,x.lng)){o.in.push(x.nr);binnen++;if(NU.has(x.a))blijft.add(x.a);else erbij.push(x)}else o.uit++}
+  const pcs=[],losse=[];for(const [pc,o] of [...PC].sort()){if(!o.in.length)continue;if(!o.uit)pcs.push(pc);else for(const nr of o.in)if(/^\d+[A-Z]?(-[A-Z0-9]+)?$/.test(nr))losse.push(pc+" "+nr)}
+  const eraf=AL.filter(l=>!inP(l.lat,l.lng));return{binnen,pcs,losse,erbij,eraf,blijft:blijft.size}};
+ const knoppen=()=>{const K=$("#gknop"),T=$("#gtel");if(!K)return;
+  if(pts.length<3){T.innerHTML="✏️ Tik op de kaart om punten te zetten (minstens 3).";K.innerHTML="";return}
+  if(!Z){T.innerHTML=bezig?"🔎 Adressen tellen…":"⚠️ De adressen konden niet worden opgehaald. <button class='plink' id='gopn' style='padding:0'>Opnieuw proberen</button>";K.innerHTML=gewijzigd()?'<button class="chip on" id="glijn">💾 Alleen de lijn opslaan</button><button class="chip" id="gterug">↩️ Wijzigingen ongedaan</button>':"";if($("#gopn"))$("#gopn").onclick=tel;bind();return}
+  const z=Z,uitAanm=huizen.filter(h=>z.eraf.some(l=>l.a==h.adres)).length,w=gewijzigd();
+  T.innerHTML=`<b>${z.binnen}</b> woonadressen binnen de lijn <small>· nu in het gebied: ${AL.length}</small>${z.erbij.length||z.eraf.length?`<div class="gdif">${z.erbij.length?`<span class="pl">➕ ${z.erbij.length} erbij</span>`:""}${z.eraf.length?`<span class="mi">➖ ${z.eraf.length} eraf</span>`:""}</div>`:`<div class="gdif"><span class="ok">✅ Lijn en gebied zijn gelijk</span></div>`}${uitAanm?`<div class="err" style="min-height:0">⚠️ ${uitAanm} aangemeld${uitAanm==1?" huis valt":"e huizen vallen"} dan buiten het gebied.</div>`:""}${z.losse.length>120?'<div class="err" style="min-height:0">Dat worden veel losse huizen. Trek de lijn liever om hele straten heen.</div>':""}`;
+  let h="";
+  if(z.erbij.length&&z.eraf.length)h=`<button class="chip on" id="ggelijk">🎯 Gebied gelijk maken aan de lijn</button><button class="chip" id="gplus">➕ Alleen de ${z.erbij.length} nieuwe toevoegen</button>`;
+  else if(z.erbij.length||z.eraf.length)h=`<button class="chip on" id="ggelijk">💾 Opslaan (${z.erbij.length?"+"+z.erbij.length:"−"+z.eraf.length} adressen)</button>`;
+  else if(w)h='<button class="chip on" id="ggelijk">💾 Lijn opslaan</button>';
+  if(w)h+='<button class="chip" id="gterug">↩️ Wijzigingen ongedaan</button>';
+  K.innerHTML=h;bind();
+  if($("#gplus"))K.insertAdjacentHTML("beforeend",'<small class="gnoot">Bij "alleen toevoegen" blijft alles wat er nu in zit staan en loopt de lijn daarna automatisch om alle huizen heen.</small>')};
+ const stip=()=>{dif.clearLayers();if(!Z)return;Z.erbij.forEach(x=>L.circleMarker([x.lat,x.lng],{radius:4,color:"#14532d",weight:1,fillColor:"#22c55e",fillOpacity:1,interactive:false}).addTo(dif));Z.eraf.forEach(l=>L.circleMarker([l.lat,l.lng],{radius:4,color:"#7f1d1d",weight:1,fillColor:"#ef4444",fillOpacity:1,interactive:false}).addTo(dif))};
+ const herreken=()=>{if(VOCACHE&&pts.length>=3){try{Z=reken(VOCACHE.v)}catch(e){Z=null}}stip();knoppen()};
+ const tel=async()=>{if(pts.length<3){Z=null;stip();knoppen();return}const mijn=++bezig;if(!Z)knoppen();try{const v=await laadVO();if(mijn!=bezig)return;Z=reken(v)}catch(e){console.log(e);if(mijn!=bezig)return;Z=null}bezig=0;stip();knoppen()};
+ let tm=0;const gewijzigdNu=()=>{RDRAFT=gewijzigd()?pts.map(p=>[p[0],p[1]]):null;$("#rinfo").textContent="";herreken();clearTimeout(tm);tm=setTimeout(tel,350)};
+ const teken=()=>{lijn.setLatLngs(pts);grp.clearLayers();pts.forEach((p,i)=>{const mk=L.marker(p,{icon,draggable:true}).addTo(grp);mk.on("drag",e=>{pts[i]=[e.latlng.lat,e.latlng.lng];lijn.setLatLngs(pts)});mk.on("dragend",gewijzigdNu);mk.on("click",()=>{if(pts.length>3){pts.splice(i,1);teken();gewijzigdNu()}})})};
+ m.on("click",e=>{const p=[e.latlng.lat,e.latlng.lng];if(pts.length<3)pts.push(p);else{const c=.616,d=(q,a,b)=>{const ax=a[1]*c,ay=a[0],bx=b[1]*c,by=b[0],qx=q[1]*c,qy=q[0],dx=bx-ax,dy=by-ay,t=Math.max(0,Math.min(1,((qx-ax)*dx+(qy-ay)*dy)/(dx*dx+dy*dy||1e-12)));return Math.hypot(qx-ax-t*dx,qy-ay-t*dy)};let best=0,bd=1e9;for(let i=0;i<pts.length;i++){const v=d(p,pts[i],pts[(i+1)%pts.length]);if(v<bd){bd=v;best=i+1}}pts.splice(best,0,p)}teken();gewijzigdNu()});
+ const b=L.latLngBounds((pts.length?pts:[]).concat(AL.map(l=>[l.lat,l.lng])));if(b.isValid())m.fitBounds(b,{padding:[20,20]});else m.setView([51.9855,4.4935],16);
+ // opslaan: altijd eerst de huidige stand bewaren, zodat "vorige versie terugzetten" kan
+ const bewaarVorig=()=>{try{localStorage.setItem("vorigGebied",JSON.stringify({t:Date.now(),rand:RAND,postcodes:EVENT.postcodes||[],losse:EVENT.losse||[]}))}catch(e){}};
+ const schrijf=async(rand,pcs,losse,melding)=>{const K=$("#gknop");K.querySelectorAll("button").forEach(x=>x.disabled=true);$("#gtel").insertAdjacentHTML("beforeend",'<div class="m" style="margin:6px 0 0">💾 Opslaan…</div>');
+  try{bewaarVorig();if(pcs)await rpc("beheer_postcodes",{p_key:k||"",p_postcodes:pcs});if(losse)await rpc("beheer_losse",{p_key:k||"",p_losse:losse});await rpc("beheer_rand",{p_key:k||"",p_rand:rand});
+   RAND=rand;RDRAFT=null;await laad();await laadGebied(EVENT.postcodes,EVENT.losse);await beheer();toast(melding);$("#gebkop")?.scrollIntoView({block:"start"})}
+  catch(x){const t=String(x);$("#rinfo").textContent="Opslaan lukte niet: "+t+(/Te veel/.test(t)?". Trek de lijn kleiner, of laat de limiet verhogen.":"");toast("⚠️ "+t);knoppen()}};
+ function bind(){
+  if($("#ggelijk"))$("#ggelijk").onclick=()=>{if(!Z)return;if(Z.eraf.length>20&&!confirm(`Er vallen ${Z.eraf.length} adressen uit het gebied. Doorgaan?`))return;schrijf(randNu(),Z.pcs,Z.losse,"Gebied opgeslagen ✓")};
+  if($("#gplus"))$("#gplus").onclick=()=>{if(!Z)return;const pcs=[...new Set([...(EVENT.postcodes||[]),...Z.pcs])].sort(),ps=new Set(pcs),losse=[...new Set([...(EVENT.losse||[]),...Z.losse])].filter(x=>!ps.has(x.split(" ")[0]));schrijf([],pcs,losse,`${Z.erbij.length} adressen toegevoegd ✓`)};
+  if($("#glijn"))$("#glijn").onclick=()=>schrijf(randNu(),null,null,"Lijn opgeslagen ✓");
+  if($("#gterug"))$("#gterug").onclick=()=>{pts=opgeslagen();RDRAFT=null;teken();herreken();tel()}}
+ $("#rleeg").onclick=()=>{if(confirm("De lijn helemaal opnieuw tekenen? Er wordt nog niets opgeslagen.")){pts=[];Z=null;RDRAFT=[];teken();stip();knoppen()}};
+ $("#rauto").onclick=()=>{if(confirm("De getekende lijn weghalen en de rand automatisch om alle huizen in het gebied laten lopen?"))schrijf([],null,null,"Lijn staat op automatisch ✓")};
+ let vorig=null;try{vorig=JSON.parse(localStorage.getItem("vorigGebied")||"null")}catch(e){}
+ if(vorig&&$("#rvorig")){$("#rvorig").hidden=false;$("#rvorig").title="Opgeslagen op "+new Date(vorig.t).toLocaleString("nl-NL");$("#rvorig").onclick=()=>{if(confirm(`Het gebied terugzetten naar de versie van ${new Date(vorig.t).toLocaleString("nl-NL")}? (${vorig.postcodes.length} postcodes, ${vorig.losse.length} losse huizen)`))schrijf(vorig.rand||[],vorig.postcodes,vorig.losse,"Vorige versie teruggezet ✓")}}
+ teken();knoppen();tel();
 }
 function strakRand(H){if(!H||H.length<4)return H;const k=Math.cos(52*Math.PI/180)*111320,m=111320;let P=H.map(([a,o])=>[o*k,a*m]);if(P[0][0]==P[P.length-1][0]&&P[0][1]==P[P.length-1][1])P=P.slice(0,-1);
  const dp=(pts,t)=>{if(pts.length<3)return pts;const [x1,y1]=pts[0],[x2,y2]=pts[pts.length-1];let mx=0,mi=0;const L=Math.hypot(x2-x1,y2-y1)||1e-9;for(let i=1;i<pts.length-1;i++){const d=Math.abs((y2-y1)*pts[i][0]-(x2-x1)*pts[i][1]+x2*y1-y2*x1)/L;if(d>mx){mx=d;mi=i}}if(mx>t){const a=dp(pts.slice(0,mi+1),t),b=dp(pts.slice(mi),t);return a.slice(0,-1).concat(b)}return [pts[0],pts[pts.length-1]]};
@@ -610,9 +633,16 @@ async function beheer(){
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
  <h2>Op de kaart (${ok.length})</h2><div class="list">${ok.map(rij).join("")||'<div class="empty">Nog niets.</div>'}</div>
- <h2>✏️ Rand van het gebied</h2><p class="m"><b>Sleep</b> de paarse bolletjes om de rand te verplaatsen. <b>Tik op de kaart</b> om een punt toe te voegen, <b>tik op een bolletje</b> om het weg te halen. Oranje = adressen uit je postcodes.</p><div class="chips" style="margin:10px 0"><button class="chip on" id="rsave">💾 Rand opslaan</button><button class="chip" id="rleeg">✏️ Opnieuw tekenen</button><button class="chip" id="rauto">🔄 Automatisch</button></div><div id="rinfo" class="m" style="margin:0 0 8px"></div><div class="rvul"><button class="chip" id="rzoek">🔎 Voorbeeld: welke adressen liggen binnen de rand?</button><small>Bij <b>Rand opslaan</b> worden de postcodes en losse huizen automatisch aangepast aan je lijn. Hier kun je vooraf kijken wat dat wordt.</small><div id="rres"></div></div><div style="height:62vh;position:relative;border-radius:18px;overflow:hidden"><div class="lmap" id="rmap"></div></div>
- <h2>📍 Gebied (postcodes)</h2><p class="m">Alle adressen met deze postcodes kunnen meedoen. Zoek postcodes op via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.</p><textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea><button class="btn ghost" id="bpcs">Gebied opslaan</button>
- <h2>🏠 Losse huizen</h2><p class="m">Huizen net buiten de postcodes. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.</p><textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea><button class="btn ghost" id="blos">Losse huizen opslaan</button>
+ <h2 id="gebkop">🗺️ Gebied</h2>
+ <p class="m">Trek de paarse lijn om de huizen die mogen meedoen. <b>Sleep</b> een bolletje om de lijn te verplaatsen, <b>tik op de kaart</b> voor een extra punt, <b>tik op een bolletje</b> om het weg te halen.</p>
+ <div class="gleg"><span><i style="background:#ff7a1a"></i>zit in het gebied</span><span><i style="background:#22c55e"></i>komt erbij</span><span><i style="background:#ef4444"></i>valt eraf</span></div>
+ <div style="height:52vh;min-height:300px;position:relative;border-radius:18px;overflow:hidden"><div class="lmap" id="rmap"></div></div>
+ <div class="gbalk" id="gbalk"><div id="gtel" class="gtel">Adressen tellen…</div><div class="chips" id="gknop"></div><div class="err" id="rinfo" style="min-height:0"></div></div>
+ <details class="gadv"><summary>⚙️ Geavanceerd: postcodes en losse huizen met de hand</summary>
+  <div class="chips" style="margin:10px 0"><button class="chip" id="rleeg">✏️ Lijn opnieuw tekenen</button><button class="chip" id="rauto">🔄 Lijn automatisch om de huizen</button><button class="chip" id="rvorig" hidden>↩️ Vorige versie terugzetten</button></div>
+  <label class="lb">Postcodes (alle adressen met deze postcodes kunnen meedoen). Opzoeken kan via de <a href="https://allecijfers.nl/postcodekaart/?lon=4.4921&lat=51.9861&zoom=16" target="_blank" style="color:var(--or)">postcodekaart</a>.<textarea id="bpc" rows="4">${esc((EVENT.postcodes||[]).join(", "))}</textarea></label><button class="btn ghost" id="bpcs">Postcodes opslaan</button>
+  <label class="lb">Losse huizen. Eén per regel: postcode + huisnummer, bijv. <b>2661HE 51</b>.<textarea id="blo" rows="3">${esc((EVENT.losse||[]).join("\n"))}</textarea></label><button class="btn ghost" id="blos">Losse huizen opslaan</button>
+ </details>
  <h2>📅 Datumprikker maken</h2>
  <div class="pmk">
   <div class="pst"><span>1</span><b>Welke data stel je voor?</b><small id="pnum"></small></div>
@@ -653,7 +683,7 @@ async function beheer(){
  const bewaar=(dag,van,tot,open)=>doe("beheer_instellingen",{p_datum:dag?dagTxt(dag):"",p_tijd:tijdTxt(van,tot),p_mededeling:$("#bm").value,p_prikker_open:open,p_dag:dag||null,p_van:van||null,p_tot:tot||null});
  app.querySelectorAll("[data-kies]").forEach(b=>b.onclick=()=>{const x=o.find(q=>q.id==b.dataset.kies);if(confirm(`${dagTxt(x.dag)} vastzetten als Halloween-datum en de datumprikker sluiten?`))bewaar(x.dag,hm(x.van),hm(x.tot),false)});
  $("#bp").onclick=()=>$("#bp").classList.toggle("on");randEditor(k);
- $("#bpcs").onclick=async()=>{const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#bpcs").textContent="Gebied opslaan";$("#err").textContent=m;toast("⚠️ "+m)}};
+ $("#bpcs").onclick=async()=>{try{localStorage.setItem("vorigGebied",JSON.stringify({t:Date.now(),rand:RAND,postcodes:EVENT.postcodes||[],losse:EVENT.losse||[]}))}catch(e){}const l=$("#bpc").value.toUpperCase().split(/[\s,;]+/).map(x=>x.trim()).filter(x=>/^\d{4}[A-Z]{2}$/.test(x));try{$("#bpcs").textContent="Laden…";await rpc("beheer_postcodes",{p_key:k,p_postcodes:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#bpcs").textContent="Postcodes opslaan";$("#err").textContent=m;toast("⚠️ "+m)}};
  $("#blos").onclick=async()=>{const l=$("#blo").value.toUpperCase().split(/[,;\n]+/).map(x=>x.trim().replace(/^(\d{4})\s*([A-Z]{2})\s+/,"$1$2 ")).filter(x=>/^\d{4}[A-Z]{2} \d+[A-Z]?(-[A-Z0-9]+)?$/.test(x));try{$("#blos").textContent="Laden…";await rpc("beheer_losse",{p_key:k,p_losse:l});await laad();await laadGebied(EVENT.postcodes,EVENT.losse);beheer()}catch(m){$("#blos").textContent="Losse huizen opslaan";$("#err").textContent=m;toast("⚠️ "+m)}};
  if($("#bwis"))$("#bwis").onclick=()=>{if(confirm("Gekozen datum wissen en de datumprikker weer openzetten?"))bewaar("","","",true)};
  $("#bs").onclick=()=>bewaar($("#bdag").value,$("#bvan").value,$("#btot").value,$("#bp").classList.contains("on"));
