@@ -99,7 +99,7 @@ input:focus,textarea:focus{border-color:var(--or)}
  .side .top{padding:18px 16px 8px}.side .bd{overflow:auto;padding:0 12px 16px;flex:1}
  .drawer{display:none}
  .sheet{left:auto;right:24px;bottom:24px;width:360px}
- .big{grid-template-columns:repeat(4,1fr)}.big:has(>a:nth-child(3):last-child){grid-template-columns:repeat(3,1fr)}.big a.main{grid-column:auto}
+ .big{grid-template-columns:repeat(4,1fr)}.big:has(>a:nth-child(3):last-child){grid-template-columns:repeat(3,1fr)}.big:has(>a:nth-child(5):last-child){grid-template-columns:repeat(5,1fr)}.big a.main{grid-column:auto}
  main{max-width:960px}.hero h1{font-size:64px}
  .meedoen{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.pmap{height:70vh;position:sticky;top:80px}
 }
@@ -129,10 +129,17 @@ input:focus,textarea:focus{border-color:var(--or)}
 .homebg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 32%,#16101fb0 0,#16101f40 38%,#16101f00 60%),linear-gradient(#16101f00 55%,#16101fcc)}
 main.home{position:relative}body{overflow-x:clip}main.home>*:not(.homebg){position:relative;z-index:1}
 main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .hero .wijk{color:#e3d8f0;text-shadow:0 2px 8px #000}
-.credit{text-align:center;color:#6f6283;font-size:11px;margin-top:8px}
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
+.bhk{position:fixed;top:10px;right:10px;z-index:1300;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:#1d1528cc;border:1px solid var(--line);text-decoration:none;font-size:18px;backdrop-filter:blur(6px)}@media(max-width:899px){body.testm .bhk{top:44px}}
+.org{text-align:center;color:var(--mu);font-size:14px;line-height:1.5;margin:18px 0 4px}.org b{color:var(--tx)}.org a{color:var(--or)}
+.eerste{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--card);border:1px dashed var(--or);border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--tx)}.eerste span{font-size:30px}.eerste b{display:block;font-size:16px}.eerste small{color:var(--mu);font-size:14px}
+.priv{background:#1a2a22;border:1px solid #2f5d45;border-radius:14px;padding:10px 12px;margin:14px 0 4px;font-size:14px;line-height:1.45;color:#d7eadf}
+.lb{display:block;font-size:13px;color:var(--mu);margin-top:8px}.lb input{margin-top:4px;width:100%}
+.big a small{font-size:14px}
+@media(max-width:899px){.tabs a{font-size:13px}}
+
 .faq{display:flex;flex-direction:column;gap:8px;margin-top:12px}
 .faq details{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .faq summary{list-style:none;cursor:pointer;padding:14px 44px 14px 14px;font-weight:700;display:flex;gap:10px;align-items:center;position:relative}
@@ -160,7 +167,6 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 .plink{background:none;border:0;color:#38bdf8;cursor:pointer;padding:8px 0 0;font:600 14px Inter,sans-serif}
 .svbalk{background:linear-gradient(135deg,#2d1b45,#1d1528);border:1px solid #6d28d9;border-radius:14px;padding:10px 14px;margin:6px 0 10px;text-align:center}.svbalk b{color:var(--or)}
 
-.hregels{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:14px}.hregels span{background:#1d1528cc;border:1px solid var(--line);border-radius:99px;padding:5px 11px;font-size:13px;color:var(--tx);white-space:nowrap}
 .wweek{margin-top:16px;background:#1d1528cc;border:1px solid var(--line);border-radius:20px;padding:10px 8px 8px;backdrop-filter:blur(6px)}
 .wkop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;padding:0 4px 8px}.wkop b{color:#c4b5fd;font-size:13px}.wkop span{color:var(--mu);font-size:12px}
 .wrij{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.wrij::-webkit-scrollbar{display:none}
@@ -171,17 +177,13 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @media(min-width:900px){.testbalk{position:fixed;left:0;right:0;top:var(--tabh)}}
 .tbox{background:var(--card);border:2px dashed var(--line);border-radius:16px;padding:14px;margin:10px 0 6px}.tbox.aan{border-color:#8b5cf6;background:#241a3a}
 .chip.rood{background:#3d1616;border-color:#ff6b6b;color:#ffd6d6}
-.regels{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;align-items:center;margin-top:14px;font-size:14px;color:var(--tx)}.regels b{width:100%;text-align:center;color:var(--or);font-size:15px}
-.weer{margin:16px auto 0;max-width:640px;background:linear-gradient(135deg,#221a2e,#2d1b45);border:1px solid #4c3a6b;border-radius:20px;padding:16px 18px;text-align:center;box-shadow:0 0 24px #7c3aed33}
-.weer .wk{font-weight:800;color:#c4b5fd}.weer .wr{font-size:20px;font-weight:800;margin-top:6px}.weer .wt{color:var(--mu);margin-top:4px}
-.weer .wz{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:14px}.weer .wz b{color:var(--or)}.weer .wn{color:var(--mu);font-size:12px;margin-top:8px}
 html{scrollbar-gutter:stable;overflow-y:scroll}
 .hero .when.soon{color:var(--tx);text-decoration:none;border-color:#7a3d10;background:#3a2410}.hero .when.soon u{text-decoration-color:var(--or);text-underline-offset:3px}
 .big a{align-items:center;text-align:center;justify-content:center}.big>a:last-child:nth-child(even){grid-column:1/-1;min-height:96px}
 .stat div{display:flex;flex-direction:column;align-items:center;justify-content:center}
 @media (min-width:900px){
- .tabs{display:grid;grid-auto-flow:column;grid-auto-columns:150px;justify-content:center;gap:6px}
- .tabs a{flex:none;width:150px}
+ .tabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,150px);justify-content:center;gap:6px}
+ .tabs a{flex:none;width:auto;min-width:0}
  .tabs a.on{box-shadow:inset 0 -3px 0 var(--or)}
  .big a{min-height:150px}.big>a:last-child:nth-child(even){grid-column:auto;min-height:150px}
 }
@@ -198,7 +200,7 @@ body[data-p=""] .pagebg,body[data-p="kaart"] .pagebg{display:none}
 .zs.spooky .mk{box-shadow:0 0 8px 2px #ff7a1aaa}
 </style></head><body>
 <main id="app"></main>
-<nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a></nav>
+<nav class="tabs"><a href="#/" data-t=""><b>🏠</b>Start</a><a href="#/kaart" data-t="kaart"><b>👻</b>Kaart</a><a href="#/meedoen" data-t="meedoen"><b>🎃</b>Meedoen</a><a href="#/datum" data-t="datum"><b>📅</b>Datum</a><a href="#/flyer" data-t="flyer"><b>🖨️</b>Flyer</a><a href="#/help" data-t="help"><b>❓</b>Vragen</a></nav>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/hull.js@1.0.6/dist/hull.js"></script>
 <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
@@ -214,12 +216,13 @@ const RUIL={spookhuis:"eng",eng:"spookhuis",aanbellen:"bak",bak:"aanbellen"};
 const doetIco=h=>DOET(h).map(k=>TYPES[k][0]).join("");
 const hm=t=>(t||"").slice(0,5);
 const DAGF=new Intl.DateTimeFormat("nl-NL",{weekday:"long",day:"numeric",month:"long"});
-function dagTxt(d){if(!d)return "";const s=DAGF.format(new Date(d+"T12:00"));return s[0].toUpperCase()+s.slice(1)}
+function jr(d){const y=(d instanceof Date?d:new Date(d+"T12:00")).getFullYear();return y!=new Date().getFullYear()?" "+y:""}
+function dagTxt(d){if(!d)return "";const s=DAGF.format(new Date(d+"T12:00"));return s[0].toUpperCase()+s.slice(1)+jr(d)}
 function tijdTxt(v,t){return v?hm(v)+(t?" – "+hm(t):""):""}
 function wanneer(){return EVENT.datum?esc(EVENT.datum)+(EVENT.tijd?" · "+esc(EVENT.tijd):""):"Datum volgt"}
 function deadline(){if(!EVENT.dag)return null;const d=new Date(EVENT.dag+"T12:00");d.setDate(d.getDate()-3);return d}
 function aanmeldenDicht(){const d=deadline();if(!d)return false;const t=new Date();t.setHours(12,0,0,0);return t>d}
-function dlTxt(){const d=deadline();if(!d)return "";const s=DAGF.format(d);return aanmeldenDicht()?"Aanmelden is gesloten.":"Huis aanmelden kan t/m "+s+"."}
+function dlTxt(){const d=deadline();if(!d)return "";const s=DAGF.format(d);return aanmeldenDicht()?"Aanmelden is gesloten.":"Huis aanmelden kan t/m "+s+jr(d)+"."}
 function agendaHTML(){return EVENT.dag?`<div class="agbtn"><button data-ics>📅 Zet in agenda</button><a target="_blank" rel="noopener" href="${gcal()}">Google Agenda</a></div>`:""}
 function icsT(d,t){return d.replace(/-/g,"")+"T"+(t||"17:00").slice(0,5).replace(":","")+"00"}
 function eindT(){return EVENT.tot||(EVENT.van?String(Math.min(23,+EVENT.van.slice(0,2)+3)).padStart(2,"0")+EVENT.van.slice(2,5):"20:00")}
@@ -232,6 +235,9 @@ function ics(){const now=new Date().toISOString().replace(/[-:]/g,"").slice(0,15
 function bindAgenda(){app.querySelectorAll("[data-ics]").forEach(b=>b.onclick=ics)}
 function toast(t){$(".toast")?.remove();const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.append(d);setTimeout(()=>d.remove(),1600)}
 const EXTRA=["🍭 Suikerspin","🔥 Marshmallows","🍫 Chocomel","📸 Fotohoekje","🎶 Muziek","🎭 Schminken"];
+const CONTACT={naam:"",mail:"",whatsapp:""};
+const waUrl=u=>/^https:\/\/(chat\.whatsapp\.com|wa\.me)\//.test(u||"")?u:"";
+function orgHTML(){const c=CONTACT,w=waUrl(c.whatsapp);if(!c.naam&&!c.mail&&!w)return "";return `<div class="org">${c.naam?`Georganiseerd door <b>${esc(c.naam)}</b>, een buurtgenoot`:"Georganiseerd door buurtgenoten"}${c.mail||w?`<br>Vragen? ${c.mail?`<a href="mailto:${esc(c.mail)}">${esc(c.mail)}</a>`:""}${c.mail&&w?" of ":""}${w?`<a href="${esc(w)}" target="_blank" rel="noopener">WhatsApp-groep</a>`:""}`:""}</div>`}
 let huizen=[],LOTS=[],HULL=null,MAP=null,LAYER=(()=>{try{return localStorage.getItem("laag")||"spooky"}catch(e){return "spooky"}})(),ME=null,WATCH=null;
 
 // ---- Database (Supabase; bewoners hebben geen account nodig) ----
@@ -239,7 +245,7 @@ const SB="https://vmlkwcndbdpmdjalhjjz.supabase.co",KEY="eyJhbGciOiJIUzI1NiIsInR
 const H={apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"};
 async function get(t){const r=await fetch(SB+"/rest/v1/"+t,{headers:H});if(!r.ok)throw await r.text();return r.json()}
 async function rpc(f,b){const r=await fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:H,body:JSON.stringify(b)});if(!r.ok){let m="Er ging iets mis";try{m=(await r.json()).message||m}catch(e){}throw m}const t=await r.text();return t?JSON.parse(t):null}
-async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[];EVENT.test=!!(i[0]&&i[0].testmodus);EVENT.pstart=i[0]?.prikker_start||null;EVENT.pend=i[0]?.prikker_eind||null}catch(e){console.log(e)}}
+async function laad(){try{const [a,i]=await Promise.all([get("aanmeldingen?select=adres,type,doet,extra"),get("instellingen?select=*")]);huizen=a;if(i[0])Object.assign(EVENT,{datum:i[0].datum,tijd:i[0].tijd,mededeling:i[0].mededeling,prikker:i[0].prikker_open,postcodes:i[0].postcodes||[],losse:i[0].losse||[],dag:i[0].dag,van:i[0].van,tot:i[0].tot});if(i[0]&&Array.isArray(i[0].rand))RAND=i[0].rand.length>2?i[0].rand:[];EVENT.test=!!(i[0]&&i[0].testmodus);EVENT.pstart=i[0]?.prikker_start||null;Object.assign(CONTACT,{naam:i[0]?.contact_naam||"",mail:i[0]?.contact_mail||"",whatsapp:i[0]?.contact_whatsapp||""});EVENT.pend=i[0]?.prikker_eind||null}catch(e){console.log(e)}}
 
 // ---- Gebied: alle adressen van de postcodes (BAG) + kadastrale percelen (PDOK, open data) ----
 const sq=(lat,lng)=>[[lat+3e-5,lng-4.5e-5],[lat+3e-5,lng+4.5e-5],[lat-3e-5,lng+4.5e-5],[lat-3e-5,lng-4.5e-5]];
@@ -403,7 +409,7 @@ function start(){
  app.className="home";
  app.innerHTML=`<div class="homebg" aria-hidden="true"></div><div class="hero"><h1>Halloween<br>in de buurt</h1><div class="wijk">De Eilanden &amp; Dichtersbuurt · Bergschenhoek</div>${EVENT.datum?`<div class="when">🎃 ${wanneer()}</div>`:`<a class="when soon" href="#/datum">📅 Datum volgt${EVENT.prikker===false?"":" · <u>stem mee</u> →"}</a>`}${agendaHTML()}${dlTxt()?`<div class="dl">⏳ ${dlTxt()}</div>`:""}</div>
  ${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}
- <div class="stat"><div><b>${huizen.length}</b><small>huizen doen mee</small></div><div><b>${huizen.filter(h=>DOET(h).some(k=>k=="spookhuis"||k=="eng")).length}</b><small>spookhuizen</small></div><div><b>${huizen.filter(h=>h.extra.length).length}</b><small>met extra's</small></div></div>
+ ${huizen.length>=5?`<div class="stat"><div><b>${huizen.length}</b><small>huizen doen mee</small></div><div><b>${huizen.filter(h=>DOET(h).some(k=>k=="spookhuis"||k=="eng")).length}</b><small>spookhuizen</small></div><div><b>${huizen.filter(h=>h.extra.length).length}</b><small>met extra's</small></div></div>`:`<a class="eerste" href="#/meedoen"><span>🎃</span><div><b>${huizen.length?"Doe jij ook mee?":"Wie doet er als eerste mee?"}</b><small>Meld je huis aan. Het is gratis en zo gebeurd.</small></div></a>`}
  <div class="big">
   <a class="main" href="#/kaart"><b>👻</b><span>Spookykaart</span><small>Zie welke huizen meedoen en loop erheen</small></a>
   <a href="#/meedoen"><b>🎃</b><span>Meedoen</span><small>Meld je huis aan in 30 seconden</small></a>
@@ -411,7 +417,8 @@ function start(){
   <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
   <a href="#/help"><b>❓</b><span>Vragen</span><small>Hoe werkt het?</small></a>
  </div>
- <div class="wweek" id="wweek"></div>`;
+ <div class="wweek" id="wweek"></div>
+ ${orgHTML()}`;
  bindAgenda();weekWeer();
 }
 
@@ -430,6 +437,7 @@ function meedoen(){
  <div class="step"><i>3</i>Iets extra's? <span style="font-weight:400;color:var(--mu)">(mag leeg)</span></div>
  <div class="chips">${EXTRA.map(x=>`<button class="chip ${form.extra.includes(x)?"on":""}" data-x="${x}">${x}</button>`).join("")}</div>
  <input id="eigen" maxlength="40" placeholder="Iets anders, bijv. heksensoep" value="${esc(form.eigen)}">
+ <div class="priv">🔒 <b>Wat ziet de buurt?</b> Alleen je adres en wat je doet. Geen naam, geen telefoonnummer. Na Halloween halen we alle aanmeldingen weg.</div>
  <button class="btn" id="go">Aanmelden</button><div class="err" id="err"></div></div></div>`;
  const m=basis($("#lmap"),{pad:[8,8]});knoppen($("#pw"),62).querySelectorAll("button").forEach(b=>b.onclick=()=>{LAYER=b.dataset.l;try{localStorage.setItem("laag",LAYER)}catch(e){}const c=m.getCenter(),z=m.getZoom();meedoen();MAP.setView(c,z)});
  const sat=LAYER=="sat";POLY={};
@@ -455,24 +463,13 @@ function meedoen(){
   const extra=[...form.extra,...(form.eigen.trim()?["✨ "+form.eigen.trim()]:[])];
   const a=form.a;$("#go").disabled=true;$("#go").textContent="Bezig…";
   rpc("aanmelden",{p_adres:a,p_doet:form.doet,p_extra:extra}).then(()=>{form={a:null,doet:["aanbellen"],extra:[],eigen:""};
-  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. ${EVENT.test?"🧪 Testmodus: je huis staat meteen op de kaart.":"Na een korte controle door de organisatie staat je huis op de kaart."}</p><a class="btn" href="#/kaart">Bekijk de spookykaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a>${agendaHTML()}</div>`;bindAgenda();scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
+  app.innerHTML=`<div class="done"><b>🎉</b><h2>Top, je doet mee!</h2><p class="m">${esc(a)} is aangemeld. ${EVENT.test?"🧪 Testmodus: je huis staat meteen op de kaart.":"Na een korte controle door de organisatie staat je huis op de kaart. Je hoeft verder niets te doen."}</p>${orgHTML()}<a class="btn" href="#/kaart">Bekijk de spookykaart</a><a class="btn ghost" href="#/flyer">Flyer printen</a>${agendaHTML()}</div>`;bindAgenda();scrollTo(0,0)}).catch(m=>{fout(m);$("#go").disabled=false;$("#go").textContent="Aanmelden"})};
 }
 function fout(t){$("#err").textContent=t}
 
 // ---- Flyer ----
 function zonOnder(d){const lat=51.986,lng=4.493,r=Math.PI/180;const n=Math.round((Date.parse(d+"T12:00:00Z")-Date.UTC(2000,0,1,12))/864e5);const Js=n-lng/360,M=(357.5291+0.98560028*Js)%360,C=1.9148*Math.sin(M*r)+.02*Math.sin(2*M*r)+.0003*Math.sin(3*M*r),l=(M+C+282.9372)%360,Jt=2451545+Js+.0053*Math.sin(M*r)-.0069*Math.sin(2*l*r),dec=Math.asin(Math.sin(l*r)*Math.sin(23.44*r)),w=Math.acos((Math.sin(-.833*r)-Math.sin(lat*r)*Math.sin(dec))/(Math.cos(lat*r)*Math.cos(dec)))/r;return new Date((Jt+w/360-2440587.5)*864e5)}
 const uur=t=>t.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Amsterdam"});
-function spookWeer(c,wind){const w=wind>35?" De bezems vliegen vandaag hard! 🧹💨":"";
- if(c==0)return["🌕","Heldere spooknacht, de maan kijkt mee."+w];if(c<=3)return["☁️","Wolken als spoken boven Boterdorp."+w];if(c<=48)return["🌫️","Mist! Perfect spookweer, houd elkaar goed vast."+w];
- if(c<=67||(c>=80&&c<=82))return["☔","Heksenweer: regenjas of paraplu mee!"+w];if(c<=77||c==85||c==86)return["❄️","IJskoude geesten, trek je warmste jas aan."+w];return["⚡","Onweer: de geesten zijn boos. Kijk even of het doorgaat."+w]}
-async function weer(){const el=$("#weer");if(!el)return;const dag=EVENT.dag;
- try{const j=await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=51.986&longitude=4.493&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max,wind_speed_10m_max&timezone=Europe%2FAmsterdam&forecast_days=16")).json();
-  const i=dag?j.daily.time.indexOf(dag):-1,zo=zonOnder(dag||new Date().toISOString().slice(0,10)),don=new Date(zo.getTime()+38*6e4);
-  let kop,regel,[ic,tekst]=["",""];
-  if(i>=0){[ic,tekst]=spookWeer(j.daily.weather_code[i],j.daily.wind_speed_10m_max[i]);kop=`Voorspelling voor ${esc(EVENT.datum||dagTxt(dag))}`;regel=`${ic} ${Math.round(j.daily.temperature_2m_min[i])}–${Math.round(j.daily.temperature_2m_max[i])}° · ☔ ${j.daily.precipitation_probability_max[i]}% kans op regen · 💨 ${Math.round(j.daily.wind_speed_10m_max[i])} km/u`}
-  else{[ic,tekst]=spookWeer(j.current.weather_code,j.current.wind_speed_10m);kop="Nu in Bergschenhoek";regel=`${ic} ${Math.round(j.current.temperature_2m)}° · 💨 ${Math.round(j.current.wind_speed_10m)} km/u`}
-  el.innerHTML=`<div class="wk">🔮 Spookweer · ${kop}</div><div class="wr">${regel}</div><div class="wt">${tekst}</div><div class="wz"><span>🌅 Zon onder <b>${uur(zo)}</b></span><span>🌑 Echt donker <b>${uur(don)}</b></span>${dag?"":"<span>(vandaag)</span>"}</div>${dag&&i<0?'<div class="wn">De voorspelling voor de avond zelf verschijnt hier 2 weken van tevoren.</div>':""}`}
- catch(e){el.innerHTML='<div class="wk">🔮 Spookweer</div><div class="wn">Het weer kon niet geladen worden. Probeer het later opnieuw.</div>'}}
 async function weekWeer(){const el=$("#wweek");if(!el)return;
  try{const j=await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=51.986&longitude=4.493&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&current=is_day,weather_code,temperature_2m&timezone=Europe%2FAmsterdam&forecast_days=7")).json();
   const ic=(c,nacht)=>c==0?(nacht?"🌙":"☀️"):c<=2?(nacht?"🌙":"🌤️"):c==3?"☁️":c<=48?"🌫️":(c<=67||(c>=80&&c<=82))?"🌧️":(c<=77||c==85||c==86)?"❄️":"⛈️";
@@ -493,14 +490,13 @@ function flyer(){
 }
 
 // ---- Help / veelgestelde vragen ----
-// Contact: vul in zodra bekend (leeg = wordt niet getoond). WhatsApp: een uitnodigingslink van de groep.
-const CONTACT={naam:"",mail:"",whatsapp:""};
 function help(){
  app.className="";
  const wanneer=EVENT.dag?`Op <b>${esc(EVENT.datum||dagTxt(EVENT.dag))}</b>${EVENT.van?`, van ${tijdTxt(EVENT.van,EVENT.tot)} uur`:""}.`:`De datum staat nog niet vast. Iedereen mag meestemmen in de <a href="#/datum">datumprikker</a>.`;
- const contact=CONTACT.mail||CONTACT.whatsapp?`neem contact op${CONTACT.naam?" met "+esc(CONTACT.naam):""}${CONTACT.mail?` via <a href="mailto:${esc(CONTACT.mail)}">${esc(CONTACT.mail)}</a>`:""}${CONTACT.whatsapp?`${CONTACT.mail?" of ":" via "}de <a href="${esc(CONTACT.whatsapp)}" target="_blank" rel="noopener">WhatsApp-groep</a>`:""}`:"laat het de organisatie weten";
+ const WA=waUrl(CONTACT.whatsapp);
+ const contact=CONTACT.mail||WA?`neem contact op${CONTACT.naam?" met "+esc(CONTACT.naam):""}${CONTACT.mail?` via <a href="mailto:${esc(CONTACT.mail)}">${esc(CONTACT.mail)}</a>`:""}${WA?`${CONTACT.mail?" of ":" via "}de <a href="${esc(WA)}" target="_blank" rel="noopener">WhatsApp-groep</a>`:""}`:"laat het de organisatie weten";
  const V=[
-  ["🎃","Wat is dit?","Een Halloween-avond voor De Eilanden en de Dichtersbuurt. Bewoners die meedoen zetten hun huis op de kaart. Kinderen zien zo precies waar ze langs kunnen."],
+  ["🎃","Wat is dit?","Een Halloween-avond voor De Eilanden en de Dichtersbuurt. Bewoners die meedoen zetten hun huis op de kaart. Kinderen zien zo precies waar ze langs kunnen."+(CONTACT.naam?` Het wordt georganiseerd door ${esc(CONTACT.naam)}, een buurtgenoot, zonder winstoogmerk.`:" Het wordt georganiseerd door buurtgenoten, zonder winstoogmerk.")],
   ["📅","Wanneer is het?",wanneer+(EVENT.dag?` <a href="#/" >Zet het in je agenda</a> via de startpagina.`:"")],
   ["🧒","Voor wie is het?","Voor alle kinderen uit de buurt. Kleintjes lopen samen met een volwassene."],
   ["🗺️","Hoe weet ik welke huizen meedoen?",`Kijk op de <a href="#/kaart">Spookykaart</a> of de flyer. Alleen bij huizen op de kaart mag je langs. Op de kaart kun je huizen afvinken als je er bent geweest.`],
@@ -517,7 +513,7 @@ function help(){
  ];
  app.innerHTML=`<h2>❓ Vragen</h2><p class="m">De meest gestelde vragen op een rij. Tik op een vraag.</p>
  <div class="faq">${V.map(([e,q,a])=>`<details><summary><span>${e}</span>${q}</summary><div>${a}</div></details>`).join("")}</div>
- ${CONTACT.mail||CONTACT.whatsapp?`<div class="faqc"><b>Staat je vraag er niet bij?</b><div class="chips" style="justify-content:center;margin-top:8px">${CONTACT.whatsapp?`<a class="chip on" href="${esc(CONTACT.whatsapp)}" target="_blank" rel="noopener">💬 WhatsApp-groep</a>`:""}${CONTACT.mail?`<a class="chip" href="mailto:${esc(CONTACT.mail)}">✉️ Mail ons</a>`:""}</div></div>`:""}`;
+ ${CONTACT.mail||WA?`<div class="faqc"><b>Staat je vraag er niet bij?</b><div class="chips" style="justify-content:center;margin-top:8px">${WA?`<a class="chip on" href="${esc(WA)}" target="_blank" rel="noopener">💬 WhatsApp-groep</a>`:""}${CONTACT.mail?`<a class="chip" href="mailto:${esc(CONTACT.mail)}">✉️ Mail ons</a>`:""}</div></div>`:""}`;
 }
 
 // ---- Datumprikker ----
@@ -527,7 +523,7 @@ function optTijd(x){return x.van?tijdTxt(x.van,x.tot)+" uur":""}
 function voorbij(x){return x.dag&&x.dag<new Date().toISOString().slice(0,10)}
 const KEUZES=[["ja","✅","Kan ik"],["misschien","🤔","Misschien"],["nee","❌","Kan niet"]];
 function stemVenster(){const v=new Date().toLocaleDateString("sv-SE",{timeZone:"Europe/Amsterdam"}),s=EVENT.pstart,e=EVENT.pend;
- const kort=d=>new Date(d+"T12:00").toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"});
+ const kort=d=>new Date(d+"T12:00").toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long"})+jr(d);
  if(EVENT.prikker===false)return{open:false,st:"dicht",txt:"",kort:""};
  if(s&&v<s)return{open:false,st:"voor",txt:`⏳ Stemmen start op <b>${kort(s)}</b>${e?` en kan t/m <b>${kort(e)}</b>`:""}.`,kort:`Stemmen vanaf ${kort(s)}`};
  if(e&&v>e)return{open:false,st:"na",txt:`🔒 Stemmen kon t/m <b>${kort(e)}</b>. De organisatie kiest nu de datum.`,kort:"Stemmen is gesloten"};
@@ -566,16 +562,16 @@ async function datum(){
 // ---- Beheer (geheime link) ----
 async function beheer(){
  app.className="";
- const k=new URLSearchParams(location.hash.split("?")[1]||"").get("k")||sessionStorage.getItem("bk")||"";
+ const k=new URLSearchParams(location.hash.split("?")[1]||"").get("k")||bkGet();
  if(!k){app.innerHTML='<div class="empty">Geen toegang.</div>';return}
- let lijst;try{lijst=await rpc("beheer_lijst",{p_key:k});sessionStorage.setItem("bk",k)}catch(m){app.innerHTML=`<div class="empty">${esc(m)}</div>`;return}
+ let lijst;try{lijst=await rpc("beheer_lijst",{p_key:k});bkSet(k);if(location.hash.includes("k="))history.replaceState(null,"",location.pathname+location.search+"#/beheer");bhKnop()}catch(m){app.innerHTML=`<div class="empty">${esc(m)}</div>`;return}
  const [o,st]=await Promise.all([get("prikker_opties?select=*&order=dag,van,volgorde"),rpc("prikker_stand",{})]);
  const nieuw=lijst.filter(h=>!h.goedgekeurd),ok=lijst.filter(h=>h.goedgekeurd);
  const rij=h=>`<div class="row" style="flex-wrap:wrap;cursor:default"><span class="e">${prim(h)}</span><span class="t">${esc(h.adres)}<small>${doetTxt(h)}${h.extra.length?" · "+h.extra.map(esc).join(" · "):""}</small></span>
   <span class="chips">${h.goedgekeurd?`<button class="chip" data-a="afkeuren" data-id="${h.id}">Verbergen</button>`:`<button class="chip on" data-a="goedkeuren" data-id="${h.id}">✓ Goedkeuren</button>`}
   ${Object.entries(TYPES).map(([t,[e,n]])=>`<button class="chip ${DOET(h).includes(t)?"on":""}" data-doet="${t}" data-hid="${h.id}" title="${n}">${e}</button>`).join("")}
   <button class="chip" data-a="verwijderen" data-id="${h.id}">🗑️</button></span></div>`;
- app.innerHTML=`<h2>🔧 Beheer</h2>
+ app.innerHTML=`<h2>🔧 Beheer <button class="chip" id="buit" style="float:right;font-size:13px">🚪 Uitloggen</button></h2>
  <div class="tbox ${EVENT.test?"aan":""}"><b>🧪 Testmodus ${EVENT.test?"staat AAN":"staat uit"}</b><p class="m" style="margin:4px 0 10px">${EVENT.test?"Nieuwe aanmeldingen komen direct op de kaart, zonder controle. Bovenaan de site staat een testbalk.":"Aanmeldingen moeten eerst door jou worden goedgekeurd."}</p><div class="chips"><button class="chip ${EVENT.test?"":"on"}" id="btest">${EVENT.test?"⏹️ Testmodus uitzetten":"🧪 Testmodus aanzetten"}</button><button class="chip rood" id="bwisalles">🗑️ Alle aangemelde huizen verwijderen</button></div></div>
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
@@ -595,6 +591,11 @@ async function beheer(){
   <button class="btn" id="psave">💾 Datumprikker opslaan</button>
  </div>
  <h2>📊 Stemmen tot nu toe</h2><div class="list">${o.map(x=>({x,c:st.find(v=>v.optie_id==x.id)||{ja:0,misschien:0,nee:0}})).sort((a,b)=>(b.c.ja*2+b.c.misschien)-(a.c.ja*2+a.c.misschien)).map(({x,c},n)=>`<div class="row" style="cursor:default;flex-wrap:wrap"><span class="t">${n==0&&c.ja+c.misschien?"⭐ ":""}${x.dag?dagTxt(x.dag)+" · "+tijdTxt(x.van,x.tot):esc(x.label)}<div class="pbar" style="margin:6px 0 4px">${c.ja+c.misschien+c.nee?`<i class="j" style="flex:${c.ja}"></i><i class="m" style="flex:${c.misschien}"></i><i class="n" style="flex:${c.nee}"></i>`:""}</div><small>✅ ${c.ja} kan · 🤔 ${c.misschien} misschien · ❌ ${c.nee} kan niet</small></span><span class="chips">${x.dag?`<button class="chip" data-kies="${x.id}">📌 Deze kiezen</button>`:""}</span></div>`).join("")||'<div class="empty">Nog geen datums.</div>'}</div>
+ <h2>👋 Organisator &amp; contact</h2><p class="m">Dit zien bewoners onderaan de startpagina en bij Vragen. Leeg laten = niet tonen. Let op: wat je hier invult is voor iedereen zichtbaar.</p>
+ <label class="lb">Naam (bijv. Joey van Terschelling)<input id="cnaam" maxlength="60" value="${esc(CONTACT.naam)}"></label>
+ <label class="lb">E-mailadres voor vragen<input id="cmail" type="email" maxlength="120" value="${esc(CONTACT.mail)}" placeholder="bijv. halloween@…"></label>
+ <label class="lb">Link WhatsApp-groep (chat.whatsapp.com/…)<input id="cwa" type="url" maxlength="200" value="${esc(CONTACT.whatsapp)}" placeholder="https://chat.whatsapp.com/…"></label>
+ <button class="btn ghost" id="csave">Contact opslaan</button>
  <h2>📌 Definitieve datum</h2><p class="m">Vul de definitieve datum in, of kies hieronder een datum uit de prikker. Aanmelden sluit dan automatisch 3 dagen ervoor.</p>
  <div class="tr3"><label>Datum<input type="date" id="bdag" value="${EVENT.dag||""}"></label><label>Van<input type="time" id="bvan" value="${hm(EVENT.van)}"></label><label>Tot<input type="time" id="btot" value="${hm(EVENT.tot)}"></label></div>
  ${EVENT.dag?`<div class="chips" style="margin-top:8px"><button class="chip" id="bwis">🗑️ Gekozen datum wissen (prikker weer open)</button></div>`:""}<input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
@@ -628,10 +629,15 @@ async function beheer(){
   app.querySelectorAll("[data-px]").forEach(e=>e.onclick=()=>{if(weg(+e.dataset.px)){tekenK();tekenT()}});
   if($("#pkop"))$("#pkop").onclick=()=>{SEL.forEach(x=>{x.van=SEL[0].van;x.tot=SEL[0].tot});tekenT();toast("Tijd gekopieerd ✓")}};
  tekenK();tekenT();
+ $("#buit").onclick=()=>{if(confirm("Uitloggen op dit apparaat? Je hebt daarna je beheerlink weer nodig.")){bkSet("");bhKnop();location.hash="#/"}};
+ $("#csave").onclick=async()=>{const w=$("#cwa").value.trim(),m=$("#cmail").value.trim();if(w&&!waUrl(w))return toast("⚠️ De WhatsApp-link moet beginnen met https://chat.whatsapp.com/");if(m&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m))return toast("⚠️ Dit e-mailadres klopt niet");await doe("beheer_contact",{p_naam:$("#cnaam").value.trim(),p_mail:m,p_whatsapp:w});toast("Contact opgeslagen ✓")};
  $("#psave").onclick=async()=>{const a=$("#pstart").value||null,e=$("#peind").value||null;if(a&&e&&e<a)return toast("⚠️ De sluitdatum ligt voor de startdatum");if(SEL.some(x=>x.van&&x.tot&&x.tot<=x.van))return toast("⚠️ Eindtijd moet na de starttijd liggen");$("#psave").textContent="Opslaan…";await doe("beheer_prikker",{p_opties:SEL.map(x=>({id:x.id,dag:x.dag,van:x.van,tot:x.tot})),p_start:a,p_eind:e});toast("Datumprikker opgeslagen ✓")};
 }
 
-function route(){$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
+function bkGet(){try{return localStorage.getItem("bk")||sessionStorage.getItem("bk")||""}catch(e){return ""}}
+function bkSet(k){try{if(k){localStorage.setItem("bk",k)}else{localStorage.removeItem("bk");sessionStorage.removeItem("bk")}}catch(e){}}
+function bhKnop(){const a=$(".bhk");if(bkGet()&&!a)document.body.insertAdjacentHTML("beforeend",'<a class="bhk noprint" href="#/beheer" title="Beheer" aria-label="Beheer">⚙️</a>');if(!bkGet()&&a)a.remove()}
+function route(){bhKnop();$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
  ({kaart,meedoen,flyer,datum,beheer,help}[p]||start)();scrollTo(0,0)}
