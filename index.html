@@ -132,7 +132,7 @@ main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .her
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
 .tabs a[hidden]{display:none}
-.bhk{position:fixed;top:10px;right:10px;z-index:1300;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:#1d1528cc;border:1px solid var(--line);text-decoration:none;font-size:18px;backdrop-filter:blur(6px)}@media(max-width:899px){body.testm .bhk{top:44px}}
+.bhk{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;text-decoration:none;font-size:17px;opacity:.6;transition:opacity .2s}.bhk:hover,.bhk:focus{opacity:1}@media(max-width:899px){body.testm .bhk{top:44px}}
 .org{text-align:center;color:var(--mu);font-size:14px;line-height:1.5;margin:18px 0 4px}.org b{color:var(--tx)}.org a{color:var(--or)}
 .eerste{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--card);border:1px dashed var(--or);border-radius:16px;padding:12px 14px;text-decoration:none;color:var(--tx)}.eerste span{font-size:30px}.eerste b{display:block;font-size:16px}.eerste small{color:var(--mu);font-size:14px}
 .priv{background:#1a2a22;border:1px solid #2f5d45;border-radius:14px;padding:10px 12px;margin:14px 0 4px;font-size:14px;line-height:1.45;color:#d7eadf}
@@ -571,7 +571,7 @@ async function beheer(){
   <span class="chips">${h.goedgekeurd?`<button class="chip" data-a="afkeuren" data-id="${h.id}">Verbergen</button>`:`<button class="chip on" data-a="goedkeuren" data-id="${h.id}">✓ Goedkeuren</button>`}
   ${Object.entries(TYPES).map(([t,[e,n]])=>`<button class="chip ${DOET(h).includes(t)?"on":""}" data-doet="${t}" data-hid="${h.id}" title="${n}">${e}</button>`).join("")}
   <button class="chip" data-a="verwijderen" data-id="${h.id}">🗑️</button></span></div>`;
- app.innerHTML=`<h2>🔧 Beheer <button class="chip" id="buit" style="float:right;font-size:13px">🚪 Uitloggen</button></h2>
+ app.innerHTML=`<h2>🔧 Beheer</h2>
  <div class="tbox ${EVENT.test?"aan":""}"><b>🧪 Testmodus ${EVENT.test?"staat AAN":"staat uit"}</b><p class="m" style="margin:4px 0 10px">${EVENT.test?"Nieuwe aanmeldingen komen direct op de kaart, zonder controle. Bovenaan de site staat een testbalk.":"Aanmeldingen moeten eerst door jou worden goedgekeurd."}</p><div class="chips"><button class="chip ${EVENT.test?"":"on"}" id="btest">${EVENT.test?"⏹️ Testmodus uitzetten":"🧪 Testmodus aanzetten"}</button><button class="chip rood" id="bwisalles">🗑️ Alle aangemelde huizen verwijderen</button></div></div>
  <div class="stat"><div><b>${nieuw.length}</b><small>te controleren</small></div><div><b>${ok.length}</b><small>op de kaart</small></div><div><b>${LOTS.length}</b><small>adressen in gebied</small></div></div>
  <h2>Nieuw (${nieuw.length})</h2><div class="list">${nieuw.map(rij).join("")||'<div class="empty">Niets te controleren.</div>'}</div>
@@ -600,7 +600,8 @@ async function beheer(){
  <div class="tr3"><label>Datum<input type="date" id="bdag" value="${EVENT.dag||""}"></label><label>Van<input type="time" id="bvan" value="${hm(EVENT.van)}"></label><label>Tot<input type="time" id="btot" value="${hm(EVENT.tot)}"></label></div>
  ${EVENT.dag?`<div class="chips" style="margin-top:8px"><button class="chip" id="bwis">🗑️ Gekozen datum wissen (prikker weer open)</button></div>`:""}<input id="bm" value="${esc(EVENT.mededeling||"")}" placeholder="Mededeling (optioneel)">
  <div class="chips" style="margin-top:10px"><button class="chip ${EVENT.prikker!==false?"on":""}" id="bp">📅 Datumprikker open</button></div>
- <button class="btn" id="bs">Opslaan</button><div class="err" id="err"></div>`;
+ <button class="btn" id="bs">Opslaan</button><div class="err" id="err"></div>
+ <p style="text-align:center;margin:28px 0 8px"><button class="plink" id="buit" style="color:var(--mu);font-weight:500">Uitloggen op dit apparaat</button></p>`;
  $("#btest").onclick=()=>doe("beheer_test",{p_aan:!EVENT.test});
  $("#bwisalles").onclick=()=>{const n=lijst.length;if(!n)return $("#err").textContent="Er staan geen huizen in.";if(prompt(`Weet je het zeker? Alle ${n} aangemelde huizen worden verwijderd. Typ WISSEN om door te gaan.`)!=="WISSEN")return;doe("beheer_wis_huizen",{})};
  const doe=async(f,b)=>{try{await rpc(f,{p_key:k,...b});await laad();beheer()}catch(m){$("#err").textContent=m;toast("⚠️ "+m)}};
@@ -636,7 +637,7 @@ async function beheer(){
 
 function bkGet(){try{return localStorage.getItem("bk")||sessionStorage.getItem("bk")||""}catch(e){return ""}}
 function bkSet(k){try{if(k){localStorage.setItem("bk",k)}else{localStorage.removeItem("bk");sessionStorage.removeItem("bk")}}catch(e){}}
-function bhKnop(){const a=$(".bhk");if(bkGet()&&!a)document.body.insertAdjacentHTML("beforeend",'<a class="bhk noprint" href="#/beheer" title="Beheer" aria-label="Beheer">⚙️</a>');if(!bkGet()&&a)a.remove()}
+function bhKnop(){const a=$(".bhk");if(bkGet()&&!a)document.body.insertAdjacentHTML("beforeend",'<a class="bhk noprint" href="#/beheer" title="Beheer" aria-label="Beheer">🕸️</a>');if(!bkGet()&&a)a.remove()}
 function route(){bhKnop();$(".sheet")?.remove();document.body.classList.toggle("testm",!!EVENT.test);if(EVENT.test&&!$(".testbalk"))document.body.insertAdjacentHTML("afterbegin",'<div class="testbalk">🧪 Testmodus: aanmeldingen staan direct op de kaart</div>');if(!EVENT.test)$(".testbalk")?.remove();document.body.dataset.p=(location.hash||"#/").slice(2).split("?")[0];if(!$(".pagebg"))document.body.insertAdjacentHTML("afterbegin",'<div class="pagebg" aria-hidden="true"></div>');const dt=$(".tabs a[data-t=datum]");if(dt)dt.hidden=EVENT.prikker===false;RLIJN=null;if(MAP){MAP.remove();MAP=null}if(WATCH!==null){navigator.geolocation.clearWatch(WATCH);WATCH=null}
  const p=(location.hash||"#/").slice(2).split("?")[0];
  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.t==p));
