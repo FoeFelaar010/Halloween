@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Halloween in de buurt</title>
+<title>Halloween Bergschenhoek</title>
 <meta name="theme-color" content="#16101f">
 <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -101,7 +101,7 @@ input:focus,textarea:focus{border-color:var(--or)}
  .sheet{left:auto;right:24px;bottom:24px;width:360px}
  .big{grid-template-columns:repeat(4,1fr)}.big:has(>a:nth-child(3):last-child){grid-template-columns:repeat(3,1fr)}.big:has(>a:nth-child(5):last-child){grid-template-columns:repeat(5,1fr)}.big a.main{grid-column:auto}
  main{max-width:960px}.hero h1{font-size:64px}
- .meedoen{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.pmap{height:70vh;position:sticky;top:80px}
+ .meedoen{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.pmap{height:clamp(420px,62vh,640px);position:sticky;top:80px}
 }
 .spooky .leaflet-tile-pane{filter:invert(1) grayscale(1) brightness(1.05) contrast(1.1) sepia(.5) hue-rotate(225deg) saturate(2.2)}.lmap.spooky{background:#0d0814}.spooky .leaflet-overlay-pane path[stroke-dasharray]{filter:drop-shadow(0 0 6px #ff7a1a)}.spooky .mk{box-shadow:0 0 14px 4px #ff7a1aaa}.spooky .num{color:#ffb366;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000}
 .mk{position:relative}.mk.vis{background:#e9e4ef;border-color:#2fbf6b;box-shadow:none}.mk.vis span{filter:grayscale(1);opacity:.45}.mk i{position:absolute;right:-7px;bottom:-7px;width:19px;height:19px;border-radius:50%;background:#2fbf6b;color:#fff;font:800 11px Inter,sans-serif;font-style:normal;display:flex;align-items:center;justify-content:center;border:2px solid #fff}.spooky .mk.vis{box-shadow:none}
@@ -128,9 +128,11 @@ input:focus,textarea:focus{border-color:var(--or)}
 .homebg{position:absolute;left:50%;width:100vw;margin-left:-50vw;top:0;height:min(78vh,620px);background:url(bg.webp?v=1) center 40%/cover;-webkit-mask-image:linear-gradient(#000 35%,transparent);mask-image:linear-gradient(#000 35%,transparent);opacity:1;animation:drift 40s ease-in-out infinite alternate;pointer-events:none}
 .homebg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 32%,#16101fb0 0,#16101f40 38%,#16101f00 60%),linear-gradient(#16101f00 55%,#16101fcc)}
 main.home{position:relative}body{overflow-x:clip}main.home>*:not(.homebg){position:relative;z-index:1}
-main.home .hero h1{text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .hero .wijk{color:#e3d8f0;text-shadow:0 2px 8px #000}
+main.home .hero h1{text-transform:uppercase;font-size:clamp(34px,13vw,84px);line-height:1;text-shadow:0 4px 24px #000,0 0 40px #ff7a1a66}main.home .hero .wijk{color:#e3d8f0;text-shadow:0 2px 8px #000}
 @keyframes drift{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.12) translateX(1%)}}
 @media(prefers-reduced-motion:reduce){.homebg{animation:none}}
+.big.twee{grid-template-columns:1fr!important;max-width:720px;margin-left:auto;margin-right:auto}.big.twee>a{grid-column:auto!important;min-height:104px}@media(min-width:600px){.big.twee{grid-template-columns:1fr 1fr!important}.big.twee>a{min-height:140px}}
+.tel{text-align:center;margin-top:16px;color:#e3d8f0;font-size:15px;text-shadow:0 2px 8px #000}.tel b{color:var(--or);font-size:18px}
 .tabs a[hidden]{display:none}
 .bhk{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;text-decoration:none;font-size:17px;opacity:.6;transition:opacity .2s}.bhk:hover,.bhk:focus,.bhu:hover,.bhu:focus{opacity:1}.bhu{position:fixed;top:12px;right:10px;z-index:1300;width:34px;height:34px;display:grid;place-items:center;background:none;border:0;padding:0;font-size:16px;opacity:.6;cursor:pointer;transition:opacity .2s}body.bhin .bhk{right:46px}@media(max-width:899px){body.testm .bhk,body.testm .bhu{top:44px}}
 .login{max-width:380px;margin:6vh auto 0;text-align:center}.login .lgi{font-size:44px}.login form{text-align:left}.login .lb{font-size:14px}.login .btn{margin-top:14px}.login .plink{margin-top:12px;font-weight:500}
@@ -225,6 +227,10 @@ const DAGF=new Intl.DateTimeFormat("nl-NL",{weekday:"long",day:"numeric",month:"
 function jr(d){const y=(d instanceof Date?d:new Date(d+"T12:00")).getFullYear();return y!=new Date().getFullYear()?" "+y:""}
 function dagTxt(d){if(!d)return "";const s=DAGF.format(new Date(d+"T12:00"));return s[0].toUpperCase()+s.slice(1)+jr(d)}
 function tijdTxt(v,t){return v?hm(v)+(t?" – "+hm(t):""):""}
+// Buurtnamen: alleen tonen als (een deel van) de postcodes van die buurt in het gebied zit
+const BUURTEN=[["De Eilanden","2662AN 2662AP 2662AR 2662AS 2662AT 2662AV 2662AW".split(" ")],["Dichtersbuurt","2662AA 2662AB 2662AE 2662AG 2662AH 2662AJ 2662AK 2662AL 2662AM 2662AX 2662AZ 2662BA 2662BB 2662BC 2662BD 2662BE 2662BG 2662BH 2662BJ 2662BK 2662BL 2662BM".split(" ")],["Tuinenbuurt","2662CE 2662CG 2662CH 2662CJ 2662CK 2662CL 2662CM 2662CN 2662CP 2662CR 2662CS 2662CT 2662CV 2662CW 2662CX 2662CZ 2662DA 2662DB 2662DE 2662DG 2662DH".split(" ")]];
+function buurtTekst(){const pcs=new Set([...(EVENT.postcodes||[]),...(EVENT.losse||[]).map(l=>String(l).replace(/\s/g,"").toUpperCase().match(/\d{4}[A-Z]{2}/)?.[0]).filter(Boolean)].map(p=>String(p).replace(/\s/g,"").toUpperCase()));
+ return BUURTEN.filter(([,pc])=>pc.some(p=>pcs.has(p))).map(([n])=>esc(n)).join(" / ")}
 function wanneer(){return EVENT.datum?esc(EVENT.datum)+(EVENT.tijd?" · "+esc(EVENT.tijd):""):"Datum volgt"}
 function deadline(){if(!EVENT.dag)return null;const d=new Date(EVENT.dag+"T12:00");d.setDate(d.getDate()-3);return d}
 function aanmeldenDicht(){const d=deadline();if(!d)return false;const t=new Date();t.setHours(12,0,0,0);return t>d}
@@ -232,10 +238,10 @@ function dlTxt(){const d=deadline();if(!d)return "";const s=DAGF.format(d);retur
 function agendaHTML(){return EVENT.dag?`<div class="agbtn"><button data-ics>📅 Zet in agenda</button><a target="_blank" rel="noopener" href="${gcal()}">Google Agenda</a></div>`:""}
 function icsT(d,t){return d.replace(/-/g,"")+"T"+(t||"17:00").slice(0,5).replace(":","")+"00"}
 function eindT(){return EVENT.tot||(EVENT.van?String(Math.min(23,+EVENT.van.slice(0,2)+3)).padStart(2,"0")+EVENT.van.slice(2,5):"20:00")}
-function gcal(){const p=new URLSearchParams({action:"TEMPLATE",text:"🎃 Halloween in de buurt",dates:icsT(EVENT.dag,EVENT.van)+"/"+icsT(EVENT.dag,eindT()),ctz:"Europe/Amsterdam",location:"De Eilanden & Dichtersbuurt, Bergschenhoek",details:"Spookykaart: "+SITE});return "https://calendar.google.com/calendar/render?"+p}
+function gcal(){const p=new URLSearchParams({action:"TEMPLATE",text:"🎃 Halloween in de buurt",dates:icsT(EVENT.dag,EVENT.van)+"/"+icsT(EVENT.dag,eindT()),ctz:"Europe/Amsterdam",location:"Bergschenhoek",details:"Spookykaart: "+SITE});return "https://calendar.google.com/calendar/render?"+p}
 function ics(){const now=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
  const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Halloween in de buurt//NL","CALSCALE:GREGORIAN","BEGIN:VTIMEZONE","TZID:Europe/Amsterdam","BEGIN:STANDARD","DTSTART:19701025T030000","RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU","TZOFFSETFROM:+0200","TZOFFSETTO:+0100","END:STANDARD","BEGIN:DAYLIGHT","DTSTART:19700329T020000","RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU","TZOFFSETFROM:+0100","TZOFFSETTO:+0200","END:DAYLIGHT","END:VTIMEZONE",
- "BEGIN:VEVENT","UID:halloween-"+EVENT.dag+"@foefelaar010.github.io","DTSTAMP:"+now,"DTSTART;TZID=Europe/Amsterdam:"+icsT(EVENT.dag,EVENT.van),"DTEND;TZID=Europe/Amsterdam:"+icsT(EVENT.dag,eindT()),"SUMMARY:🎃 Halloween in de buurt","LOCATION:De Eilanden & Dichtersbuurt\\, Bergschenhoek","DESCRIPTION:Spookykaart: "+SITE,"URL:"+SITE,
+ "BEGIN:VEVENT","UID:halloween-"+EVENT.dag+"@halloweenbergschenhoek.nl","DTSTAMP:"+now,"DTSTART;TZID=Europe/Amsterdam:"+icsT(EVENT.dag,EVENT.van),"DTEND;TZID=Europe/Amsterdam:"+icsT(EVENT.dag,eindT()),"SUMMARY:🎃 Halloween in de buurt","LOCATION:Bergschenhoek","DESCRIPTION:Spookykaart: "+SITE,"URL:"+SITE,
  "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Halloween in de buurt","TRIGGER:-PT1H","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/calendar;charset=utf-8"}));a.download="halloween-in-de-buurt.ics";document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
 function bindAgenda(){app.querySelectorAll("[data-ics]").forEach(b=>b.onclick=ics)}
@@ -450,7 +456,7 @@ async function looproute(a){
  const zet=(html)=>{bar.querySelector("div").innerHTML=html};
  let van;try{van=await hier()}catch(e){zet(`<b>Waar ben je?</b><small>Sta locatie toe om de route te zien, of <a href="${gm}" target="_blank" rel="noopener">open Google Maps</a>.</small>`);return}
  if(!$(".ctl [data-c=gps]").classList.contains("on"))gps($(".ctl [data-c=gps]"));
- if(van.distanceTo(doel)>4000){zet(`<b>Je bent niet in de buurt</b><small>Ga eerst naar De Eilanden / Dichtersbuurt, of <a href="${gm}" target="_blank" rel="noopener">open Google Maps</a>.</small>`);return}
+ if(van.distanceTo(doel)>4000){zet(`<b>Je bent niet in de buurt</b><small>Ga eerst naar de buurt, of <a href="${gm}" target="_blank" rel="noopener">open Google Maps</a>.</small>`);return}
  let pts=null,m=van.distanceTo(doel)*1.3,sec=null;
  try{const r=await fetch(`https://routing.openstreetmap.de/routed-foot/route/v1/foot/${van.lng},${van.lat};${l.lng},${l.lat}?overview=full&geometries=geojson`);const j=await r.json();
   if(j.routes&&j.routes[0]){pts=j.routes[0].geometry.coordinates.map(c=>[c[1],c[0]]);m=j.routes[0].distance}}catch(e){}
@@ -463,15 +469,12 @@ async function looproute(a){
 // ---- Start ----
 function start(){
  app.className="home";
- app.innerHTML=`<div class="homebg" aria-hidden="true"></div><div class="hero"><h1>Halloween<br>in de buurt</h1><div class="wijk">De Eilanden &amp; Dichtersbuurt · Bergschenhoek</div>${EVENT.datum?`<div class="when">🎃 ${wanneer()}</div>`:`<a class="when soon" href="#/datum">📅 Datum volgt${EVENT.prikker===false?"":" · <u>stem mee</u> →"}</a>`}${agendaHTML()}${dlTxt()?`<div class="dl">⏳ ${dlTxt()}</div>`:""}</div>
+ app.innerHTML=`<div class="homebg" aria-hidden="true"></div><div class="hero"><h1>Halloween<br>Bergschenhoek</h1>${buurtTekst()?`<div class="wijk">${buurtTekst()}</div>`:""}${EVENT.datum?`<div class="when">🎃 ${wanneer()}</div>`:`<a class="when soon" href="#/datum">📅 Datum volgt${EVENT.prikker===false?"":" · <u>stem mee</u> →"}</a>`}${agendaHTML()}${dlTxt()?`<div class="dl">⏳ ${dlTxt()}</div>`:""}</div>
  ${EVENT.mededeling?`<div class="note">📢 ${esc(EVENT.mededeling)}</div>`:""}
- ${huizen.length>=5?`<div class="stat"><div><b>${huizen.length}</b><small>huizen doen mee</small></div><div><b>${huizen.filter(h=>DOET(h).some(k=>k=="spookhuis"||k=="eng")).length}</b><small>spookhuizen</small></div><div><b>${huizen.filter(h=>h.extra.length).length}</b><small>met extra's</small></div></div>`:`<a class="eerste" href="#/meedoen"><span>🎃</span><div><b>${huizen.length?"Doe jij ook mee?":"Wie doet er als eerste mee?"}</b><small>Meld je huis aan. Het is gratis en zo gebeurd.</small></div></a>`}
- <div class="big">
-  <a class="main" href="#/kaart"><b>👻</b><span>Spookykaart</span><small>Zie welke huizen meedoen en loop erheen</small></a>
-  <a href="#/meedoen"><b>🎃</b><span>Meedoen</span><small>Meld je huis aan in 30 seconden</small></a>
-  ${EVENT.prikker===false?"":`<a href="#/datum"><b>📅</b><span>Datumprikker</span><small>${EVENT.prikker===false&&EVENT.dag?"Datum staat vast · zet in agenda":stemVenster().kort||"Stem mee over de datum"}</small></a>`}
-  <a href="#/flyer"><b>🖨️</b><span>Flyer</span><small>Printen of delen</small></a>
-  <a href="#/help"><b>❓</b><span>Vragen</span><small>Hoe werkt het?</small></a>
+ ${huizen.length>=5?(()=>{const sp=huizen.filter(h=>DOET(h).some(k=>k=="spookhuis"||k=="eng")).length,ex=huizen.filter(h=>h.extra.length).length;return `<div class="tel"><b>${huizen.length}</b> huizen doen mee${sp?` · <b>${sp}</b> ${sp==1?"spookhuis":"spookhuizen"}`:""}${ex?` · <b>${ex}</b> met extra's`:""}</div>`})():""}
+ <div class="big twee">
+  <a class="main" href="#/kaart"><b>👻</b><span>Bekijk de kaart</span><small>Zie welke huizen meedoen en loop erheen</small></a>
+  <a href="#/meedoen"><b>🎃</b><span>Meld je huis aan</span><small>Gratis en in 30 seconden geregeld</small></a>
  </div>
  <div class="wweek" id="wweek"></div>
  ${orgHTML()}`;
@@ -527,6 +530,7 @@ function fout(t){$("#err").textContent=t}
 function zonOnder(d){const lat=51.986,lng=4.493,r=Math.PI/180;const n=Math.round((Date.parse(d+"T12:00:00Z")-Date.UTC(2000,0,1,12))/864e5);const Js=n-lng/360,M=(357.5291+0.98560028*Js)%360,C=1.9148*Math.sin(M*r)+.02*Math.sin(2*M*r)+.0003*Math.sin(3*M*r),l=(M+C+282.9372)%360,Jt=2451545+Js+.0053*Math.sin(M*r)-.0069*Math.sin(2*l*r),dec=Math.asin(Math.sin(l*r)*Math.sin(23.44*r)),w=Math.acos((Math.sin(-.833*r)-Math.sin(lat*r)*Math.sin(dec))/(Math.cos(lat*r)*Math.cos(dec)))/r;return new Date((Jt+w/360-2440587.5)*864e5)}
 const uur=t=>t.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",timeZone:"Europe/Amsterdam"});
 async function weekWeer(){const el=$("#wweek");if(!el)return;
+ const vd=new Date().toLocaleDateString("sv-SE",{timeZone:"Europe/Amsterdam"}),dd=EVENT.dag?(Date.parse(EVENT.dag)-Date.parse(vd))/864e5:-1;if(!(dd>=0&&dd<=6)){el.remove();return}
  try{const j=await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=51.986&longitude=4.493&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&current=is_day,weather_code,temperature_2m&timezone=Europe%2FAmsterdam&forecast_days=7")).json();
   const ic=(c,nacht)=>c==0?(nacht?"🌙":"☀️"):c<=2?(nacht?"🌙":"🌤️"):c==3?"☁️":c<=48?"🌫️":(c<=67||(c>=80&&c<=82))?"🌧️":(c<=77||c==85||c==86)?"❄️":"⛈️";
   const D=new Intl.DateTimeFormat("nl-NL",{weekday:"short"}),M=new Intl.DateTimeFormat("nl-NL",{day:"numeric",month:"short"});
@@ -537,7 +541,7 @@ function flyer(){
  app.className="";
  let qr="";try{const q=qrcode(0,"M");q.addData(SITE);q.make();qr=q.createSvgTag({cellSize:4,margin:0,scalable:true})}catch(e){}
  app.innerHTML=`<button class="btn noprint" onclick="print()" style="margin:4px 0 16px">🖨️ Print de flyer</button>
- <div class="flyer"><h1>Halloween in de buurt</h1><div style="text-align:center;color:var(--mu)">De Eilanden &amp; Dichtersbuurt</div><div style="text-align:center;font-size:18px;font-weight:800;margin-top:4px">${wanneer()}</div>
+ <div class="flyer"><h1>Halloween Bergschenhoek</h1>${buurtTekst()?`<div style="text-align:center;color:var(--mu)">${buurtTekst()}</div>`:""}<div style="text-align:center;font-size:18px;font-weight:800;margin-top:4px">${wanneer()}</div>
  <div class="fmap"><div class="lmap" id="lmap"></div></div>
  <div class="legend" style="margin-bottom:10px">${Object.values(TYPES).map(([e,t])=>`<span>${e} ${t}</span>`).join("")}</div>
  <div class="fbot"><ol class="fl">${sorted().map(h=>`<li>${doetIco(h)} ${esc(h.adres)}${h.extra.length?" "+h.extra.map(x=>x.split(" ")[0]).join(""):""}</li>`).join("")||"<li>Nog geen aanmeldingen</li>"}</ol>
@@ -552,7 +556,7 @@ function help(){
  const WA=waUrl(CONTACT.whatsapp);
  const contact=CONTACT.mail||WA?`neem contact op${CONTACT.naam?" met "+esc(CONTACT.naam):""}${CONTACT.mail?` via <a href="mailto:${esc(CONTACT.mail)}">${esc(CONTACT.mail)}</a>`:""}${WA?`${CONTACT.mail?" of ":" via "}de <a href="${esc(WA)}" target="_blank" rel="noopener">WhatsApp-groep</a>`:""}`:"laat het de organisatie weten";
  const V=[
-  ["🎃","Wat is dit?","Een Halloween-avond voor De Eilanden en de Dichtersbuurt. Bewoners die meedoen zetten hun huis op de kaart. Kinderen zien zo precies waar ze langs kunnen."+(CONTACT.naam?` Het wordt georganiseerd door ${esc(CONTACT.naam)}, een buurtgenoot, zonder winstoogmerk.`:" Het wordt georganiseerd door buurtgenoten, zonder winstoogmerk.")],
+  ["🎃","Wat is dit?","Een Halloween-avond voor onze buurt in Bergschenhoek. Bewoners die meedoen zetten hun huis op de kaart. Kinderen zien zo precies waar ze langs kunnen."+(CONTACT.naam?` Het wordt georganiseerd door ${esc(CONTACT.naam)}, een buurtgenoot, zonder winstoogmerk.`:" Het wordt georganiseerd door buurtgenoten, zonder winstoogmerk.")],
   ["📅","Wanneer is het?",wanneer+(EVENT.dag?` <a href="#/" >Zet het in je agenda</a> via de startpagina.`:"")],
   ["🧒","Voor wie is het?","Voor alle kinderen uit de buurt. Kleintjes lopen samen met een volwassene."],
   ["🗺️","Hoe weet ik welke huizen meedoen?",`Kijk op de <a href="#/kaart">Spookykaart</a> of de flyer. Alleen bij huizen op de kaart mag je langs. Op de kaart kun je huizen afvinken als je er bent geweest.`],
@@ -564,7 +568,7 @@ function help(){
   ["✏️","Ik wil iets wijzigen of afmelden",`Geen probleem: ${contact}.`],
   ["🥜","Hoe zit het met allergieën?","Kies als het kan voor snoep zonder noten, of leg iets zonder noten apart. Ouders: kijk het snoep thuis even na."],
   ["🚸","Tips voor veilig lopen","Blijf op de stoep, steek over bij een oversteekplaats en neem een lampje of iets reflecterends mee. Zeg dankjewel!"],
-  ["☔","Gaat het door als het regent?","Ja. Op de startpagina zie je het weer voor de komende dagen. Een paraplu of regenjas maakt het alleen maar spookachtiger."],
+  ["☔","Gaat het door als het regent?","Ja. In de week voor de avond zie je op de startpagina het weer. Een paraplu of regenjas maakt het alleen maar spookachtiger."],
   ["📱","De site doet raar of laat oude informatie zien","Ververs de pagina. Op de telefoon kun je de site ook vastzetten op je beginscherm via Delen → 'Zet op beginscherm'."]
  ];
  app.innerHTML=`<h2>❓ Vragen</h2><p class="m">De meest gestelde vragen op een rij. Tik op een vraag.</p>
